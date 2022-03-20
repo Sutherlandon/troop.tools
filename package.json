@@ -1,0 +1,22 @@
+{
+  "name": "troop1412-api",
+  "version": "1.0.0",
+  "description": "The Api backend for the Trail Life Attendence app",
+  "main": "index.js",
+  "repository": "github.com/sutherlandon/troop1412-api.git",
+  "author": "Landon Sutherland",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "next dev"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.5.1",
+    "@mui/material": "^5.5.1",
+    "next": "^12.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
