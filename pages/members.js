@@ -1,6 +1,9 @@
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
+  Grid,
+  IconButton,
   Paper,
   Table,
   TableRow,
@@ -10,14 +13,28 @@ import {
   Typography,
 } from '@mui/material';
 
-import { getMembers } from '../data/membersData';
+import * as Members from '../data/membersData';
 
 function MembersPage({ data }) {
   return (
     <div>
-      <Typography variant='h4'>
-        Troop Members
-      </Typography>
+      <Grid container>
+        <Grid item sx={{ flexGrow: 1 }}>
+          <Typography variant='h5'>
+            Troop Members
+          </Typography>
+        </Grid>
+        {/* <Grid item>
+          <Button 
+            color='primary'
+            startIcon={<AddIcon />}
+            variant='outlined'
+            sx={{ fontWeight: 'bold' }}
+          >
+            Add
+          </Button>
+        </Grid> */}
+      </Grid>
       <Paper>
         <Table>
           <TableHead>
@@ -29,13 +46,13 @@ function MembersPage({ data }) {
           </TableHead>
           <TableBody>
             {data.map(member => (
-              <TableRow key={member.id}>
+              <TableRow key={member.name}>
                 <TableCell>{member.name}</TableCell>
                 <TableCell>{member.patrol}</TableCell>
                 <TableCell>
-                  <Button color='error' startIcon={<DeleteIcon />}>
-                    Delete
-                  </Button>
+                  <IconButton color='error'>
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -48,7 +65,7 @@ function MembersPage({ data }) {
 
 
 export async function getServerSideProps() {
-  const data = await getMembers();
+  const data = await Members.getAll();
   return { props: { data } };
 }
 

@@ -13,8 +13,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { getMembers } from '../data/membersData';
-import { getEvents } from '../data/eventsData';
+
+import * as Members from '../data/membersData';
+import * as Events from '../data/eventsData';
 
 
 function Attendence({ members, schedule }) {
@@ -141,8 +142,8 @@ function Attendence({ members, schedule }) {
 export async function getServerSideProps() {
   return {
     props: {
-      members: await getMembers(),
-      schedule: await getEvents(),
+      members: await Members.getAll(),
+      schedule: await Events.getAll(),
     }
   };
 }

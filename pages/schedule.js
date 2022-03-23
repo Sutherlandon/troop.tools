@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { getEvents } from '../data/eventsData';
+import * as Events from '../data/eventsData';
 
 function SchedulePage({ data }) {
   return (
@@ -31,7 +31,7 @@ function SchedulePage({ data }) {
           </TableHead>
           <TableBody>
             {data.map(event => (
-              <TableRow key={event.id}>
+              <TableRow key={event.name + event.date}>
                 <TableCell>{event.date}</TableCell>
                 <TableCell>{event.name}</TableCell>
                 <TableCell>{event.branch}</TableCell>
@@ -52,7 +52,7 @@ function SchedulePage({ data }) {
 
 
 export async function getServerSideProps() {
-  const data = await getEvents();
+  const data = await Events.getAll();
   return { props: { data } };
 }
 
