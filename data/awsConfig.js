@@ -1,4 +1,7 @@
 import AWS from 'aws-sdk';
+  console.log('aws-config');
+  console.log(process.env.DynamoDBAccessKeyId);
+  console.log(process.env.DynamoDBSecretAccessKey);
 
 AWS.config.update({
   region: 'us-west-1',
