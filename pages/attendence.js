@@ -3,7 +3,6 @@ import { Form, Formik } from 'formik';
 import {
   Box,
   Button,
-  Checkbox,
   MenuItem,
   Table,
   TableBody,
@@ -16,6 +15,7 @@ import Select from '../components/formikMui/Select';
 
 import * as Members from '../data/membersData';
 import * as Events from '../data/eventsData';
+import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
 
 
 function Attendence({ members, schedule }) {
@@ -88,25 +88,12 @@ function Attendence({ members, schedule }) {
                   <TableBody>
                     {members
                       .filter(member => member.patrol === values.patrol)
-                      .map(member => {
-                        const isItemChecked = isSelected(member.name);
-                        console.log({ name: member.name, isItemChecked });
-
+                      .map((member) => {
                         return (
-                          <TableRow
-                            hover
-                            onClick={() => toggleSelection(member.name)}
-                            role='checkbox'
-                            key={member.name}
-                          >
-                            <TableCell padding='checkbox'>
-                              <Checkbox
-                                color='primary'
-                                checked={isItemChecked}
-                              />
-                            </TableCell>
-                            <TableCell>{member.name}</TableCell>
-                          </TableRow>
+                          <FormikMuiCheckboxRow
+                            groupName='members'
+                            name={member.name}
+                          />
                         );
                       })
                     }

@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
 import {
   Button,
   Grid,
@@ -13,9 +14,27 @@ import {
   Typography,
 } from '@mui/material';
 
+import NewMemberDialog from '../components/NewMemberDialog';
+import * as MembersAPI from '../api/MembersAPI';
 import * as Members from '../data/membersData';
 
 function MembersPage({ data }) {
+  const [newOpen, setNewOpen] = useState(false);
+  const [members, setMembers] = useState(data);
+
+  // Handle removing a member from the list
+  async function handleRemove(name) {
+    if (confirm(`Are you sure you want to delete ${name}`)) {
+      const { data, error } = await MembersAPI.remove(name);
+
+      if (error) {
+        return console.error(error);
+      }
+
+      setMembers(data);
+    }
+  }
+
   return (
     <div>
       <Grid container>
@@ -24,17 +43,23 @@ function MembersPage({ data }) {
             Troop Members
           </Typography>
         </Grid>
-        {/* <Grid item>
-          <Button 
+        <Grid item>
+          <Button
             color='primary'
+            onClick={() => setNewOpen(true)}
             startIcon={<AddIcon />}
             variant='outlined'
             sx={{ fontWeight: 'bold' }}
           >
             Add
           </Button>
-        </Grid> */}
+        </Grid>
       </Grid>
+      <NewMemberDialog
+        open={newOpen}
+        onUpdate={(updatedMembers) => setMembers(updatedMembers)}
+        handleClose={() => setNewOpen(false)}
+      />
       <Paper>
         <Table>
           <TableHead>
@@ -45,12 +70,15 @@ function MembersPage({ data }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(member => (
+            {members.map(member => (
               <TableRow key={member.name}>
                 <TableCell>{member.name}</TableCell>
                 <TableCell>{member.patrol}</TableCell>
                 <TableCell>
-                  <IconButton color='error'>
+                  <IconButton
+                    color='error'
+                    onClick={() => handleRemove(member.name)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
