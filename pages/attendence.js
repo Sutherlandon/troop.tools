@@ -14,7 +14,7 @@ import {
 import Select from '../components/formikMui/Select';
 
 import * as Members from '../data/membersData';
-import * as Events from '../data/eventsData';
+import * as Events from '../data/scheduleData';
 import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
 
 
