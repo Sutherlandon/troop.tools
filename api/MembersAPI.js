@@ -20,9 +20,9 @@ export function add(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
  *   including the new one just added
  */
-export function remove(name) {
+export function remove(id) {
   return makeRequest({
-    url: `/api/members/${name}`,
+    url: `/api/members/${id}`,
     method: 'DELETE',
   });
 }

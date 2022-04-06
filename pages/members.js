@@ -16,16 +16,16 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
-import * as Members from '../data/membersData';
+import * as Members from '../models/members.model';
 
 function MembersPage({ data }) {
   const [newOpen, setNewOpen] = useState(false);
   const [members, setMembers] = useState(data);
 
   // Handle removing a member from the list
-  async function handleRemove(name) {
-    if (confirm(`Are you sure you want to delete ${name}`)) {
-      const { data, error } = await MembersAPI.remove(name);
+  async function handleRemove(member) {
+    if (confirm(`Are you sure you want to delete ${member.name}`)) {
+      const { data, error } = await MembersAPI.remove(member.id);
 
       if (error) {
         return console.error(error);
@@ -37,7 +37,7 @@ function MembersPage({ data }) {
 
   return (
     <div>
-      <Grid container>
+      <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
             Troop Members
@@ -77,7 +77,7 @@ function MembersPage({ data }) {
                 <TableCell>
                   <IconButton
                     color='error'
-                    onClick={() => handleRemove(member.name)}
+                    onClick={() => handleRemove(member)}
                   >
                     <DeleteIcon />
                   </IconButton>

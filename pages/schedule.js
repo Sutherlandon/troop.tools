@@ -16,7 +16,7 @@ import {
 
 import NewEventDialog from '../components/NewEventDialog';
 import * as ScheduleAPI from '../api/ScheduleAPI';
-import * as Schedule from '../data/scheduleData';
+import * as Schedule from '../models/schedule.model';
 
 function SchedulePage({ data }) {
   const [newOpen, setNewOpen] = useState(false);
@@ -37,7 +37,7 @@ function SchedulePage({ data }) {
   
   return (
     <div>
-      <Grid container>
+      <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
             Troop Schedule

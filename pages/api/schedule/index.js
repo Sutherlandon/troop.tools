@@ -1,4 +1,4 @@
-import * as Schedule from '../../../data/scheduleData';
+import * as Schedule from '../../../models/schedule.model';
 
 export default async function handler(req, res) {
   let members = [];

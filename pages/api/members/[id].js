@@ -1,12 +1,12 @@
-import * as Members from '../../../data/membersData';
+import * as Members from '../../../models/members.model';
 
 export default async function handler(req, res) {
-  const { name } = req.query;
+  const { id } = req.query;
   let members = [];
 
   switch (req.method) {
     case 'DELETE':
-      members = await Members.remove(name);
+      members = await Members.remove(id);
       break;
     default:
       return res.status(405);

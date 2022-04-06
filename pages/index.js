@@ -14,8 +14,8 @@ export default function HomePage() {
         </Link>
       </li>
       <li>
-        <Link href='/attendence'>
-          <a>Record Attendence</a>
+        <Link href='/attendance'>
+          <a>Record Attendance</a>
         </Link>
       </li>
     </ul>

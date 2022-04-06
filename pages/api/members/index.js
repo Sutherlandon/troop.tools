@@ -1,4 +1,4 @@
-import * as Members from '../../../data/membersData';
+import * as Members from '../../../models/members.model';
 
 export default async function handler(req, res) {
   // Process a POST request

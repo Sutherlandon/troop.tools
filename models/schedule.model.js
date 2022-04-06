@@ -93,17 +93,26 @@ export async function remove(item) {
   return schedule;
 }
 
-// const testEvents = [
-//   {date: '3/10/2022', name: 'Personal Safety', branch: 'Life Skills', type: 'core'},
-//   {date: '3/17/2022', name: 'Maps Skills', branch: 'Life Skills', type: 'elective'},
-//   {date: '3/19/2022', name: 'Fire Station Tour', branch: 'Life Skills', type: 'htt'},
-// ]
+export async function updateAttendance(formData) {
+  const { event: { name, date }, members } = formData;
+  const patrol = formData.patrol.toLowerCase();
 
-// testEvents.forEach((event) =>
-//   docClient.put({ TableName: 'events', Item: event }, function(err, data) {
-//       if (err) {
-//           console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-//       } else {
-//           console.log("PutItem succeeded:", JSON.stringify(data, null, 2));
-//       }
-//   }));
+  // put the new event in the DB
+  try {
+    const updatedEvent = await docClient.update({
+      TableName: 'events',
+      Key: { name, date },
+      ExpressionAttributeNames: { '#patrol': patrol },
+      ExpressionAttributeValues: { ':members': members },
+      UpdateExpression: 'SET attendance.#patrol = :members',
+      ReturnValues: 'ALL_NEW',
+    }).promise();
+  } catch (err) {
+    console.error("Unable to update attendance.", JSON.stringify(formData), err);
+  }
+
+  // return the updated schedule
+  const schedule = await getAll(true);
+
+  return schedule;
+}

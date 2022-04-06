@@ -1,6 +1,8 @@
 import sortBy from 'lodash.sortby';
 import * as yup from 'yup';
+import { nanoid } from 'nanoid';
 import { differenceInHours, format } from 'date-fns';
+
 import { docClient } from './awsConfig';
 
 let cacheUpdated;
@@ -15,6 +17,7 @@ const patrols = [
 ];
 
 const memberSchema = yup.object({
+  id: yup.string(),
   name: yup.string(),
   patrol: yup.string().oneOf(patrols),
 });
@@ -25,7 +28,10 @@ const memberSchema = yup.object({
  * @returns All members including the new one
  */
 export async function add(formData) {
-  const item = { ...formData };
+  const item = {
+    id: nanoid(),
+    ...formData
+  };
 
   // validate the new member
   try {
@@ -38,7 +44,7 @@ export async function add(formData) {
   try {
     await docClient.put({ TableName: 'members', Item: item }).promise();
   } catch (err) {
-    console.error("Unable to add new member.", item, err);
+    console.error("Unable to add new member.", JSON.stringify(item), err);
   }
 
   // return a new list of all memebers
@@ -76,15 +82,15 @@ export async function getAll(bustCache) {
 
 /**
  * Deletes a member from the DB and returns an updated list of members
- * @param {String} name The name of the user to delete
+ * @param {String} id The id of the user to delete
  * @returns The new list of members
  */
-export async function remove(name) {
+export async function remove(id) {
   // delete the member from the DB
   try {
-    await docClient.delete({ TableName: 'members', Key: { name } }).promise();
+    await docClient.delete({ TableName: 'members', Key: { id } }).promise();
   } catch (err) {
-    console.error(`Unable to delete member. ${name}`, err);
+    console.error(`Unable to delete member. ${id}`, err);
   }
 
   // return a new list of all memebers

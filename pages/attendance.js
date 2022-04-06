@@ -13,43 +13,47 @@ import {
 
 import Select from '../components/formikMui/Select';
 
-import * as Members from '../data/membersData';
-import * as Events from '../data/scheduleData';
+import * as ScheduleAPI from '../api/ScheduleAPI';
+import { getAll as fetchMembers } from '../models/members.model';
+import { getAll as fetchEvents } from '../models/schedule.model';
 import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
 
+const patrols = [
+  ['Fox', 'Foxes'],
+  ['Hawk', 'Hawks'],
+  ['Mountain Lion', 'Mountain Lions'],
+  ['Navigator', 'Navigators'],
+  ['Adventurer', 'Adventurers'],
+];
 
 function Attendence({ members, schedule }) {
-  const [selectedMembers, setSelectedMembers] = useState([]);
 
-  function isSelected(memberId) {
-    return selectedMembers.includes(memberId);
-  }
+  async function handleSubmit(values) {
+    const { eventIndex, ...rest } = values
+    const { name, date } = schedule[eventIndex];
 
-  function toggleSelection(memberId) {
-    const index = selectedMembers.indexOf(memberId);
-    const newMembers = [...selectedMembers];
+    const formData = {
+      event: { name, date },
+      ...rest
+    };
 
-    if (index === -1) {
-      newMembers.push(memberId);
-    } else {
-      newMembers.splice(index, 1)
+    console.log('data submitted', formData);
+
+    const { data, error } = await ScheduleAPI.attendance(formData);
+
+    if (error) {
+      return console.log(error);
     }
-
-    setSelectedMembers(newMembers);
-  }
-
-  function handleSubmit(values) {
-    // todo
   }
 
   return (
     <Formik
       initialValues={{
-        event: '',
+        eventIndex: '',
         patrol: '',
         members: {},
       }}
-      handleSubmit={handleSubmit}
+      onSubmit={handleSubmit}
     >
       {({ values }) => {
         console.log('Values', values);
@@ -58,7 +62,7 @@ function Attendence({ members, schedule }) {
           <Form>
             <Select
               label='Select an Event'
-              name='event'
+              name='eventIndex'
             >
               {schedule.map((event, index) => (
                 <MenuItem value={index} key={index}>
@@ -70,11 +74,11 @@ function Attendence({ members, schedule }) {
               label='Select a Patrol'
               name='patrol'
             >
-              <MenuItem value='fox'>Foxes</MenuItem>
-              <MenuItem value='hawk'>Hawks</MenuItem>
-              <MenuItem value='lion'>Mountain Lions</MenuItem>
-              <MenuItem value='navigator'>Navigators</MenuItem>
-              <MenuItem value='adventurer'>Adventurers</MenuItem>
+              {patrols.map(([value, option]) => (
+                <MenuItem value={value} key={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
             {values.patrol &&
               <>
@@ -93,24 +97,22 @@ function Attendence({ members, schedule }) {
                           <FormikMuiCheckboxRow
                             groupName='members'
                             name={member.name}
+                            key={member.name}
                           />
                         );
                       })
                     }
-
                   </TableBody>
                 </Table>
-                {event &&
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Button
-                      color='primary'
-                      type='submit'
-                      variant='contained'
-                    >
-                      Submit
-                    </Button>
-                  </Box>
-                }
+                <Box sx={{ textAlign: 'center' }}>
+                  <Button
+                    color='primary'
+                    type='submit'
+                    variant='contained'
+                  >
+                    Submit
+                  </Button>
+                </Box>
               </>
             }
           </Form>
@@ -123,8 +125,8 @@ function Attendence({ members, schedule }) {
 export async function getServerSideProps() {
   return {
     props: {
-      members: await Members.getAll(),
-      schedule: await Events.getAll(),
+      members: await fetchMembers(),
+      schedule: await fetchEvents(),
     }
   };
 }
