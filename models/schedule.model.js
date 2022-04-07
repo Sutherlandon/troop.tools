@@ -22,6 +22,7 @@ const EventSchema = yup.object({
   name: yup.string(),
   branch: yup.string().oneOf(branches),
   type: yup.string().oneOf(types),
+  attendance: yup.object(),
 });
 
 /**
@@ -30,7 +31,10 @@ const EventSchema = yup.object({
  * @returns the updated schedule
  */
 export async function add(formData) {
-  const item = { ...formData };
+  const item = {
+    ...formData,
+    attendance: {}
+  };
 
   // validate the new event
   try {

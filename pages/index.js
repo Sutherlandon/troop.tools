@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function HomePage() {
+function HomePage() {
   return (
     <ul>
       <li>
@@ -21,3 +21,5 @@ export default function HomePage() {
     </ul>
   );
 }
+
+export default HomePage;

@@ -1,22 +1,19 @@
 import { useState } from 'react';
-import { Form, Formik } from 'formik';
 import {
   Box,
-  Button,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  Tab,
 } from '@mui/material';
+import {
+  TabContext,
+  TabList,
+  TabPanel,
+} from '@mui/lab'
 
-import Select from '../components/formikMui/Select';
-
+import AttendanceForm from '../components/AttendanceForm';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import { getAll as fetchMembers } from '../models/members.model';
 import { getAll as fetchEvents } from '../models/schedule.model';
-import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
+import AttendanceView from '../components/AttendanceView';
 
 const patrols = [
   ['Fox', 'Foxes'],
@@ -27,6 +24,7 @@ const patrols = [
 ];
 
 function Attendence({ members, schedule }) {
+  const [focusedTab, setFocusedTab] = useState('2');
 
   async function handleSubmit(values) {
     const { eventIndex, ...rest } = values
@@ -47,78 +45,33 @@ function Attendence({ members, schedule }) {
   }
 
   return (
-    <Formik
-      initialValues={{
-        eventIndex: '',
-        patrol: '',
-        members: {},
-      }}
-      onSubmit={handleSubmit}
-    >
-      {({ values }) => {
-        console.log('Values', values);
-
-        return (
-          <Form>
-            <Select
-              label='Select an Event'
-              name='eventIndex'
-            >
-              {schedule.map((event, index) => (
-                <MenuItem value={index} key={index}>
-                  {`${event.date} - ${event.name}`}
-                </MenuItem>
-              ))}
-            </Select>
-            <Select
-              label='Select a Patrol'
-              name='patrol'
-            >
-              {patrols.map(([value, option]) => (
-                <MenuItem value={value} key={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-            {values.patrol &&
-              <>
-                <Table sx={{ marginBottom: 2 }}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>Name</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {members
-                      .filter(member => member.patrol === values.patrol)
-                      .map((member) => {
-                        return (
-                          <FormikMuiCheckboxRow
-                            groupName='members'
-                            name={member.name}
-                            key={member.name}
-                          />
-                        );
-                      })
-                    }
-                  </TableBody>
-                </Table>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Button
-                    color='primary'
-                    type='submit'
-                    variant='contained'
-                  >
-                    Submit
-                  </Button>
-                </Box>
-              </>
-            }
-          </Form>
-        );
-      }}
-    </Formik>
+    <Box sx={{ width: '100%', typography: 'body1' }}>
+      <TabContext value={focusedTab}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList
+            onChange={(e, newTab) => setFocusedTab(newTab)}
+            aria-label='Attendence Tabs'
+            variant='fullWidth'
+          >
+            <Tab label='Form' value='1' />
+            <Tab label='View' value='2' />
+          </TabList>
+        </Box>
+        <TabPanel value='1'>
+          <AttendanceForm
+            handleSubmit={handleSubmit}
+            members={members}
+            schedule={schedule}
+          />
+        </TabPanel>
+        <TabPanel value='2'>
+          <AttendanceView
+            members={members}
+            schedule={schedule}
+          />
+        </TabPanel>
+      </TabContext>
+    </Box>
   );
 }
 
