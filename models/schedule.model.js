@@ -1,13 +1,17 @@
 import sortBy from 'lodash.sortby';
 import * as yup from 'yup';
-import { differenceInHours, format } from 'date-fns';
+import { format } from 'date-fns';
 import { docClient } from './awsConfig';
 
-let cacheUpdated;
 let _events = [];
 
-const types = ['Core', 'Elective', 'HTT'];
-const branches = [
+export const EVENT_TYPES = [
+  'Core',
+  'Elective',
+  'HTT',
+];
+
+export const BRANCHES = [
   'Heritage',
   'Hobbies',
   'Life Skills',
@@ -15,13 +19,17 @@ const branches = [
   'Science/Tech',
   'Sports/Fitness',
   'Values',
+  'Camp',
+  'Board',
+  'Fundraiser',
+  'General',
 ];
 
 const EventSchema = yup.object({
   date: yup.date(),
   name: yup.string(),
-  branch: yup.string().oneOf(branches),
-  type: yup.string().oneOf(types),
+  branch: yup.string().oneOf(BRANCHES),
+  type: yup.string().oneOf(EVENT_TYPES),
   attendance: yup.object(),
 });
 
@@ -43,34 +51,30 @@ export async function add(formData) {
     console.error(err);
   }
 
-  // put the new event in the DB
   try {
+    // put the new event in the DB
     await docClient.put({ TableName: 'events', Item: item }).promise();
+
   } catch (err) {
     console.error("Unable to add new event.", item, err);
   }
 
   // return the updated schedule
-  const schedule = await getAll(true);
+  const schedule = await get();
 
   return schedule;
 }
 
-export async function getAll() {
-  // re-up the cache only every 12 hours
-  if (!cacheUpdated || differenceInHours(cacheUpdated, new Date()) > 12) {
-    try {
-      // fetch the members data
-      const results = await docClient.scan({ TableName: 'events' }).promise();
-      cacheUpdated = new Date();
-      console.log("Events Cached", format(cacheUpdated, 'yyyy-MM-dd hh:mm:ss'));
+export async function get() {
+  try {
+    // fetch the members data
+    const results = await docClient.scan({ TableName: 'events' }).promise();
 
-      // cache the members
-      _events = sortBy(results.Items, 'date');
+    // cache the events
+    _events = sortBy(results.Items, 'date');
 
-    } catch (err) {
-      console.error("Unable to fetch Events.", err);
-    }
+  } catch (err) {
+    console.error("Unable to fetch Events.", err);
   }
 
   return _events;
@@ -92,7 +96,7 @@ export async function remove(item) {
   }
 
   // return the updated schedule
-  const schedule = await getAll(true);
+  const schedule = await get();
 
   return schedule;
 }
@@ -116,7 +120,7 @@ export async function updateAttendance(formData) {
   }
 
   // return the updated schedule
-  const schedule = await getAll(true);
+  const schedule = await get();
 
   return schedule;
 }

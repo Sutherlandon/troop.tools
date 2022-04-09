@@ -11,6 +11,7 @@ import {
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as ScheduleAPI from '../api/ScheduleAPI';
+import { BRANCHES, EVENT_TYPES } from '../models/schedule.model';
 
 export default function NewMemberDialog(props) {
   const { open, onUpdate, handleClose } = props;
@@ -48,21 +49,21 @@ export default function NewMemberDialog(props) {
                   label='Branch'
                   name='branch'
                 >
-                  <MenuItem value='Heritage'>Heritage</MenuItem>
-                  <MenuItem value='Hobbies'>Hobbies</MenuItem>
-                  <MenuItem value='Life Skills'>Life Skills</MenuItem>
-                  <MenuItem value='Outdoor Skills'>Outdoor Activities</MenuItem>
-                  <MenuItem value='Science/Tech'>Science/Tech</MenuItem>
-                  <MenuItem value='Sports/Fitness'>Sports/Fitness</MenuItem>
-                  <MenuItem value='Values'>Values</MenuItem>
+                  {BRANCHES.map((branch) => (
+                    <MenuItem value={branch} key={branch}>
+                      {branch}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <Select
                   label='Type'
                   name='type'
                 >
-                  <MenuItem value='Core'>Core</MenuItem>
-                  <MenuItem value='Elective'>Elective</MenuItem>
-                  <MenuItem value='HTT'>HTT</MenuItem>
+                  {EVENT_TYPES.map((type) => (
+                    <MenuItem value={type} key={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
                 </Select>
                 <TextField
                   label='Date'

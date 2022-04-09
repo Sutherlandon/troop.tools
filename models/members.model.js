@@ -1,25 +1,24 @@
 import sortBy from 'lodash.sortby';
 import * as yup from 'yup';
 import { nanoid } from 'nanoid';
-import { differenceInHours, format } from 'date-fns';
+import { format } from 'date-fns';
 
 import { docClient } from './awsConfig';
 
-let cacheUpdated;
 let _members = [];
 
-const patrols = [
-  'Fox',
-  'Hawk',
-  'Mountain Lion',
-  'Navigator',
-  'Adventurer',
+export const PATROLS = [
+  'Foxes',
+  'Hawks',
+  'Mountain Lions',
+  'Navigators',
+  'Adventurers',
 ];
 
 const memberSchema = yup.object({
   id: yup.string(),
   name: yup.string(),
-  patrol: yup.string().oneOf(patrols),
+  patrol: yup.string().oneOf(PATROLS),
 });
 
 /**
@@ -48,7 +47,7 @@ export async function add(formData) {
   }
 
   // return a new list of all memebers
-  const members = await getAll(true);
+  const members = await getAll();
 
   return members;
 }
@@ -59,21 +58,18 @@ export async function add(formData) {
  * @param {Boolean} bustCache True means ignore bust the cache and fetch all new data
  * @returns A list of all members
  */
-export async function getAll(bustCache) {
-  // re-up the cache only every 12 hours
-  if (bustCache || (!cacheUpdated || differenceInHours(cacheUpdated, new Date()) > 12)) {
-    try {
-      // fetch the members data
-      const results = await docClient.scan({ TableName: 'members' }).promise();
-      cacheUpdated = new Date();
-      console.log("Members Cached", format(cacheUpdated, 'yyyy-MM-dd hh:mm:ss'));
+export async function getAll() {
+  try {
+    // fetch the members data
+    const results = await docClient.scan({ TableName: 'members' }).promise();
+    cacheUpdated = new Date();
+    console.log("Members Cached", format(cacheUpdated, 'yyyy-MM-dd hh:mm:ss'));
 
-      // cache the members
-      _members = sortBy(results.Items, ['patrol', 'name']);
+    // cache the members
+    _members = sortBy(results.Items, ['patrol', 'name']);
 
-    } catch (err) {
-      console.error("Unable to fetch Members.", err);
-    }
+  } catch (err) {
+    console.error("Unable to fetch Members.", err);
   }
 
   return _members;

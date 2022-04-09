@@ -17,19 +17,15 @@ import * as ScheduleAPI from '../api/ScheduleAPI';
 import { getAll as fetchMembers } from '../models/members.model';
 import { getAll as fetchEvents } from '../models/schedule.model';
 import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
+import config from '../config';
 
-const patrols = [
-  ['Fox', 'Foxes'],
-  ['Hawk', 'Hawks'],
-  ['Mountain Lion', 'Mountain Lions'],
-  ['Navigator', 'Navigators'],
-  ['Adventurer', 'Adventurers'],
-];
 
 // TODO: Clear member selections on patrol change
+// TODO: Convert all referrences to partrols to the plural form
 
 function Attendence(props) {
   const { members, schedule, handleSubmit } = props;
+  const { patrols } = config;
 
   return (
     <Formik

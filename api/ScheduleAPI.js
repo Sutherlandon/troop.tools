@@ -14,19 +14,6 @@ export function add(item) {
 }
 
 /**
- * Calls the API to remove a specified event
- * @param {Object} item The event item to remove
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
- */
-export function remove(item) {
-  return makeRequest({
-    url: `/api/schedule/remove`,
-    method: 'POST',
-    data: item,
-  });
-}
-
-/**
  * Calls the API to add attendence for a patrol on certain event
  * @param {Object} formData Data from the attendance form
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
@@ -36,5 +23,28 @@ export function attendance(formData) {
     url: '/api/schedule/attendance',
     method: 'POST',
     data: formData,
+  });
+}
+
+/**
+ * Fetches the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ */
+export function get() {
+  return makeRequest({
+    url: '/api/schedule',
+  });
+}
+
+/**
+ * Calls the API to remove a specified event
+ * @param {Object} item The event item to remove
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ */
+export function remove(item) {
+  return makeRequest({
+    url: `/api/schedule/remove`,
+    method: 'POST',
+    data: item,
   });
 }
