@@ -11,7 +11,7 @@ import {
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as ScheduleAPI from '../api/ScheduleAPI';
-import { BRANCHES, EVENT_TYPES } from '../models/schedule.model';
+import { BRANCHES, EVENT_TYPES, EventSchema } from '../models/schedule.model';
 
 export default function NewMemberDialog(props) {
   const { open, onUpdate, handleClose } = props;
@@ -41,10 +41,15 @@ export default function NewMemberDialog(props) {
             name: ''
           }}
           onSubmit={handleSubmit}
+          validationSchema={EventSchema}
         >
           {({ values }) => {
             return (
               <Form style={{ paddingTop: 16 }}>
+                <TextField
+                  label='Date'
+                  name='date'
+                />
                 <Select
                   label='Branch'
                   name='branch'
@@ -65,10 +70,6 @@ export default function NewMemberDialog(props) {
                     </MenuItem>
                   ))}
                 </Select>
-                <TextField
-                  label='Date'
-                  name='date'
-                />
                 <TextField
                   label='Name'
                   name='name'

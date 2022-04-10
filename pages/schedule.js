@@ -17,6 +17,7 @@ import {
 
 import NewEventDialog from '../components/NewEventDialog';
 import * as ScheduleAPI from '../api/ScheduleAPI';
+import { BRANCH_COLORS } from '../models/schedule.model';
 
 function SchedulePage({ data }) {
   const [loading, setLoading] = useState(true);
@@ -80,23 +81,31 @@ function SchedulePage({ data }) {
         <LinearProgress />
       ) : (
         <Paper>
-          <Table>
+          <Table size='small'>
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Name</TableCell>
                 <TableCell>Branch</TableCell>
                 <TableCell>Type</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow >
             </TableHead >
             <TableBody>
               {schedule.map(event => (
-                <TableRow key={event.name + event.date}>
+                <TableRow
+                  key={event.name + event.date}
+                  sx={{
+                    '& td': {
+                      backgroundColor: BRANCH_COLORS[event.branch]?.b,
+                      color: BRANCH_COLORS[event.branch]?.t,
+                    }
+                  }}  
+                >
                   <TableCell>{event.date}</TableCell>
-                  <TableCell>{event.name}</TableCell>
                   <TableCell>{event.branch}</TableCell>
                   <TableCell>{event.type}</TableCell>
+                  <TableCell>{event.name}</TableCell>
                   <TableCell>
                     <IconButton
                       color='error'
