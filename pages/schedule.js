@@ -57,7 +57,7 @@ function SchedulePage({ data }) {
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            Troop Schedule
+            Troop Schedule 2022
           </Typography>
         </Grid>
         <Grid item>

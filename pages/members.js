@@ -1,10 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Grid,
   IconButton,
+  LinearProgress,
   Paper,
   Table,
   TableRow,
@@ -16,11 +17,26 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
-import * as Members from '../models/members.model';
 
-function MembersPage({ data }) {
+function MembersPage() {
+  const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
-  const [members, setMembers] = useState(data);
+
+  useEffect(() => {
+    async function loadMembers() {
+      const { data, error } = await MembersAPI.getAll();
+
+      if (error) {
+        return console.error(error);
+      }
+
+      setMembers(data);
+      setLoading(false);
+    }
+
+    loadMembers();
+  })
 
   // Handle removing a member from the list
   async function handleRemove(member) {
@@ -60,41 +76,39 @@ function MembersPage({ data }) {
         onUpdate={(updatedMembers) => setMembers(updatedMembers)}
         handleClose={() => setNewOpen(false)}
       />
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Patrol</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {members.map(member => (
-              <TableRow key={member.name}>
-                <TableCell>{member.name}</TableCell>
-                <TableCell>{member.patrol}</TableCell>
-                <TableCell>
-                  <IconButton
-                    color='error'
-                    onClick={() => handleRemove(member)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Patrol</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {members.map(member => (
+                <TableRow key={member.name}>
+                  <TableCell>{member.name}</TableCell>
+                  <TableCell>{member.patrol}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color='error'
+                      onClick={() => handleRemove(member)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      )}
     </div>
   );
-}
-
-
-export async function getServerSideProps() {
-  const data = await Members.getAll();
-  return { props: { data } };
 }
 
 export default MembersPage;

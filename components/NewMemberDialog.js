@@ -11,6 +11,7 @@ import {
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as MembersAPI from '../api/MembersAPI';
+import { memberSchema, PATROLS } from '../models/members.model';
 
 export default function NewMemberDialog(props) {
   const { open, onUpdate, handleClose } = props;
@@ -38,6 +39,7 @@ export default function NewMemberDialog(props) {
             patrol: 'Foxes',
           }}
           onSubmit={handleSubmit}
+          validationSchema={memberSchema}
         >
           {({ values }) => {
             return (
@@ -50,11 +52,9 @@ export default function NewMemberDialog(props) {
                   label='Patrol'
                   name='patrol'
                 >
-                  <MenuItem value='Fox'>Foxes</MenuItem>
-                  <MenuItem value='Hawk'>Hawks</MenuItem>
-                  <MenuItem value='Mountian Lion'>Mountain Lions</MenuItem>
-                  <MenuItem value='Navigator'>Navigators</MenuItem>
-                  <MenuItem value='Adventurer'>Adventurers</MenuItem>
+                  {PATROLS.map((patrol) => (
+                    <MenuItem value={patrol} key={patrol}>{patrol}</MenuItem>
+                  ))}
                 </Select>
                 <div>
                   <Button

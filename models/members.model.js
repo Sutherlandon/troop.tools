@@ -1,7 +1,6 @@
 import sortBy from 'lodash.sortby';
 import * as yup from 'yup';
 import { nanoid } from 'nanoid';
-import { format } from 'date-fns';
 
 import { docClient } from './awsConfig';
 
@@ -15,10 +14,10 @@ export const PATROLS = [
   'Adventurers',
 ];
 
-const memberSchema = yup.object({
+export const memberSchema = yup.object({
   id: yup.string(),
-  name: yup.string(),
-  patrol: yup.string().oneOf(PATROLS),
+  name: yup.string().required('This field cannot be left blank'),
+  patrol: yup.string().oneOf(PATROLS).required('This field cannot be left blank'),
 });
 
 /**
@@ -62,8 +61,6 @@ export async function getAll() {
   try {
     // fetch the members data
     const results = await docClient.scan({ TableName: 'members' }).promise();
-    cacheUpdated = new Date();
-    console.log("Members Cached", format(cacheUpdated, 'yyyy-MM-dd hh:mm:ss'));
 
     // cache the members
     _members = sortBy(results.Items, ['patrol', 'name']);
