@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { format } from 'date-fns';
 import { docClient } from './awsConfig';
 
-let _events = [];
+let _schedule = [];
 
 export const EVENT_TYPES = [
   'Core',
@@ -85,11 +85,12 @@ export const BRANCH_COLORS = {
 
 const blankError = 'This field cannot be left blank';
 export const EventSchema = yup.object({
+  attendance: yup.object(),
+  branch: yup.string().oneOf(BRANCHES).required(blankError),
   date: yup.string().required(blankError),
   name: yup.string().required(blankError),
-  branch: yup.string().oneOf(BRANCHES).required(blankError),
   type: yup.string().oneOf(EVENT_TYPES).required(blankError),
-  attendance: yup.object(),
+  year: yup.number(),
 });
 
 /**
@@ -130,13 +131,13 @@ export async function get() {
     const results = await docClient.scan({ TableName: 'events' }).promise();
 
     // cache the events
-    _events = sortBy(results.Items, 'date');
+    _schedule = sortBy(results.Items, 'date');
 
   } catch (err) {
     console.error("Unable to fetch Events.", err);
   }
 
-  return _events;
+  return _schedule;
 }
 
 /**
@@ -160,6 +161,63 @@ export async function remove(item) {
   return schedule;
 }
 
+/**
+ * Updates the info for an event.
+ * If the name or date (primary key fields) are updated, we have to delete
+ * the record and create a new one.  Since this is 90% of what updates are
+ * going to be, we will just do that in any case for simplicity.
+ * @param {Obejct} formData Event data 
+ * @returns The new list of events
+ */
+export async function update(formData) {
+  const { eventIndex, year = '2022', ...eventData } = formData;
+  const { name, date, attendance } = _schedule[eventIndex];
+  const item = { ...eventData, attendance };
+
+  try {
+    // delete and recreate if one of the primary key values has been changed
+    if (name !== eventData.name || date !== eventData.date) {
+      // delete and create the new record with a transaction
+      await docClient.transactWrite({
+        TransactItems: [
+          { 'Delete': { TableName: 'events', Key: { name, date } } },
+          { 'Put': { TableName: 'events', Item: item } },
+        ]
+      }).promise();
+
+    } else {
+      // just update
+      await docClient.update({
+        TableName: 'events',
+        Key: { name, date },
+        ExpressionAttributeNames: {
+          '#type': 'type',
+          '#branch': 'branch',
+          '#year': 'year',
+        },
+        ExpressionAttributeValues: {
+          ':type': eventData.type,
+          ':branch': eventData.branch,
+          ':year': year
+        },
+        UpdateExpression: 'SET #type = :type, #branch = :branch, #year = :year',
+      }).promise();
+    }
+  } catch (err) {
+    console.error("Unable to updated event", JSON.stringify(formData), err);
+  }
+
+  // return the updated schedule
+  const schedule = await get();
+
+  return schedule;
+}
+
+/**
+ * Sets the attendance for an event
+ * @param {Obejct} formData Attendance data
+ * @returns The new list of events
+ */
 export async function updateAttendance(formData) {
   const { event: { name, date }, members } = formData;
   const patrol = formData.patrol.toLowerCase();

@@ -10,6 +10,9 @@ export default async function handler(req, res) {
     case 'POST':
       schedule = await Schedule.add(req.body);
       break;
+    case 'PUT':
+      schedule = await Schedule.update(req.body);
+      break;
     default:
       return res.status(405);
   }

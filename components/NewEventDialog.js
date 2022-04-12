@@ -14,12 +14,23 @@ import * as ScheduleAPI from '../api/ScheduleAPI';
 import { BRANCHES, EVENT_TYPES, EventSchema } from '../models/schedule.model';
 
 export default function NewMemberDialog(props) {
-  const { open, onUpdate, handleClose } = props;
+  const {
+    event,
+    open,
+    onUpdate,
+    handleClose
+  } = props;
 
   async function handleSubmit(values) {
     console.log('submitting', { values });
 
-    const { data, error } = await ScheduleAPI.add(values);
+    // If the event already exists, update it, otherwise add it
+    let data, error;
+    if (event) {
+      ({ data, error } = await ScheduleAPI.update(values));
+    } else {
+      ({ data, error } = await ScheduleAPI.add(values));
+    }
 
     if (error) {
       return console.log(error);
@@ -29,17 +40,20 @@ export default function NewMemberDialog(props) {
     handleClose();
   }
 
+  const initialValues = event || {
+    date: '',
+    branch: 'Heritage',
+    type: 'Core',
+    name: '',
+    year: '2022',
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>New Member</DialogTitle>
       <DialogContent sx={{ paddingTop: 16 }}>
         <Formik
-          initialValues={{
-            branch: 'Heritage',
-            type: 'Core',
-            date: '',
-            name: ''
-          }}
+          initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={EventSchema}
         >
@@ -79,7 +93,7 @@ export default function NewMemberDialog(props) {
                     type='submit'
                   >
                     Submit
-                 </Button>
+                  </Button>
                 </div>
               </Form>
             );

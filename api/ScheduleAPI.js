@@ -48,3 +48,17 @@ export function remove(item) {
     data: item,
   });
 }
+
+/**
+ * Calls the API to update
+ * @param {Object} formData The form data form the update form
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ */
+export function update(formData) {
+  return makeRequest({
+    url: `/api/schedule`,
+    method: 'PUT',
+    data: formData,
+  });
+
+}

@@ -1,4 +1,9 @@
+// TODO: Edit Events
+// TODO: Enter Member data
+// TODO: Create separate dev dbs using tags?
+
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from 'react';
 import {
@@ -20,6 +25,7 @@ import * as ScheduleAPI from '../api/ScheduleAPI';
 import { BRANCH_COLORS } from '../models/schedule.model';
 
 function SchedulePage({ data }) {
+  const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [newOpen, setNewOpen] = useState(false);
   const [schedule, setSchedule] = useState(data);
@@ -37,7 +43,18 @@ function SchedulePage({ data }) {
     }
 
     loadSchedule();
-  })
+  }, []);
+
+  // open the edit form loaded with the event at the index
+  function openEdit(event, index) {
+    setEditInfo({
+      event: {
+        ...event,
+        eventIndex: index
+      },
+      open: true
+    });
+  }
 
   // Handle removing a member from the list
   async function handleRemove(event) {
@@ -73,9 +90,14 @@ function SchedulePage({ data }) {
         </Grid>
       </Grid>
       <NewEventDialog
+        handleClose={() => setNewOpen(false)}
         open={newOpen}
         onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
-        handleClose={() => setNewOpen(false)}
+      />
+      <NewEventDialog
+        {...editInfo}
+        handleClose={() => setEditInfo({ open: false })}
+        onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
       />
       {loading ? (
         <LinearProgress />
@@ -92,14 +114,14 @@ function SchedulePage({ data }) {
               </TableRow >
             </TableHead >
             <TableBody>
-              {schedule.map(event => (
+              {schedule.map((event, index) => (
                 <TableRow
                   key={event.name + event.date}
                   sx={{
                     '& td': {
                       backgroundColor: BRANCH_COLORS[event.branch]?.b,
                       color: BRANCH_COLORS[event.branch]?.t,
-                    }
+                    },
                   }}  
                 >
                   <TableCell>{event.date}</TableCell>
@@ -107,9 +129,15 @@ function SchedulePage({ data }) {
                   <TableCell>{event.type}</TableCell>
                   <TableCell>{event.name}</TableCell>
                   <TableCell>
+                    <IconButton 
+                      onClick={() => openEdit(event, index)}
+                      sx={{ 'color': 'inherit' }}
+                    >
+                      <EditIcon />
+                    </IconButton>
                     <IconButton
-                      color='error'
                       onClick={() => handleRemove(event)}
+                      sx={{ 'color': 'inherit' }}
                     >
                       <DeleteIcon />
                     </IconButton>
