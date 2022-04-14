@@ -14,12 +14,23 @@ import * as MembersAPI from '../api/MembersAPI';
 import { memberSchema, PATROLS } from '../models/members.model';
 
 export default function NewMemberDialog(props) {
-  const { open, onUpdate, handleClose } = props;
+  const {
+    member,
+    open,
+    onUpdate,
+    handleClose
+  } = props;
 
   async function handleSubmit(values) {
     console.log('submitting', { values });
 
-    const { data, error } = await MembersAPI.add(values);
+    // if the member already exists updated it, otherwise create it
+    let data, error;
+    if (values.id) {
+      ({ data, error } = await MembersAPI.update(values));
+    } else {
+      ({ data, error } = await MembersAPI.add(values));
+    }
 
     if (error) {
       return console.log(error);
@@ -29,15 +40,17 @@ export default function NewMemberDialog(props) {
     handleClose();
   }
 
+  const initialValues = member || {
+    name: '',
+    patrol: 'Foxes',
+  }
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>New Member</DialogTitle>
       <DialogContent sx={{ paddingTop: 16 }}>
         <Formik
-          initialValues={{
-            name: '',
-            patrol: 'Foxes',
-          }}
+          initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={memberSchema}
         >

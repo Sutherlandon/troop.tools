@@ -36,3 +36,16 @@ export function remove(id) {
     method: 'DELETE',
   });
 }
+
+/**
+ * Calls the API to update a member
+ * @param {Object} formData The form data form the update form
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ */
+export function update(formData) {
+  return makeRequest({
+    url: `/api/members`,
+    method: 'PUT',
+    data: formData,
+  });
+}

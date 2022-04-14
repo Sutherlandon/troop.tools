@@ -1,4 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState, useEffect } from 'react';
 import {
@@ -17,8 +18,10 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
+import { PATROL_COLORS } from '../models/members.model';
 
 function MembersPage() {
+  const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
@@ -36,7 +39,15 @@ function MembersPage() {
     }
 
     loadMembers();
-  })
+  }, [])
+
+  // open the edit form loaded with the event at the index
+  function openEdit(member) {
+    setEditInfo({
+      member,
+      open: true
+    });
+  }
 
   // Handle removing a member from the list
   async function handleRemove(member) {
@@ -46,7 +57,7 @@ function MembersPage() {
       if (error) {
         return console.error(error);
       }
-
+      
       setMembers(data);
     }
   }
@@ -76,6 +87,11 @@ function MembersPage() {
         onUpdate={(updatedMembers) => setMembers(updatedMembers)}
         handleClose={() => setNewOpen(false)}
       />
+      <NewMemberDialog
+        {...editInfo}
+        handleClose={() => setEditInfo({ open: false })}
+        onUpdate={(memberList) => setMembers(memberList)}
+      />
       {loading ? (
         <LinearProgress />
       ) : (
@@ -90,10 +106,23 @@ function MembersPage() {
             </TableHead>
             <TableBody>
               {members.map(member => (
-                <TableRow key={member.name}>
+                <TableRow
+                  key={member.name}
+                  sx={{
+                    '& td': {
+                      backgroundColor: PATROL_COLORS[member.patrol],
+                    },
+                  }}  
+                >
                   <TableCell>{member.name}</TableCell>
                   <TableCell>{member.patrol}</TableCell>
                   <TableCell>
+                    <IconButton 
+                      onClick={() => openEdit(member)}
+                      sx={{ 'color': 'inherit' }}
+                    >
+                      <EditIcon />
+                    </IconButton>
                     <IconButton
                       color='error'
                       onClick={() => handleRemove(member)}

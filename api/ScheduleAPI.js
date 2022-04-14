@@ -60,5 +60,4 @@ export function update(formData) {
     method: 'PUT',
     data: formData,
   });
-
 }

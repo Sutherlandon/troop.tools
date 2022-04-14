@@ -14,6 +14,12 @@ export const PATROLS = [
   'Adventurers',
 ];
 
+export const PATROL_COLORS = {
+  'Foxes': '#b97c38',
+  'Hawks': '#eab71b',
+  'Mountain Lions': '#cea54a',
+};
+
 export const memberSchema = yup.object({
   id: yup.string(),
   name: yup.string().required('This field cannot be left blank'),
@@ -70,6 +76,39 @@ export async function getAll() {
   }
 
   return _members;
+}
+
+/**
+ * Updates the info for an event.
+ * @param {Obejct} formData Event data 
+ * @returns The new list of events
+ */
+export async function update(formData) {
+  const { id, name, patrol } = formData;
+
+  try {
+      // just update
+      await docClient.update({
+        TableName: 'members',
+        Key: { id },
+        ExpressionAttributeNames: {
+          '#name': 'name',
+          '#patrol': 'patrol',
+        },
+        ExpressionAttributeValues: {
+          ':name': name,
+          ':patrol': patrol,
+        },
+        UpdateExpression: 'SET #name = :name, #patrol = :patrol',
+      }).promise();
+  } catch (err) {
+    console.error("Unable to updated member", JSON.stringify(formData), err);
+  }
+
+  // return the updated memberList
+  const schedule = await getAll();
+
+  return schedule;
 }
 
 

@@ -163,14 +163,11 @@ export async function remove(item) {
 
 /**
  * Updates the info for an event.
- * If the name or date (primary key fields) are updated, we have to delete
- * the record and create a new one.  Since this is 90% of what updates are
- * going to be, we will just do that in any case for simplicity.
  * @param {Obejct} formData Event data 
  * @returns The new list of events
  */
 export async function update(formData) {
-  const { eventIndex, year = '2022', ...eventData } = formData;
+  const { eventIndex, year, ...eventData } = formData;
   const { name, date, attendance } = _schedule[eventIndex];
   const item = { ...eventData, attendance };
 
