@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
+  Grid,
   Tab,
+  Typography,
+  LinearProgress,
 } from '@mui/material';
 import {
   TabContext,
@@ -11,22 +14,39 @@ import {
 
 import AttendanceForm from '../components/AttendanceForm';
 import * as ScheduleAPI from '../api/ScheduleAPI';
-import { getAll as fetchMembers } from '../models/members.model';
-import { getAll as fetchEvents } from '../models/schedule.model';
+import * as MembersAPI from '../api/MembersAPI';
 import AttendanceView from '../components/AttendanceView';
+import { PATROLS } from '../models/members.model';
 
-const patrols = [
-  ['Fox', 'Foxes'],
-  ['Hawk', 'Hawks'],
-  ['Mountain Lion', 'Mountain Lions'],
-  ['Navigator', 'Navigators'],
-  ['Adventurer', 'Adventurers'],
-];
-
-function Attendence({ members, schedule }) {
+function Attendence(props) {
   const [focusedTab, setFocusedTab] = useState('2');
+  const [members, setMembers] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  async function handleSubmit(values) {
+  useEffect(() => {
+    async function loadData() {
+      const [members, schedule] = await Promise.all([
+        MembersAPI.get(),
+        ScheduleAPI.get(),
+      ]);
+
+      if (schedule.error || members.error) {
+        return console.error({
+          eventsError: schedule.error,
+          membersError: members.error
+        });
+      }
+
+      setMembers(members.data);
+      setSchedule(schedule.data);
+      setLoading(false);
+    }
+
+    loadData();
+  }, []);
+
+  async function handleSubmit(values, formik) {
     const { eventIndex, ...rest } = values
     const { name, date } = schedule[eventIndex];
 
@@ -42,46 +62,55 @@ function Attendence({ members, schedule }) {
     if (error) {
       return console.log(error);
     }
+
+    setSchedule(data);
+    formik.resetForm();
   }
 
   return (
-    <Box sx={{ width: '100%', typography: 'body1' }}>
-      <TabContext value={focusedTab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList
-            onChange={(e, newTab) => setFocusedTab(newTab)}
-            aria-label='Attendence Tabs'
-            variant='fullWidth'
-          >
-            <Tab label='Form' value='1' />
-            <Tab label='View' value='2' />
-          </TabList>
-        </Box>
-        <TabPanel value='1'>
-          <AttendanceForm
-            handleSubmit={handleSubmit}
-            members={members}
-            schedule={schedule}
-          />
-        </TabPanel>
-        <TabPanel value='2'>
-          <AttendanceView
-            members={members}
-            schedule={schedule}
-          />
-        </TabPanel>
-      </TabContext>
-    </Box>
+    <div>
+      <Grid container sx={{ marginBottom: 2 }}>
+        <Grid item sx={{ flexGrow: 1 }}>
+          <Typography variant='h5'>
+            Troop Attendance
+          </Typography>
+        </Grid>
+      </Grid>
+      {
+        loading ? (
+          <LinearProgress />
+        ) : (
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={focusedTab}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList
+                  onChange={(e, newTab) => setFocusedTab(newTab)}
+                  aria-label='Attendence Tabs'
+                  variant='fullWidth'
+                >
+                  <Tab label='Form' value='1' />
+                  <Tab label='View' value='2' />
+                </TabList>
+              </Box>
+              <TabPanel value='1'>
+                <AttendanceForm
+                  handleSubmit={handleSubmit}
+                  members={members}
+                  schedule={schedule}
+                />
+              </TabPanel>
+              <TabPanel value='2'>
+                <AttendanceView
+                  members={members}
+                  schedule={schedule}
+                />
+              </TabPanel>
+            </TabContext>
+          </Box>
+        )
+      }
+    </div>
   );
-}
-
-export async function getServerSideProps() {
-  return {
-    props: {
-      members: await fetchMembers(),
-      schedule: await fetchEvents(),
-    }
-  };
 }
 
 export default Attendence;

@@ -28,7 +28,7 @@ function MembersPage() {
 
   useEffect(() => {
     async function loadMembers() {
-      const { data, error } = await MembersAPI.getAll();
+      const { data, error } = await MembersAPI.get();
 
       if (error) {
         return console.error(error);

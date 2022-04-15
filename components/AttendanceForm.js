@@ -13,19 +13,14 @@ import {
 
 import Select from '../components/formikMui/Select';
 
-import * as ScheduleAPI from '../api/ScheduleAPI';
-import { getAll as fetchMembers } from '../models/members.model';
-import { getAll as fetchEvents } from '../models/schedule.model';
+import { PATROLS } from '../models/members.model';
 import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
-import config from '../config';
-
 
 // TODO: Clear member selections on patrol change
 // TODO: Convert all referrences to partrols to the plural form
 
 function Attendence(props) {
   const { members, schedule, handleSubmit } = props;
-  const { patrols } = config;
 
   return (
     <Formik
@@ -55,9 +50,9 @@ function Attendence(props) {
               label='Select a Patrol'
               name='patrol'
             >
-              {patrols.map(([value, option]) => (
-                <MenuItem value={value} key={option}>
-                  {option}
+              {PATROLS.map((name) => (
+                <MenuItem value={name} key={name}>
+                  {name}
                 </MenuItem>
               ))}
             </Select>

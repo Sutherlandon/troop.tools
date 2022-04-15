@@ -18,7 +18,7 @@ export function add(item) {
  * Fetches the member list
  * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
  */
-export function getAll() {
+export function get() {
   return makeRequest({
     url: '/api/members',
   });
