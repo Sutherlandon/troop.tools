@@ -76,7 +76,11 @@ function EventDetails(props) {
             >
               <Box sx={{ fontWeight: 'bold' }}>{capitalize(patrol)}</Box>
               <ul style={{ margin: 0 }}>
-                {Object.keys(event.attendance[patrol]).map((name) => (
+                {Object
+                  .keys(event.attendance[patrol])
+                  .map(name => name.split(' ').reverse().join(', '))
+                  .sort()
+                  .map((name) => (
                   <li className='member-name' key={name}>{name}</li>
                 ))}
               </ul>
