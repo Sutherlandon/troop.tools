@@ -19,7 +19,7 @@ import AttendanceView from '../components/AttendanceView';
 import { PATROLS } from '../models/members.model';
 
 function Attendence(props) {
-  const [focusedTab, setFocusedTab] = useState('2');
+  const [focusedTab, setFocusedTab] = useState('1');
   const [members, setMembers] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -15,7 +15,10 @@ function AttendanceView(props) {
   const { members, schedule } = props;
 
   return (
-    <div>
+    <Box sx={{
+      maxWidth: 500,
+      mx: 'auto',
+    }}>
       {schedule
         .filter(event => !isEmpty(event.attendance))
         .map((event, index) => (
@@ -56,7 +59,7 @@ function AttendanceView(props) {
             </AccordionDetails>
           </Accordion>
         ))}
-    </div>
+    </Box>
   );
 }
 

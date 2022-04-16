@@ -1,5 +1,3 @@
-// TODO: Edit Events
-// TODO: Enter Member data
 // TODO: Create separate dev dbs using tags?
 
 import AddIcon from '@mui/icons-material/Add';
@@ -23,12 +21,15 @@ import {
 import NewEventDialog from '../components/NewEventDialog';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import { BRANCH_COLORS } from '../models/schedule.model';
+import EventDetails from '../components/EventDetails';
+import { MoreHoriz } from '@mui/icons-material';
 
 function SchedulePage({ data }) {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [newOpen, setNewOpen] = useState(false);
   const [schedule, setSchedule] = useState(data);
+  const [showDetails, setShowDetails] = useState();
 
   useEffect(() => {
     async function loadSchedule() {
@@ -107,42 +108,41 @@ function SchedulePage({ data }) {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Branch</TableCell>
-                <TableCell>Type</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell></TableCell>
               </TableRow >
             </TableHead >
             <TableBody>
               {schedule.map((event, index) => (
-                <TableRow
-                  key={event.name + event.date}
-                  sx={{
-                    '& td': {
-                      backgroundColor: BRANCH_COLORS[event.branch]?.b,
-                      color: BRANCH_COLORS[event.branch]?.t,
-                    },
-                  }}  
-                >
-                  <TableCell>{event.date}</TableCell>
-                  <TableCell>{event.branch}</TableCell>
-                  <TableCell>{event.type}</TableCell>
-                  <TableCell>{event.name}</TableCell>
-                  <TableCell>
-                    <IconButton 
-                      onClick={() => openEdit(event, index)}
-                      sx={{ 'color': 'inherit' }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleRemove(event)}
-                      sx={{ 'color': 'inherit' }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
+                <>
+                  <TableRow
+                    onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
+                    key={event.name + event.date}
+                    sx={{
+                      '& td': {
+                        backgroundColor: BRANCH_COLORS[event.branch]?.b,
+                        color: BRANCH_COLORS[event.branch]?.t,
+                      },
+                    }}
+                  >
+                    <TableCell>{event.date}</TableCell>
+                    <TableCell>{event.name}</TableCell>
+                    <TableCell>
+                      <MoreHoriz />
+                    </TableCell>
+                  </TableRow>
+                  {showDetails === index &&
+                    <TableRow>
+                      <TableCell colSpan={3}>
+                        <EventDetails
+                          event={event}
+                          onEdit={() => openEdit(event, index)}
+                          onDelete={() => handleRemove(event)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  }
+                </>
               ))}
             </TableBody>
           </Table >

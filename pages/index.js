@@ -15,7 +15,7 @@ function HomePage() {
       </li>
       <li>
         <Link href='/attendance'>
-          <a>Record Attendance</a>
+          <a>Attendance</a>
         </Link>
       </li>
     </ul>

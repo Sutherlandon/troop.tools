@@ -50,7 +50,7 @@ export default function NewMemberDialog(props) {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>New Member</DialogTitle>
+      <DialogTitle>New Event</DialogTitle>
       <DialogContent sx={{ paddingTop: 16 }}>
         <Formik
           initialValues={initialValues}

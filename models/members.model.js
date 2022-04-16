@@ -15,9 +15,9 @@ export const PATROLS = [
 ];
 
 export const PATROL_COLORS = {
-  'Foxes': '#b97c38',
-  'Hawks': '#eab71b',
-  'Mountain Lions': '#cea54a',
+  'foxes': '#b97c38',
+  'hawks': '#eab71b',
+  'mountain lions': '#cea54a',
 };
 
 export const memberSchema = yup.object({
