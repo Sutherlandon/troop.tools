@@ -1,34 +1,29 @@
 import isEmpty from 'lodash.isempty';
-import capitalize from 'lodash.capitalize';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Image from 'next/image';
 import {
   Box,
+  Button,
   IconButton,
   Grid,
   Typography,
+  Table,
+  TableRow,
+  TableCell,
 } from '@mui/material';
-import { BRANCH_COLORS } from '../models/schedule.model';
-import { PATROL_COLORS } from '../models/members.model';
-import { isEmptyArray } from 'formik';
 
-function Tag({ variant, text = variant }) {
-  return (
-    <Box sx={{
-      marginLeft: 1,
-      px: 1,
-      py: '2px',
-      border: '1px solid black',
-      borderRadius: '4px',
-      backgroundColor: BRANCH_COLORS[variant]?.b,
-      color: BRANCH_COLORS[variant]?.t,
-      display: 'inline',
-      width: 'contain-content',
-    }}>
-      {text}
-    </Box>
-  );
-}
+import Tag from '../components/Tag';
+import { PATROL_COLORS } from '../models/members.model';
+import FoxesLogo from '../images/foxesLogo.png';
+import HawksLogo from '../images/hawksLogo.png';
+import MountainLionsLogo from '../images/MountainLionsLogo.png';
+
+const patrolLogos = {
+  'foxes': FoxesLogo,
+  'hawks': HawksLogo,
+  'mountain lions': MountainLionsLogo,
+};
 
 function EventDetails(props) {
   const {
@@ -36,8 +31,6 @@ function EventDetails(props) {
     onEdit,
     onDelete,
   } = props;
-
-  //TODO: if no event, fetch one based on ID
 
   return (
     <Box>
@@ -53,12 +46,6 @@ function EventDetails(props) {
           >
             <EditIcon />
           </IconButton>
-          <IconButton
-            onClick={onDelete}
-            sx={{ 'color': 'inherit' }}
-          >
-            <DeleteIcon />
-          </IconButton>
         </Grid>
       </Grid>
       {!isEmpty(event.attendance) &&
@@ -66,28 +53,47 @@ function EventDetails(props) {
           <Typography variant='h6'>
             Attendance
           </Typography>
-          {Object.keys(event.attendance).map((patrol) => (
-            <Box
-              sx={{
-                backgroundColor: PATROL_COLORS[patrol],
-                padding: 1,
-              }}
-              key={patrol}
-            >
-              <Box sx={{ fontWeight: 'bold' }}>{capitalize(patrol)}</Box>
-              <ul style={{ margin: 0 }}>
-                {Object
-                  .keys(event.attendance[patrol])
-                  .map(name => name.split(' ').reverse().join(', '))
-                  .sort()
-                  .map((name) => (
-                  <li className='member-name' key={name}>{name}</li>
-                ))}
-              </ul>
-            </Box>
-          ))}
+          <Table>
+            {Object.keys(event.attendance).map((patrol) => (
+              <TableRow
+                sx={{
+                  '& td': {
+                    backgroundColor: PATROL_COLORS[patrol],
+                    padding: 1,
+                    border: 0,
+                  }
+                }}
+                key={patrol}
+              >
+                <TableCell sx={{ width: 85 }}>
+                  <Image src={patrolLogos[patrol]} alt='Patrol Logo' />
+                </TableCell>
+                <TableCell>
+                  <ul style={{ margin: 0 }}>
+                    {Object
+                      .keys(event.attendance[patrol])
+                      .map(name => name.split(' ').reverse().join(', '))
+                      .sort()
+                      .map((name) => (
+                        <li className='member-name' key={name}>{name}</li>
+                      ))}
+                  </ul>
+                </TableCell>
+              </TableRow>
+            ))}
+          </Table>
         </>
       }
+      <Box sx={{ my: 2, textAlign: 'center' }}>
+        <Button
+          color='error'
+          onClick={onDelete}
+          size='small'
+          variant='outlined'
+        >
+          <DeleteIcon /> Delete
+        </Button>
+      </Box>
     </Box>
   );
 }

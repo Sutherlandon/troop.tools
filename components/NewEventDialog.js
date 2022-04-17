@@ -1,4 +1,5 @@
-// import { format } from 'date-fns';
+// TODO: add close icon to dialogs
+
 import { Formik, Form } from 'formik';
 import {
   Button,

@@ -1,13 +1,12 @@
 // TODO: Create separate dev dbs using tags?
 
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
   Button,
   Grid,
-  IconButton,
   Paper,
   Table,
   TableRow,
@@ -18,11 +17,11 @@ import {
   LinearProgress,
 } from '@mui/material';
 
+import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
+import Tag from '../components/Tag';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import { BRANCH_COLORS } from '../models/schedule.model';
-import EventDetails from '../components/EventDetails';
-import { MoreHoriz } from '@mui/icons-material';
 
 function SchedulePage({ data }) {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -113,37 +112,48 @@ function SchedulePage({ data }) {
               </TableRow >
             </TableHead >
             <TableBody>
-              {schedule.map((event, index) => (
-                <>
-                  <TableRow
-                    onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
-                    key={event.name + event.date}
-                    sx={{
-                      '& td': {
-                        backgroundColor: BRANCH_COLORS[event.branch]?.b,
-                        color: BRANCH_COLORS[event.branch]?.t,
-                      },
-                    }}
-                  >
-                    <TableCell>{event.date}</TableCell>
-                    <TableCell>{event.name}</TableCell>
-                    <TableCell>
-                      <MoreHoriz />
-                    </TableCell>
-                  </TableRow>
-                  {showDetails === index &&
-                    <TableRow>
-                      <TableCell colSpan={3}>
-                        <EventDetails
-                          event={event}
-                          onEdit={() => openEdit(event, index)}
-                          onDelete={() => handleRemove(event)}
-                        />
+              {schedule.map((event, index) => {
+                const highlight = event.type === 'HTT' || ['Camp', 'Award', 'Fundraiser'].includes(event.branch);
+                return (
+                  <>
+                    <TableRow
+                      onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
+                      key={event.name + event.date}
+                      sx={highlight ? {
+                        '& td': {
+                          backgroundColor: BRANCH_COLORS[event.branch]?.b,
+                          color: BRANCH_COLORS[event.branch]?.t,
+                        },
+                      } : null}
+                    >
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        {highlight
+                          ? event.date
+                          : <Tag text={event.date} variant={event.branch} />
+                        }
+                      </TableCell>
+                      <TableCell>{event.name}</TableCell>
+                      <TableCell>
+                        {showDetails === index
+                          ? <CloseIcon />
+                          : <MoreHorizIcon />
+                        }
                       </TableCell>
                     </TableRow>
-                  }
-                </>
-              ))}
+                    {showDetails === index &&
+                      <TableRow>
+                        <TableCell colSpan={3}>
+                          <EventDetails
+                            event={event}
+                            onEdit={() => openEdit(event, index)}
+                            onDelete={() => handleRemove(event)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    }
+                  </>
+                );
+              })}
             </TableBody>
           </Table >
         </Paper >

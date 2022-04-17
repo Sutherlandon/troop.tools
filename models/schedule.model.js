@@ -50,7 +50,7 @@ export const BRANCH_COLORS = {
     t: 'black',
   },
   'General': {
-    b: 'white',
+    b: 'lightgray',
     t: 'black',
   },
   'Heritage': {
