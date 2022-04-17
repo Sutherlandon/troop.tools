@@ -17,7 +17,7 @@ import Tag from '../components/Tag';
 import { PATROL_COLORS } from '../models/members.model';
 import FoxesLogo from '../images/foxesLogo.png';
 import HawksLogo from '../images/hawksLogo.png';
-import MountainLionsLogo from '../images/MountainLionsLogo.png';
+import MountainLionsLogo from '../images/mountainLionsLogo.png';
 
 const patrolLogos = {
   'foxes': FoxesLogo,
