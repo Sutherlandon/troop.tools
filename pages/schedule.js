@@ -1,4 +1,5 @@
 // TODO: Create separate dev dbs using tags?
+// TODO: add expading animation to opening an event.
 
 import { useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
@@ -113,21 +114,37 @@ function SchedulePage({ data }) {
             </TableHead >
             <TableBody>
               {schedule.map((event, index) => {
-                const highlight = event.type === 'HTT' || ['Camp', 'Award', 'Fundraiser'].includes(event.branch);
+                const expanded = showDetails === index;
+                const highlight = event.type === 'HTT' ||
+                  ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
+
+                const branchColor = BRANCH_COLORS[event.branch]?.b;
+                const branchText = BRANCH_COLORS[event.branch]?.t;
+                const borderColor='#464646';
+
                 return (
                   <>
                     <TableRow
                       onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
                       key={event.name + event.date}
-                      sx={highlight ? {
+                      sx={{
                         '& td': {
-                          backgroundColor: BRANCH_COLORS[event.branch]?.b,
-                          color: BRANCH_COLORS[event.branch]?.t,
+                          backgroundColor: (expanded || highlight) && branchColor,
+                          borderTop: expanded && `2px solid ${borderColor}`,
+                          color: (expanded || highlight) && branchText,
                         },
-                      } : null}
+                        '& td:first-of-type': {
+                          borderLeft: expanded && `2px solid ${borderColor}`,
+                          borderTop: expanded && `2px solid ${borderColor}`,
+                        },
+                        '& td:last-of-type': {
+                          borderRight: expanded && `2px solid ${borderColor}`,
+                          borderTopWidth: expanded && `2px solid ${borderColor}`,
+                        },
+                      }}
                     >
                       <TableCell sx={{ textAlign: 'center' }}>
-                        {highlight
+                        {highlight || expanded
                           ? event.date
                           : <Tag text={event.date} variant={event.branch} />
                         }
@@ -140,9 +157,16 @@ function SchedulePage({ data }) {
                         }
                       </TableCell>
                     </TableRow>
-                    {showDetails === index &&
+                    {expanded &&
                       <TableRow>
-                        <TableCell colSpan={3}>
+                        <TableCell
+                          colSpan={3}
+                          sx={{
+                            borderWidth: '0 2px 2px',
+                            borderStyle: 'solid',
+                            borderColor: borderColor,
+                          }}
+                        >
                           <EventDetails
                             event={event}
                             onEdit={() => openEdit(event, index)}
