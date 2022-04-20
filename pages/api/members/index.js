@@ -1,17 +1,20 @@
-import * as Members from '../../../models/members.model';
+import Member from '../../../models/members.model';
+import connection from '../../../models/mongooseConfig';
 
 export default async function handler(req, res) {
+  await connection;
+
   let members = [];
 
   switch (req.method) {
     case 'GET':
-      members = await Members.getAll();
+      members = await Member.getAll();
       break;
     case 'POST':
-      members = await Members.add(req.body);
+      members = await Member.add(req.body);
       break;
     case 'PUT':
-      members = await Members.update(req.body);
+      members = await Member.update(req.body);
       break;
     default:
       return res.status(405);

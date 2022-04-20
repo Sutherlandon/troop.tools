@@ -23,6 +23,7 @@
     "lodash.capitalize": "^4.2.1",
     "lodash.isempty": "^4.4.0",
     "lodash.sortby": "^4.7.0",
+    "mongoose": "^6.3.0",
     "nanoid": "^3.3.2",
     "next": "^12.1.0",
     "notistack": "^2.0.3",

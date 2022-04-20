@@ -10,8 +10,15 @@ import {
 
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
+import * as yup from 'yup';
 import * as MembersAPI from '../api/MembersAPI';
-import { memberSchema, PATROLS } from '../models/members.model';
+import { PATROLS } from '../util/Constants';
+
+const memberSchema = yup.object({
+  id: yup.string(),
+  name: yup.string().required('This field cannot be left blank'),
+  patrol: yup.string().oneOf(PATROLS).required('This field cannot be left blank'),
+});
 
 export default function NewMemberDialog(props) {
   const {
