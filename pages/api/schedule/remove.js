@@ -1,13 +1,16 @@
-import * as Schedule from '../../../models/schedule.model';
+import Event from '../../../models/event.model';
+import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
-  let members = [];
+  await connection;
+
+  let events;
 
   if (req.method === 'POST') {
-    members = await Schedule.remove(req.body);
+    events = await Event.remove(req.body);
   } else {
     return res.status(405);
   }
 
-  return res.status(200).json(members);
+  return res.status(200).json(events);
 }  

@@ -14,15 +14,16 @@ import {
 } from '@mui/material';
 
 import Tag from '../components/Tag';
-import { PATROL_COLORS } from '../models/members.model';
+import { PATROL_COLORS } from '../config/constants';
+
 import FoxesLogo from '../images/foxesLogo.png';
 import HawksLogo from '../images/hawksLogo.png';
 import MountainLionsLogo from '../images/mountainLionsLogo.png';
 
 const patrolLogos = {
-  'foxes': FoxesLogo,
-  'hawks': HawksLogo,
-  'mountain lions': MountainLionsLogo,
+  'Foxes': FoxesLogo,
+  'Hawks': HawksLogo,
+  'Mountain Lions': MountainLionsLogo,
 };
 
 function EventDetails(props) {

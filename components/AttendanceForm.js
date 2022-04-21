@@ -12,9 +12,8 @@ import {
 } from '@mui/material';
 
 import Select from '../components/formikMui/Select';
-
-import { PATROLS } from '../models/members.model';
-import FormikMuiCheckboxRow from '../components/formikMui/CheckboxRow';
+import CheckboxRow from '../components/formikMui/CheckboxRow';
+import { PATROLS } from '../config/constants';
 
 function Attendence(props) {
   const { members, schedule, handleSubmit } = props;
@@ -78,7 +77,7 @@ function Attendence(props) {
                         .filter(member => member.patrol === values.patrol)
                         .map((member) => {
                           return (
-                            <FormikMuiCheckboxRow
+                            <CheckboxRow
                               groupName='members'
                               name={member.name}
                               key={member.name}

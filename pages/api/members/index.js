@@ -1,10 +1,10 @@
-import Member from '../../../models/members.model';
-import connection from '../../../models/mongooseConfig';
+import Member from '../../../models/member.model';
+import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
   await connection;
 
-  let members = [];
+  let members;
 
   switch (req.method) {
     case 'GET':

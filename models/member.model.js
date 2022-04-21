@@ -61,10 +61,10 @@ MemberSchema.statics = {
    */
   async getAll() {
     // fetch the members data
-    const results = await this.find().lean();
+    const members = await this.find().lean();
 
     // cache the members
-    _members = sortBy(results, ['patrol', 'name']);
+    _members = sortBy(members, ['patrol', 'name']);
 
     return _members;
   },
@@ -104,6 +104,16 @@ MemberSchema.statics = {
   },
 };
 
-const Member = mongoose.models.Member || mongoose.model('Member', MemberSchema);
+let Member;
+if (process.env.NODE_ENV === 'development') {
+  // always start fresh, we need to do this because Next preserves the
+  // mongoose instance of Member so we cant build a new one
+  console.log('Rebuilding Member Model')
+  delete mongoose.models.Member;
+
+  Member = mongoose.model('Member', MemberSchema);
+} else {
+  Member = mongoose.models.Member || mongoose.model('Member', MemberSchema);
+}
 
 export default Member;

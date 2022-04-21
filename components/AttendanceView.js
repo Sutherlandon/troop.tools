@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 
-import { PATROL_COLORS } from '../models/members.model';
+import { PATROL_COLORS } from '../config/constants';
 
 function AttendanceView(props) {
   const { members, schedule } = props;

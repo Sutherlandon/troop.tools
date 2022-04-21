@@ -23,15 +23,16 @@ if (NODE_ENV === 'development') {
   connection = mongoose.connect(uri, options);
 }
 
-mongoose.connection.on('connected', () => {
-  if (NODE_ENV === 'test') {
-    console.log('Database connected!');
-  }
-})
+// not working atm
+// mongoose.connection.on('connected', () => {
+//   if (NODE_ENV === 'test') {
+//     console.log('Database connected!');
+//   }
+// })
 
-mongoose.connection.on('error', () => {
-  console.error('Error: Unable to connect to DB');
-});
+// mongoose.connection.on('error', () => {
+//   console.error('Error: Unable to connect to DB');
+// });
 
 // Export a module-scoped Mongoose connection. By doing this in a
 // separate module, the connection can be shared across functions.

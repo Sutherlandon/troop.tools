@@ -16,7 +16,7 @@ import AttendanceForm from '../components/AttendanceForm';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import * as MembersAPI from '../api/MembersAPI';
 import AttendanceView from '../components/AttendanceView';
-import { PATROLS } from '../models/members.model';
+import { PATROLS } from '../config/constants';
 
 function Attendence(props) {
   const [focusedTab, setFocusedTab] = useState('1');
@@ -48,10 +48,10 @@ function Attendence(props) {
 
   async function handleSubmit(values, formik) {
     const { eventIndex, ...rest } = values
-    const { name, date } = schedule[eventIndex];
+    const { _id } = schedule[eventIndex];
 
     const formData = {
-      event: { name, date },
+      eventId: _id,
       ...rest
     };
 

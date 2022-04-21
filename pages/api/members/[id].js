@@ -1,5 +1,5 @@
 import Member from '../../../models/members.model';
-import connection from '../../../models/mongooseConfig';
+import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
   await connection;

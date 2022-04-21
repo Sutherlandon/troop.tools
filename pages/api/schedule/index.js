@@ -1,21 +1,24 @@
-import * as Schedule from '../../../models/schedule.model';
+import Event from '../../../models/event.model';
+import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
-  let schedule = [];
+  await connection;
+
+  let events;
 
   switch (req.method) {
     case 'GET':
-      schedule = await Schedule.get();
+      events = await Event.getAll();
       break;
     case 'POST':
-      schedule = await Schedule.add(req.body);
+      events = await Event.add(req.body);
       break;
     case 'PUT':
-      schedule = await Schedule.update(req.body);
+      events = await Event.update(req.body);
       break;
     default:
       return res.status(405);
   }
   
-  return res.status(200).json(schedule);
+  return res.status(200).json(events);
 }  

@@ -22,7 +22,7 @@ import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
 import Tag from '../components/Tag';
 import * as ScheduleAPI from '../api/ScheduleAPI';
-import { BRANCH_COLORS } from '../models/schedule.model';
+import { BRANCH_COLORS } from '../config/constants';
 
 function SchedulePage({ data }) {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -47,14 +47,8 @@ function SchedulePage({ data }) {
   }, []);
 
   // open the edit form loaded with the event at the index
-  function openEdit(event, index) {
-    setEditInfo({
-      event: {
-        ...event,
-        eventIndex: index
-      },
-      open: true
-    });
+  function openEdit(event) {
+    setEditInfo({ event, open: true });
   }
 
   // Handle removing a member from the list
@@ -169,7 +163,7 @@ function SchedulePage({ data }) {
                         >
                           <EventDetails
                             event={event}
-                            onEdit={() => openEdit(event, index)}
+                            onEdit={() => openEdit(event)}
                             onDelete={() => handleRemove(event)}
                           />
                         </TableCell>

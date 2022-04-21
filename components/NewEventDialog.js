@@ -1,5 +1,5 @@
 // TODO: add close icon to dialogs
-
+import * as yup from 'yup';
 import { Formik, Form } from 'formik';
 import {
   Button,
@@ -12,7 +12,18 @@ import {
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as ScheduleAPI from '../api/ScheduleAPI';
-import { BRANCHES, EVENT_TYPES, EventSchema } from '../models/schedule.model';
+import { BRANCHES, EVENT_TYPES } from '../config/constants';
+
+const blankError = 'This field cannot be left blank';
+export const EventSchema = yup.object({
+  attendance: yup.object(),
+  branch: yup.string().oneOf(BRANCHES).required(blankError),
+  date: yup.string().required(blankError),
+  name: yup.string().required(blankError),
+  type: yup.string().oneOf(EVENT_TYPES).required(blankError),
+  year: yup.number(),
+});
+
 
 export default function NewMemberDialog(props) {
   const {

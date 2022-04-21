@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { BRANCH_COLORS } from '../models/schedule.model';
+import { BRANCH_COLORS } from '../config/constants';
 
 function Tag({ variant, text = variant }) {
   return (

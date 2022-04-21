@@ -18,7 +18,7 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
-import { PATROL_COLORS } from '../util/Constants';
+import { PATROL_COLORS } from '../config/constants';
 
 function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
