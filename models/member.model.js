@@ -16,10 +16,6 @@ let _members = [];
 
 // Model Schema
 const MemberSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    unique: true,
-  },
   name: String,
   patrol: String,
 }, {
@@ -39,10 +35,7 @@ MemberSchema.statics = {
    */
   async add(formData) {
 
-    const newMember = {
-      id: nanoid(),
-      ...formData
-    };
+    const newMember = { ...formData };
 
     // put the new member in the DB
     await this.create(newMember);
@@ -76,10 +69,10 @@ MemberSchema.statics = {
    * @returns The new list of events
    */
   async update(formData) {
-    const { id, ...update } = formData;
+    const { _id, ...update } = formData;
 
     // make the update
-    await this.findOneAndUpdate({ id }, { ...update });
+    await this.findOneAndUpdate({ _id }, { ...update });
 
     // return the updated memberList
     const members = await this.getAll();
@@ -90,12 +83,12 @@ MemberSchema.statics = {
 
   /**
    * Deletes a member from the DB and returns an updated list of members
-   * @param {String} id The id of the user to delete
+   * @param {String} _id The _id of the user to delete
    * @returns The new list of members
    */
-  async remove(id) {
+  async remove(_id) {
     // delete the member from the DB
-    await this.deleteOne({ id });
+    await this.deleteOne({ _id });
 
     // return a new list of all memebers
     const members = await this.getAll();

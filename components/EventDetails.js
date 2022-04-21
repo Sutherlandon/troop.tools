@@ -14,17 +14,7 @@ import {
 } from '@mui/material';
 
 import Tag from '../components/Tag';
-import { PATROL_COLORS } from '../config/constants';
-
-import FoxesLogo from '../images/foxesLogo.png';
-import HawksLogo from '../images/hawksLogo.png';
-import MountainLionsLogo from '../images/mountainLionsLogo.png';
-
-const patrolLogos = {
-  'Foxes': FoxesLogo,
-  'Hawks': HawksLogo,
-  'Mountain Lions': MountainLionsLogo,
-};
+import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
 
 function EventDetails(props) {
   const {
@@ -67,7 +57,7 @@ function EventDetails(props) {
                 key={patrol}
               >
                 <TableCell sx={{ width: 85 }}>
-                  <Image src={patrolLogos[patrol]} alt='Patrol Logo' />
+                  <Image src={PATROL_LOGOS[patrol]} alt='Patrol Logo' />
                 </TableCell>
                 <TableCell>
                   <ul style={{ margin: 0 }}>

@@ -1,3 +1,7 @@
+import FoxesLogo from '../images/foxesLogo.png';
+import HawksLogo from '../images/hawksLogo.png';
+import MountainLionsLogo from '../images/mountainLionsLogo.png';
+
 export const EVENT_TYPES = [
   'Core',
   'Elective',
@@ -88,4 +92,10 @@ export const PATROL_COLORS = {
   'Foxes': '#b97c38',
   'Hawks': '#eab71b',
   'Mountain Lions': '#cea54a',
+};
+
+export const PATROL_LOGOS = {
+  'Foxes': FoxesLogo,
+  'Hawks': HawksLogo,
+  'Mountain Lions': MountainLionsLogo,
 };

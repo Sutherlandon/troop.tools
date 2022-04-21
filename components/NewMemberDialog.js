@@ -33,7 +33,7 @@ export default function NewMemberDialog(props) {
 
     // if the member already exists updated it, otherwise create it
     let data, error;
-    if (values.id) {
+    if (values._id) {
       ({ data, error } = await MembersAPI.update(values));
     } else {
       ({ data, error } = await MembersAPI.add(values));

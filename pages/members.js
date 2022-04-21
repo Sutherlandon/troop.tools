@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import {
   Button,
@@ -18,7 +19,7 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
-import { PATROL_COLORS } from '../config/constants';
+import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
 
 function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -52,15 +53,26 @@ function MembersPage() {
   // Handle removing a member from the list
   async function handleRemove(member) {
     if (confirm(`Are you sure you want to delete ${member.name}`)) {
-      const { data, error } = await MembersAPI.remove(member.id);
+      const { data, error } = await MembersAPI.remove(member._id);
 
       if (error) {
         return console.error(error);
       }
-      
+
       setMembers(data);
     }
   }
+
+  // calculate the rows that each logo needs to span
+  const membersByPatrol = {};
+  members.forEach((member) => {
+    if (membersByPatrol[member.patrol]) {
+      membersByPatrol[member.patrol].push(member);
+    } else {
+      membersByPatrol[member.patrol] = [member];
+    }
+  });
+
 
   return (
     <div>
@@ -96,42 +108,55 @@ function MembersPage() {
         <LinearProgress />
       ) : (
         <Paper>
-          <Table>
+          <Table size='small'>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
                 <TableCell>Patrol</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {members.map(member => (
-                <TableRow
-                  key={member.name}
-                  sx={{
-                    '& td': {
-                      backgroundColor: PATROL_COLORS[member.patrol],
-                    },
-                  }}  
-                >
-                  <TableCell>{member.name}</TableCell>
-                  <TableCell>{member.patrol}</TableCell>
-                  <TableCell>
-                    <IconButton 
-                      onClick={() => openEdit(member)}
-                      sx={{ 'color': 'inherit' }}
+              {Object.keys(membersByPatrol)
+                .map((patrol) => membersByPatrol[patrol]
+                  .map((member, index) => (
+                    <TableRow
+                      key={member.name}
+                      sx={{
+                        '& td': {
+                          backgroundColor: PATROL_COLORS[member.patrol],
+                        },
+                      }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color='error'
-                      onClick={() => handleRemove(member)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      {index === 0 &&
+                        <TableCell
+                          rowSpan={membersByPatrol[patrol].length}
+                          sx={{
+                            width: 85,
+                            borderRight: '1px solid rgba(224, 224, 224, 1)',
+                          }}
+                        >
+                          <Image src={PATROL_LOGOS[member.patrol]} alt='Patrol Logo' />
+                        </TableCell>
+                      }
+                      <TableCell>{member.name}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                        <IconButton
+                          onClick={() => openEdit(member)}
+                          sx={{ 'color': 'inherit' }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color='error'
+                          onClick={() => handleRemove(member)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
             </TableBody>
           </Table>
         </Paper>
