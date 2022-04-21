@@ -1,24 +1,40 @@
+import { Button, Grid } from '@mui/material'
 import Link from 'next/link';
 
 function HomePage() {
   return (
-    <ul>
-      <li>
-        <Link href='/members'>
-          <a>Troop Members List</a>
+    <Grid container justifyContent='center'>
+      <Grid item sx={{ marginBottom: 1 }}>
+        <Link href='/schedule' passHref>
+          <Button
+            color='secondary'
+            variant='contained'
+          >
+            Troop Schedule
+          </Button>
         </Link>
-      </li>
-      <li>
-        <Link href='/schedule'>
-          <a>Troop Scheudule</a>
+      </Grid>
+      <Grid item sx={{ marginBottom: 1 }}>
+        <Link href='/members' passHref>
+          <Button
+            color='secondary'
+            variant='contained'
+          >
+            Troop Members List
+          </Button>
         </Link>
-      </li>
-      <li>
-        <Link href='/attendance'>
-          <a>Attendance</a>
+      </Grid>
+      <Grid item sx={{ marginBottom: 1 }}>
+        <Link href='/attendance' passHref>
+          <Button
+            color='secondary'
+            variant='contained'
+          >
+            Record Attendance
+          </Button>
         </Link>
-      </li>
-    </ul>
+      </Grid>
+    </Grid>
   );
 }
 
