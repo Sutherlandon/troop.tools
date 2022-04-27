@@ -1,7 +1,8 @@
-// TODO: Create separate dev dbs using tags?
 // TODO: add expading animation to opening an event.
+// TODO: add notistack for form feedback
 
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Fragment, useEffect, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -9,6 +10,7 @@ import {
   Button,
   Grid,
   Paper,
+  Slide,
   Table,
   TableRow,
   TableCell,
@@ -18,37 +20,48 @@ import {
   LinearProgress,
 } from '@mui/material';
 
+import AttendanceFormDialog from '../components/AttendanceFormDialog';
 import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
 import Tag from '../components/Tag';
 import * as ScheduleAPI from '../api/ScheduleAPI';
+import * as MembersAPI from '../api/MembersAPI';
 import { BRANCH_COLORS } from '../config/constants';
 
-function SchedulePage({ data }) {
+function SchedulePage() {
+  const [attInfo, setAttInfo] = useState({ open: false });
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [newOpen, setNewOpen] = useState(false);
-  const [schedule, setSchedule] = useState(data);
+  const [schedule, setSchedule] = useState([]);
+  const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data, error } = await ScheduleAPI.get();
+      const { data: schedule, error: scheduleErr } = await ScheduleAPI.get();
+      const { data: members, error: memberErr } = await MembersAPI.get();
 
-      if (error) {
+      if (scheduleErr || memberErr) {
         return console.error(error);
       }
 
-      setSchedule(data);
+      setMembers(members)
+      setSchedule(schedule);
       setLoading(false);
     }
 
     loadSchedule();
   }, []);
 
-  // open the edit form loaded with the event at the index
+  // open the edit form loaded with the event
   function openEdit(event) {
     setEditInfo({ event, open: true });
+  }
+
+  // open the attendance form loaded with the event
+  function openAttendance(event) {
+    setAttInfo({ event, open: true });
   }
 
   // Handle removing a member from the list
@@ -63,6 +76,8 @@ function SchedulePage({ data }) {
       setSchedule(data);
     }
   }
+
+  console.log({ schedule });
 
   return (
     <div>
@@ -94,10 +109,20 @@ function SchedulePage({ data }) {
         handleClose={() => setEditInfo({ open: false })}
         onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
       />
+      <AttendanceFormDialog
+        {...attInfo}
+        handleClose={() => setAttInfo({ open: false })}
+        members={members}
+        onSubmit={(data) => {
+          setSchedule(data);
+          setAttInfo({ open: false });
+        }}
+        schedule={schedule}
+      />
       {loading ? (
         <LinearProgress />
       ) : (
-        <Paper>
+        <Paper sx={{ mb: 2 }}>
           <Table size='small'>
             <TableHead>
               <TableRow>
@@ -114,13 +139,12 @@ function SchedulePage({ data }) {
 
                 const branchColor = BRANCH_COLORS[event.branch]?.b;
                 const branchText = BRANCH_COLORS[event.branch]?.t;
-                const borderColor='#464646';
+                const borderColor = '#464646';
 
                 return (
-                  <>
+                  <Fragment key={event.name + event.date}>
                     <TableRow
                       onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
-                      key={event.name + event.date}
                       sx={{
                         '& td': {
                           backgroundColor: (expanded || highlight) && branchColor,
@@ -163,25 +187,34 @@ function SchedulePage({ data }) {
                         >
                           <EventDetails
                             event={event}
+                            onAttendance={() => openAttendance(event)}
                             onEdit={() => openEdit(event)}
                             onDelete={() => handleRemove(event)}
                           />
                         </TableCell>
                       </TableRow>
                     }
-                  </>
+                  </Fragment>
                 );
               })}
             </TableBody>
           </Table >
         </Paper >
-
-      )
-      }
+      )}
+      <Grid container justifyContent='space-around' sx={{ marginBottom: 2 }}>
+        <Grid item sx={{ marginBottom: 1 }}>
+          <Link href='/members' passHref>
+            <Button
+              color='secondary'
+              variant='contained'
+            >
+              Members List
+            </Button>
+          </Link>
+        </Grid>
+      </Grid>
     </div >
   );
 }
-
-
 
 export default SchedulePage;

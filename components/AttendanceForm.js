@@ -106,13 +106,4 @@ function Attendence(props) {
   );
 }
 
-export async function getServerSideProps() {
-  return {
-    props: {
-      members: await fetchMembers(),
-      schedule: await fetchEvents(),
-    }
-  };
-}
-
 export default Attendence;

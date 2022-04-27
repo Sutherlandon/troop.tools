@@ -1,4 +1,5 @@
 import isEmpty from 'lodash.isempty';
+import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Image from 'next/image';
@@ -9,6 +10,7 @@ import {
   Grid,
   Typography,
   Table,
+  TableBody,
   TableRow,
   TableCell,
 } from '@mui/material';
@@ -19,6 +21,7 @@ import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
 function EventDetails(props) {
   const {
     event,
+    onAttendance,
     onEdit,
     onDelete,
   } = props;
@@ -40,42 +43,64 @@ function EventDetails(props) {
         </Grid>
       </Grid>
       {!isEmpty(event.attendance) &&
+        Object.keys(event.attendance)
+          .filter(key => !isEmpty(event.attendance[key]))
+          .length > 0 &&
         <>
           <Typography variant='h6'>
             Attendance
           </Typography>
           <Table>
-            {Object.keys(event.attendance).map((patrol) => (
-              <TableRow
-                sx={{
-                  '& td': {
-                    backgroundColor: PATROL_COLORS[patrol],
-                    padding: 1,
-                    border: 0,
-                  }
-                }}
-                key={patrol}
-              >
-                <TableCell sx={{ width: 85 }}>
-                  <Image src={PATROL_LOGOS[patrol]} alt='Patrol Logo' />
-                </TableCell>
-                <TableCell>
-                  <ul style={{ margin: 0 }}>
-                    {Object
-                      .keys(event.attendance[patrol])
-                      .map(name => name.split(' ').reverse().join(', '))
-                      .sort()
-                      .map((name) => (
-                        <li className='member-name' key={name}>{name}</li>
-                      ))}
-                  </ul>
-                </TableCell>
-              </TableRow>
-            ))}
+            <TableBody>
+              {Object.keys(event.attendance).map((patrol) => {
+                // don't show empty patrols
+                if (isEmpty(event.attendance[patrol])) {
+                  return null;
+                }
+
+                return (
+                  <TableRow
+                    key={patrol}
+                    sx={{
+                      '& td': {
+                        backgroundColor: PATROL_COLORS[patrol],
+                        padding: 1,
+                        border: 0,
+                      }
+                    }}
+                  >
+                    <TableCell sx={{ width: 85 }}>
+                      <Image src={PATROL_LOGOS[patrol]} alt='Patrol Logo' />
+                    </TableCell>
+                    <TableCell>
+                      <ul style={{ margin: 0 }}>
+                        {Object
+                          .keys(event.attendance[patrol])
+                          .map(name => name.split(' ').reverse().join(', '))
+                          .sort()
+                          .map((name) => (
+                            <li className='member-name' key={name}>{name}</li>
+                          ))}
+                      </ul>
+                    </TableCell>
+                  </TableRow>
+                )
+              }
+              )}
+            </TableBody>
           </Table>
         </>
       }
       <Box sx={{ my: 2, textAlign: 'center' }}>
+        <Button
+          color='primary'
+          onClick={onAttendance}
+          size='small'
+          variant='outlined'
+          sx={{ marginRight: 1 }}
+        >
+          <CheckIcon /> Attendance
+        </Button>
         <Button
           color='error'
           onClick={onDelete}

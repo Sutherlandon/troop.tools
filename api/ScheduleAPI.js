@@ -1,12 +1,26 @@
 import makeRequest from './makeRequest';
 
+// cache the members when fetched
+let _schedule;
+
+/**
+ * Make the request but cache the results for repeated gets
+ */
+async function makeCacheRequest(params) {
+  const { data, error } = await makeRequest(params);
+
+  _schedule = data;
+
+  return { data, error };
+}
+
 /**
  * Calls the API to add a new event
  * @param {Object} item A new event item
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function add(item) {
-  return makeRequest({
+  return makeCacheRequest({
     url: '/api/schedule',
     method: 'POST',
     data: item
@@ -19,7 +33,7 @@ export function add(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function attendance(formData) {
-  return makeRequest({
+  return makeCacheRequest({
     url: '/api/schedule/attendance',
     method: 'POST',
     data: formData,
@@ -31,7 +45,11 @@ export function attendance(formData) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function get() {
-  return makeRequest({
+  if (_schedule) {
+    return { data: _schedule };
+  }
+
+  return makeCacheRequest({
     url: '/api/schedule',
   });
 }
@@ -42,7 +60,7 @@ export function get() {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function remove(item) {
-  return makeRequest({
+  return makeCacheRequest({
     url: `/api/schedule/remove`,
     method: 'POST',
     data: item,
@@ -55,7 +73,7 @@ export function remove(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function update(formData) {
-  return makeRequest({
+  return makeCacheRequest({
     url: `/api/schedule`,
     method: 'PUT',
     data: formData,

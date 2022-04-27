@@ -101,14 +101,25 @@ EventSchema.statics = {
    * @returns The new list of events
    */
   async updateAttendance(formData) {
-    const {
-      eventId: _id,
-      members,
-      patrol,
-    } = formData;
+    const { _id, attendance } = formData;
+
+    // don't save false values
+    const filteredAttendance = {
+      Foxes: {},
+      Hawks: {},
+      'Mountain Lions': {},
+    };
+
+    Object.keys(attendance).forEach((patrol) => {
+      Object.keys(attendance[patrol]).forEach((member) => {
+        if (attendance[patrol][member]) {
+          filteredAttendance[patrol][member] = true;
+        }
+      })
+    })
 
     // put the new event in the DB
-    await this.findOneAndUpdate({ _id }, { $set: { [`attendance.${patrol}`]: members } });
+    await this.findOneAndUpdate({ _id }, { $set: { attendance: filteredAttendance } });
 
     // return the updated schedule
     const schedule = await this.getAll();

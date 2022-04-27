@@ -1,5 +1,19 @@
 import makeRequest from './makeRequest';
 
+// cache the members when fetched
+let _members;
+
+/**
+ * Make the request but cache the results for repeated gets
+ */
+async function makeCacheRequest(params) {
+  const { data, error } = await makeRequest(params);
+
+  _members = data;
+
+  return { data, error };
+}
+
 /**
  * Calls the API to add a new member 
  * @param {Object} item A new member item
@@ -7,7 +21,7 @@ import makeRequest from './makeRequest';
  *   including the new one just added
  */
 export function add(item) {
-  return makeRequest({
+  return makeCacheRequest({
     url: '/api/members',
     method: 'POST',
     data: item
@@ -19,7 +33,11 @@ export function add(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
  */
 export function get() {
-  return makeRequest({
+  if (_members) {
+    return { data: _members };
+  }
+
+  return makeCacheRequest({
     url: '/api/members',
   });
 }
@@ -31,7 +49,7 @@ export function get() {
  *   excluding the new one just removed
  */
 export function remove(id) {
-  return makeRequest({
+  return makeCacheRequest({
     url: `/api/members/${id}`,
     method: 'DELETE',
   });
@@ -43,7 +61,7 @@ export function remove(id) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
  */
 export function update(formData) {
-  return makeRequest({
+  return makeCacheRequest({
     url: `/api/members`,
     method: 'PUT',
     data: formData,
