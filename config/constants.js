@@ -1,6 +1,8 @@
 import FoxesLogo from '../images/foxesLogo.png';
 import HawksLogo from '../images/hawksLogo.png';
 import MountainLionsLogo from '../images/mountainLionsLogo.png';
+import AdventurersLogo from '../images/adventuersLogo.png';
+import NavigatorsLogo from '../images/navigatorsLogo.png'
 
 export const EVENT_TYPES = [
   'Core',
@@ -98,4 +100,6 @@ export const PATROL_LOGOS = {
   'Foxes': FoxesLogo,
   'Hawks': HawksLogo,
   'Mountain Lions': MountainLionsLogo,
+  Adventurers: AdventurersLogo,
+  Navigators: NavigatorsLogo,
 };

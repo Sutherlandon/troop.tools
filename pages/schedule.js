@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
+  Box,
   Button,
   Grid,
   Paper,
@@ -126,7 +127,7 @@ function SchedulePage() {
           <Table size='small'>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
+                <TableCell sx={{ textAlign: 'left'}}>Date</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell></TableCell>
               </TableRow >
@@ -161,14 +162,14 @@ function SchedulePage() {
                         },
                       }}
                     >
-                      <TableCell sx={{ textAlign: 'center' }}>
+                      <TableCell sx={{ textAlign: 'left' }}>
                         {highlight || expanded
-                          ? event.date
+                          ? <Box sx={{ pl: 2 }}>{event.date}</Box>
                           : <Tag text={event.date} variant={event.branch} />
                         }
                       </TableCell>
                       <TableCell>{event.name}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ textAlign: 'right' }}>
                         {showDetails === index
                           ? <CloseIcon />
                           : <MoreHorizIcon />
