@@ -1,8 +1,10 @@
 // TODO: add close icon to dialogs
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 import {
-  Button,
+  Box,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -15,7 +17,7 @@ import * as ScheduleAPI from '../api/ScheduleAPI';
 import { BRANCHES, EVENT_TYPES } from '../config/constants';
 
 const blankError = 'This field cannot be left blank';
-export const EventSchema = yup.object({
+const EventSchema = yup.object({
   attendance: yup.object(),
   branch: yup.string().oneOf(BRANCHES).required(blankError),
   date: yup.string().required(blankError),
@@ -23,7 +25,6 @@ export const EventSchema = yup.object({
   type: yup.string().oneOf(EVENT_TYPES).required(blankError),
   year: yup.number(),
 });
-
 
 export default function NewMemberDialog(props) {
   const {
@@ -69,7 +70,7 @@ export default function NewMemberDialog(props) {
           onSubmit={handleSubmit}
           validationSchema={EventSchema}
         >
-          {({ values }) => {
+          {({ values, isSubmitting }) => {
             return (
               <Form style={{ paddingTop: 16 }}>
                 <TextField
@@ -100,13 +101,17 @@ export default function NewMemberDialog(props) {
                   label='Name'
                   name='name'
                 />
-                <div>
-                  <Button
+                <Box sx={{ textAlign: 'center' }}>
+                  <LoadingButton
+                    loading={isSubmitting}
+                    loadingPosition='start'
                     type='submit'
+                    startIcon={<SaveIcon />}
+                    variant='contained'
                   >
-                    Submit
-                  </Button>
-                </div>
+                    Save
+                  </LoadingButton>
+                </Box>
               </Form>
             );
           }}

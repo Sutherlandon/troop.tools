@@ -1,6 +1,9 @@
 // import { format } from 'date-fns';
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { Formik, Form } from 'formik';
 import {
+  Box,
   Button,
   Dialog,
   DialogContent,
@@ -61,7 +64,7 @@ export default function NewMemberDialog(props) {
           onSubmit={handleSubmit}
           validationSchema={memberSchema}
         >
-          {({ values }) => {
+          {({ values, isSubmitting }) => {
             return (
               <Form style={{ paddingTop: 16 }}>
                 <TextField
@@ -76,13 +79,17 @@ export default function NewMemberDialog(props) {
                     <MenuItem value={patrol} key={patrol}>{patrol}</MenuItem>
                   ))}
                 </Select>
-                <div>
-                  <Button
+                <Box sx={{ textAlign: 'center' }}>
+                  <LoadingButton
+                    loading={isSubmitting}
+                    loadingPosition='start'
                     type='submit'
+                    startIcon={<SaveIcon />}
+                    variant='contained'
                   >
-                    Submit
-                 </Button>
-                </div>
+                    Save
+                  </LoadingButton>
+                </Box>
               </Form>
             );
           }}

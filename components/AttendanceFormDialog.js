@@ -1,10 +1,9 @@
-// TODO: Make this a dialog and include it with the Event Details
-// - Lock the event to the one selected
-// - pre-populate with previously set values
 import React from 'react';
 import Image from 'next/image';
 import isEmpty from 'lodash.isempty';
 import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { Form, Formik } from 'formik';
 import {
   Box,
@@ -120,7 +119,7 @@ function AttendenceFormDialog(props) {
           initialValues={initialValues}
           onSubmit={handleSubmit}
         >
-          {({ values }) => {
+          {({ values, isSubmitting }) => {
             console.log('Values', values);
 
             return (
@@ -167,13 +166,15 @@ function AttendenceFormDialog(props) {
                   return null;
                 })}
                 <Box sx={{ textAlign: 'center' }}>
-                  <Button
-                    color='primary'
+                  <LoadingButton
+                    loading={isSubmitting}
+                    loadingPosition='start'
                     type='submit'
+                    startIcon={<SaveIcon />}
                     variant='contained'
                   >
-                    Submit
-                  </Button>
+                    Save
+                  </LoadingButton>
                 </Box>
               </Form>
             );
