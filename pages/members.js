@@ -19,7 +19,11 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../api/MembersAPI';
-import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
+import {
+  PATROLS,
+  PATROL_COLORS,
+  PATROL_LOGOS
+} from '../config/constants';
 
 function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -117,7 +121,7 @@ function MembersPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(membersByPatrol)
+              {PATROLS
                 .map((patrol) => membersByPatrol[patrol]
                   .map((member, index) => (
                     <TableRow

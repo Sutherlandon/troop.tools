@@ -94,12 +94,14 @@ export const PATROL_COLORS = {
   'Foxes': '#b97c38',
   'Hawks': '#eab71b',
   'Mountain Lions': '#cea54a',
+  'Navigators': '#bbbdbd',
+  'Adventurers': '#8ec8e7',
 };
 
 export const PATROL_LOGOS = {
   'Foxes': FoxesLogo,
   'Hawks': HawksLogo,
   'Mountain Lions': MountainLionsLogo,
-  Adventurers: AdventurersLogo,
-  Navigators: NavigatorsLogo,
+  'Adventurers': AdventurersLogo,
+  'Navigators': NavigatorsLogo,
 };
