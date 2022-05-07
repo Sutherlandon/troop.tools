@@ -122,6 +122,7 @@ function MembersPage() {
             </TableHead>
             <TableBody>
               {PATROLS
+                .filter((patrol) => !!membersByPatrol[patrol])
                 .map((patrol) => membersByPatrol[patrol]
                   .map((member, index) => (
                     <TableRow
