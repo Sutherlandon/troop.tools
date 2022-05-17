@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LinearProgress } from '@mui/material';
-import SchedulePage from './schedule';
 
+import SchedulePage from './schedule';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import * as MembersAPI from '../api/MembersAPI';
 

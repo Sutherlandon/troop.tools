@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
-import * as yup from 'yup';
 import { nanoid } from 'nanoid';
 
 // define the default collection name
