@@ -58,15 +58,12 @@ function LoginForm(props) {
   async function handleSubmit(values) {
     const { data, error } = await UserAPI.add(values);
 
-    console.log('onboarding', {data, error});
-
     if (error) {
       return console.error(error);
     }
 
     setUser(data);
   }
-
 
   return (
     <Dialog open={true} fullWidth sx={{ maxWidth: 800 }}>

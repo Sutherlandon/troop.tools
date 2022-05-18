@@ -18,7 +18,7 @@ export default function MyApp({ Component, pageProps }) {
       const isLoggedIn = await magic.user.isLoggedIn();
 
       // if logged in with magic
-      if (isLoggedIn) {
+      if (isLoggedIn && !user?.issuer) {
         const magicMetaData = await magic.user.getMetadata();
 
         // get the user from the DB
