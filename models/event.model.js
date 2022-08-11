@@ -107,6 +107,8 @@ EventSchema.statics = {
       Foxes: {},
       Hawks: {},
       'Mountain Lions': {},
+      Navigators: {},
+      Adventurers: {},
     };
 
     Object.keys(attendance).forEach((patrol) => {

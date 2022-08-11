@@ -2,7 +2,7 @@
 // TODO: add notistack for form feedback
 // TODO: add loading icons to buttons that trigger request (ie submit) for immediate feedback
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,9 +26,11 @@ import AttendanceFormDialog from '../components/AttendanceFormDialog';
 import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
 import Tag from '../components/Tag';
+import UserContext from '../config/UserContext';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import * as MembersAPI from '../api/MembersAPI';
 import { BRANCH_COLORS } from '../config/constants';
+import useRoles from '../hooks/useRoles';
 
 function SchedulePage() {
   const [attInfo, setAttInfo] = useState({ open: false });
@@ -38,6 +40,7 @@ function SchedulePage() {
   const [schedule, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
+  const { isAdmin, isTrailGuide } = useRoles();
 
   useEffect(() => {
     async function loadSchedule() {
@@ -66,7 +69,7 @@ function SchedulePage() {
     setAttInfo({ event, open: true });
   }
 
-  // Handle removing a member from the list
+  // Handle removing an event from the list
   async function handleRemove(event) {
     if (confirm(`Are you sure you want to delete ${event.name}`)) {
       const { data, error } = await ScheduleAPI.remove(event);
@@ -79,27 +82,27 @@ function SchedulePage() {
     }
   }
 
-  console.log({ schedule });
-
   return (
     <div>
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            Troop Schedule 2022
+            Schedule 2022
           </Typography>
         </Grid>
-        <Grid item>
-          <Button
-            color='primary'
-            onClick={() => setNewOpen(true)}
-            startIcon={<AddIcon />}
-            variant='outlined'
-            sx={{ fontWeight: 'bold' }}
-          >
-            Add
-          </Button>
-        </Grid>
+        {isAdmin &&
+          <Grid item>
+            <Button
+              color='primary'
+              onClick={() => setNewOpen(true)}
+              startIcon={<AddIcon />}
+              variant='outlined'
+              sx={{ fontWeight: 'bold' }}
+            >
+              Add
+            </Button>
+          </Grid>
+        }
       </Grid>
       <NewEventDialog
         handleClose={() => setNewOpen(false)}
@@ -203,18 +206,20 @@ function SchedulePage() {
           </Table >
         </Paper >
       )}
-      <Grid container justifyContent='space-around' sx={{ marginBottom: 2 }}>
-        <Grid item sx={{ marginBottom: 1 }}>
-          <Link href='/members' passHref>
-            <Button
-              color='secondary'
-              variant='contained'
-            >
-              Members List
-            </Button>
-          </Link>
+      {isTrailGuide &&
+        <Grid container justifyContent='space-around' sx={{ marginBottom: 2 }}>
+          <Grid item sx={{ marginBottom: 1 }}>
+            <Link href='/members' passHref>
+              <Button
+                color='secondary'
+                variant='contained'
+              >
+                Members List
+              </Button>
+            </Link>
+          </Grid>
         </Grid>
-      </Grid>
+      }
     </div >
   );
 }

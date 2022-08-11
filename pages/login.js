@@ -43,8 +43,8 @@ function LoginForm(props) {
 
     // Set the UserContext to the now logged in user
     if (res.status === 200) {
-      const userMetadata = await magic.user.getMetadata();
-      let { data, error } = await UserAPI.get(userMetadata.issuer);
+      const magicMetadata = await magic.user.getMetadata();
+      let { data, error } = await UserAPI.get(magicMetadata.issuer);
 
       if (error === 'USER_NOT_FOUND') {
         return Router.push('/onboarding');

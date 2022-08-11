@@ -7,14 +7,12 @@ import magic from '../config/magic-sdk';
 import * as UserAPI from '../api/UserAPI';
 
 export default function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({ loading: true });
 
   // If isLoggedIn is true, set the UserContext with user data
   // Otherwise, redirect to /login and set UserContext to { user: null }
   useEffect(() => {
     async function checkUser() {
-      setUser({ loading: true });
-
       const isLoggedIn = await magic.user.isLoggedIn();
 
       // if logged in with magic
@@ -43,6 +41,10 @@ export default function MyApp({ Component, pageProps }) {
 
     checkUser();
   }, []);
+
+  if (user.loading) {
+    return <h3>Logging you in...</h3>
+  }
 
   return (
     <UserContext.Provider value={[user, setUser]}>

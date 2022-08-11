@@ -17,6 +17,7 @@ import {
 
 import Tag from '../components/Tag';
 import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
+import useRoles from '../hooks/useRoles';
 
 function EventDetails(props) {
   const {
@@ -25,6 +26,8 @@ function EventDetails(props) {
     onEdit,
     onDelete,
   } = props;
+
+  const { isAdmin, isTrailGuide } = useRoles();
 
   return (
     <Box>
@@ -92,23 +95,27 @@ function EventDetails(props) {
         </>
       }
       <Box sx={{ my: 2, textAlign: 'center' }}>
-        <Button
-          color='primary'
-          onClick={onAttendance}
-          size='small'
-          variant='outlined'
-          sx={{ marginRight: 1 }}
-        >
-          <CheckIcon /> Attendance
-        </Button>
-        <Button
-          color='error'
-          onClick={onDelete}
-          size='small'
-          variant='outlined'
-        >
-          <DeleteIcon /> Delete
-        </Button>
+        {isTrailGuide &&
+          <Button
+            color='primary'
+            onClick={onAttendance}
+            size='small'
+            variant='outlined'
+            sx={{ marginRight: 1 }}
+          >
+            <CheckIcon /> Attendance
+          </Button>
+        }
+        {isAdmin &&
+          <Button
+            color='error'
+            onClick={onDelete}
+            size='small'
+            variant='outlined'
+          >
+            <DeleteIcon /> Delete
+          </Button>
+        }
       </Box>
     </Box>
   );
