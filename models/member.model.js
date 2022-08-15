@@ -16,6 +16,7 @@ let _members = [];
 
 // Model Schema
 const MemberSchema = new mongoose.Schema({
+  active: Boolean,
   name: String,
   patrol: String,
 }, {
@@ -23,18 +24,17 @@ const MemberSchema = new mongoose.Schema({
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated',
-  }
+  },
 });
 
 // Static Model Methods
 MemberSchema.statics = {
   /**
-   * Adds a new member to the system 
+   * Adds a new member to the system
    * @param {Obejct} formData Form data contianing the new item
    * @returns All members including the new one
    */
-  async add(formData) {
-
+  async add (formData) {
     const newMember = { ...formData };
 
     // put the new member in the DB
@@ -45,7 +45,6 @@ MemberSchema.statics = {
 
     return members;
   },
-
 
   /**
    * Gets a list of all the members in the DB
@@ -62,10 +61,9 @@ MemberSchema.statics = {
     return _members;
   },
 
-
   /**
    * Updates the info for an event.
-   * @param {Obejct} formData Event data 
+   * @param {Obejct} formData Event data
    * @returns The new list of events
    */
   async update(formData) {
@@ -79,7 +77,6 @@ MemberSchema.statics = {
 
     return members;
   },
-
 
   /**
    * Deletes a member from the DB and returns an updated list of members
@@ -101,7 +98,7 @@ let Member;
 if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
   // mongoose instance of Member so we cant build a new one
-  console.log('Rebuilding Member Model')
+  console.log('Rebuilding Member Model');
   delete mongoose.models.Member;
 
   Member = mongoose.model('Member', MemberSchema);
