@@ -7,12 +7,12 @@ import {
   AccordionDetails,
   Box,
   Typography,
-} from '@mui/material'
+} from '@mui/material';
 
 import { PATROL_COLORS } from '../config/constants';
 
 function AttendanceView(props) {
-  const { members, schedule } = props;
+  const { schedule } = props;
 
   return (
     <Box sx={{
@@ -39,7 +39,7 @@ function AttendanceView(props) {
             }}>
               <Box sx={{ padding: 1 }}>
                 {event.branch} - {event.type}
-              </Box> 
+              </Box>
               {Object.keys(event.attendance).map((patrol) => (
                 <Box
                   sx={{

@@ -23,8 +23,8 @@ function HomePage() {
   });
 
   return loading
-    ? ( <LinearProgress /> )
-    : ( <SchedulePage /> );
+    ? <LinearProgress />
+    : <SchedulePage />;
 }
 
 export default HomePage;

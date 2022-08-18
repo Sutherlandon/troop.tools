@@ -3,8 +3,6 @@ import { Send } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { useContext, useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -12,7 +10,6 @@ import {
   FormControl,
 } from '@mui/material';
 
-import makeRequest from '../api/makeRequest';
 import magic from '../config/magic-sdk';
 import UserContext from '../config/UserContext';
 import * as UserAPI from '../api/UserAPI';
@@ -31,7 +28,7 @@ function LoginForm(props) {
     setLoading(true);
 
     // Trigger Magic link to be sent to user
-    let didToken = await magic.auth.loginWithMagicLink({
+    const didToken = await magic.auth.loginWithMagicLink({
       email,
       // redirectURI: new URL('/callback', window.location.origin).href // optional redirect back to your app after magic link is clicked
     });
@@ -44,14 +41,14 @@ function LoginForm(props) {
     // Set the UserContext to the now logged in user
     if (res.status === 200) {
       const magicMetadata = await magic.user.getMetadata();
-      let { data, error } = await UserAPI.get(magicMetadata.issuer);
+      const { data, error } = await UserAPI.get(magicMetadata.issuer);
 
       if (error === 'USER_NOT_FOUND') {
         return Router.push('/onboarding');
       } else if (error) {
         setLoading(false);
         return console.error(error);
-      } 
+      }
 
       await setUser(data);
       Router.push('/');
@@ -64,7 +61,7 @@ function LoginForm(props) {
     <Dialog open={true} fullWidth sx={{ maxWidth: 800 }}>
       <DialogTitle sx={{
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
       }}>
         Welcome
       </DialogTitle>

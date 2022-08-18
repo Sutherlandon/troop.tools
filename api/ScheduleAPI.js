@@ -23,7 +23,7 @@ export function add(item) {
   return makeCacheRequest({
     url: '/api/schedule',
     method: 'POST',
-    data: item
+    data: item,
   });
 }
 
@@ -61,7 +61,7 @@ export function get() {
  */
 export function remove(item) {
   return makeCacheRequest({
-    url: `/api/schedule/remove`,
+    url: '/api/schedule/remove',
     method: 'POST',
     data: item,
   });
@@ -74,7 +74,7 @@ export function remove(item) {
  */
 export function update(formData) {
   return makeCacheRequest({
-    url: `/api/schedule`,
+    url: '/api/schedule',
     method: 'PUT',
     data: formData,
   });

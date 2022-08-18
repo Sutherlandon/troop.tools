@@ -6,13 +6,13 @@ import UserContext from '../config/UserContext';
 
 const Callback = () => {
   const router = useRouter();
-  const [user, setUser] = useContext(UserContext);
+  const [, setUser] = useContext(UserContext);
 
   // The redirect contains a `provider` query param if the user is logging in with a social provider
   useEffect(() => {
     async function authenticateWithServer() {
       // get the did token
-      const didToken = await magic.auth.loginWithCredential()
+      const didToken = await magic.auth.loginWithCredential();
 
       // Send token to server to validate
       const res = await fetch('/api/login', {

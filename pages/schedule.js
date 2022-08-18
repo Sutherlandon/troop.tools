@@ -2,7 +2,7 @@
 // TODO: add notistack for form feedback
 // TODO: add loading icons to buttons that trigger request (ie submit) for immediate feedback
 
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,7 +12,6 @@ import {
   Button,
   Grid,
   Paper,
-  Slide,
   Table,
   TableRow,
   TableCell,
@@ -26,7 +25,6 @@ import AttendanceFormDialog from '../components/AttendanceFormDialog';
 import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
 import Tag from '../components/Tag';
-import UserContext from '../config/UserContext';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import * as MembersAPI from '../api/MembersAPI';
 import { BRANCH_COLORS } from '../config/constants';
@@ -48,10 +46,10 @@ function SchedulePage() {
       const { data: members, error: memberErr } = await MembersAPI.get();
 
       if (scheduleErr || memberErr) {
-        return console.error(error);
+        return console.error(scheduleErr || memberErr);
       }
 
-      setMembers(members)
+      setMembers(members);
       setSchedule(schedule);
       setLoading(false);
     }
@@ -124,14 +122,13 @@ function SchedulePage() {
         }}
         schedule={schedule}
       />
-      {loading ? (
-        <LinearProgress />
-      ) : (
-        <Paper sx={{ mb: 2 }}>
+      {loading
+        ? <LinearProgress />
+        : <Paper sx={{ mb: 2 }}>
           <Table size='small'>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ textAlign: 'left'}}>Date</TableCell>
+                <TableCell sx={{ textAlign: 'left' }}>Date</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell></TableCell>
               </TableRow >
@@ -187,7 +184,7 @@ function SchedulePage() {
                           sx={{
                             borderWidth: '0 2px 2px',
                             borderStyle: 'solid',
-                            borderColor: borderColor,
+                            borderColor,
                           }}
                         >
                           <EventDetails
@@ -205,7 +202,7 @@ function SchedulePage() {
             </TableBody>
           </Table >
         </Paper >
-      )}
+      }
       {isTrailGuide &&
         <Grid container justifyContent='space-around' sx={{ marginBottom: 2 }}>
           <Grid item sx={{ marginBottom: 1 }}>

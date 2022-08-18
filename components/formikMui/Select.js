@@ -19,4 +19,4 @@ export default function FormikMuiSelect(props) {
       </Field>
     </FormControl>
   );
-} 
+}

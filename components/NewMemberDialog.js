@@ -4,7 +4,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Formik, Form } from 'formik';
 import {
   Box,
-  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -28,7 +27,7 @@ export default function NewMemberDialog(props) {
     member,
     open,
     onUpdate,
-    handleClose
+    handleClose,
   } = props;
 
   async function handleSubmit(values) {
@@ -53,7 +52,7 @@ export default function NewMemberDialog(props) {
   const initialValues = member || {
     name: '',
     patrol: 'Foxes',
-  }
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>

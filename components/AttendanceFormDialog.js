@@ -7,7 +7,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Form, Formik } from 'formik';
 import {
   Box,
-  Button,
   Grid,
   Dialog,
   DialogContent,
@@ -103,7 +102,7 @@ function AttendenceFormDialog(props) {
           <Grid item>
             <IconButton
               onClick={handleClose}
-              sx={{ 'color': 'inherit' }}
+              sx={{ color: 'inherit' }}
             >
               <CloseIcon />
             </IconButton>
@@ -135,7 +134,7 @@ function AttendenceFormDialog(props) {
                           key={member.name}
                         />
                       );
-                    })
+                    });
 
                   if (patrolMembers.length > 0) {
                     return (

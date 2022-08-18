@@ -7,7 +7,7 @@ import {
   Box,
   Grid,
   IconButton,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import magic from '../config/magic-sdk';
@@ -25,7 +25,7 @@ function AppBar() {
       Router.push('/login');
     });
   }
-  
+
   return (
       <MuiAppBar position='static'>
         <Grid container justifyContent='space-between' alignItems='center'>
@@ -51,7 +51,7 @@ function AppBar() {
           }
         </Grid>
       </MuiAppBar>
-  )
+  );
 }
 
 export default AppBar;

@@ -10,13 +10,12 @@ import {
   TabContext,
   TabList,
   TabPanel,
-} from '@mui/lab'
+} from '@mui/lab';
 
 import AttendanceForm from '../components/AttendanceForm';
 import * as ScheduleAPI from '../api/ScheduleAPI';
 import * as MembersAPI from '../api/MembersAPI';
 import AttendanceView from '../components/AttendanceView';
-import { PATROLS } from '../config/constants';
 
 function Attendence(props) {
   const [focusedTab, setFocusedTab] = useState('1');
@@ -34,7 +33,7 @@ function Attendence(props) {
       if (schedule.error || members.error) {
         return console.error({
           eventsError: schedule.error,
-          membersError: members.error
+          membersError: members.error,
         });
       }
 
@@ -47,12 +46,12 @@ function Attendence(props) {
   }, []);
 
   async function handleSubmit(values, formik) {
-    const { eventIndex, ...rest } = values
+    const { eventIndex, ...rest } = values;
     const { _id } = schedule[eventIndex];
 
     const formData = {
       eventId: _id,
-      ...rest
+      ...rest,
     };
 
     console.log('data submitted', formData);
@@ -77,10 +76,9 @@ function Attendence(props) {
         </Grid>
       </Grid>
       {
-        loading ? (
-          <LinearProgress />
-        ) : (
-          <Box sx={{ width: '100%', typography: 'body1' }}>
+        loading
+          ? <LinearProgress />
+          : <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={focusedTab}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList
@@ -107,7 +105,6 @@ function Attendence(props) {
               </TabPanel>
             </TabContext>
           </Box>
-        )
       }
     </div>
   );

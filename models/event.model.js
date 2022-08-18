@@ -26,7 +26,7 @@ const EventSchema = new mongoose.Schema({
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated',
-  }
+  },
 });
 
 EventSchema.statics = {
@@ -80,7 +80,7 @@ EventSchema.statics = {
 
   /**
    * Updates the info for an event.
-   * @param {Obejct} formData Event data 
+   * @param {Obejct} formData Event data
    * @returns The new list of events
    */
   async update(formData) {
@@ -116,8 +116,8 @@ EventSchema.statics = {
         if (attendance[patrol][member]) {
           filteredAttendance[patrol][member] = true;
         }
-      })
-    })
+      });
+    });
 
     // put the new event in the DB
     await this.findOneAndUpdate({ _id }, { $set: { attendance: filteredAttendance } });
@@ -129,12 +129,11 @@ EventSchema.statics = {
   },
 };
 
-
 let Event;
 if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
   // mongoose instance of Event so we cant build a new one
-  console.log('Rebuilding Event Model')
+  console.log('Rebuilding Event Model');
   delete mongoose.models.Event;
 
   Event = mongoose.model('Event', EventSchema);

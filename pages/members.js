@@ -22,7 +22,7 @@ import * as MembersAPI from '../api/MembersAPI';
 import {
   PATROLS,
   PATROL_COLORS,
-  PATROL_LOGOS
+  PATROL_LOGOS,
 } from '../config/constants';
 
 function MembersPage() {
@@ -44,13 +44,13 @@ function MembersPage() {
     }
 
     loadMembers();
-  }, [])
+  }, []);
 
   // open the edit form loaded with the event at the index
   function openEdit(member) {
     setEditInfo({
       member,
-      open: true
+      open: true,
     });
   }
 
@@ -76,7 +76,6 @@ function MembersPage() {
       membersByPatrol[member.patrol] = [member];
     }
   });
-
 
   return (
     <div>
@@ -108,10 +107,9 @@ function MembersPage() {
         handleClose={() => setEditInfo({ open: false })}
         onUpdate={(memberList) => setMembers(memberList)}
       />
-      {loading ? (
-        <LinearProgress />
-      ) : (
-        <Paper>
+      {loading
+        ? <LinearProgress />
+        : <Paper>
           <Table size='small'>
             <TableHead>
               <TableRow>
@@ -148,7 +146,7 @@ function MembersPage() {
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         <IconButton
                           onClick={() => openEdit(member)}
-                          sx={{ 'color': 'inherit' }}
+                          sx={{ color: 'inherit' }}
                         >
                           <EditIcon />
                         </IconButton>
@@ -165,7 +163,7 @@ function MembersPage() {
             </TableBody>
           </Table>
         </Paper>
-      )}
+      }
     </div>
   );
 }

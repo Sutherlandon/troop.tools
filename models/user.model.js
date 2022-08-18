@@ -1,4 +1,3 @@
-import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
 import mongoose from 'mongoose';
 import { nanoid } from 'nanoid';
@@ -29,7 +28,7 @@ const UserSchema = new mongoose.Schema({
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated',
-  }
+  },
 });
 
 UserSchema.statics = {
@@ -41,7 +40,7 @@ UserSchema.statics = {
 
   async get(id) {
     // not sure whether email or issuer will be more consistently used
-    const user = await this.findOne({ $or: [{ email: id }, {issuer: id }] });
+    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] });
 
     return user;
   },
@@ -61,13 +60,13 @@ UserSchema.statics = {
 
     return this.getAll();
   },
-}
+};
 
 let User;
 if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
   // mongoose instance of User so we cant build a new one
-  console.log('Rebuilding User Model')
+  console.log('Rebuilding User Model');
   delete mongoose.models.User;
 
   User = mongoose.model('User', UserSchema);

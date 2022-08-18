@@ -2,7 +2,7 @@ import FoxesLogo from '../images/foxesLogo.png';
 import HawksLogo from '../images/hawksLogo.png';
 import MountainLionsLogo from '../images/mountainLionsLogo.png';
 import AdventurersLogo from '../images/adventuersLogo.png';
-import NavigatorsLogo from '../images/navigatorsLogo.png'
+import NavigatorsLogo from '../images/navigatorsLogo.png';
 
 export const EVENT_TYPES = [
   'Core',
@@ -28,15 +28,15 @@ export const BRANCHES = [
 ];
 
 export const BRANCH_COLORS = {
-  'Award': {
+  Award: {
     b: 'purple',
     t: 'white',
   },
-  'Board': {
+  Board: {
     b: 'lightgray',
     t: 'black',
   },
-  'Camp': {
+  Camp: {
     b: 'yellow',
     t: 'black',
   },
@@ -44,19 +44,19 @@ export const BRANCH_COLORS = {
     b: 'yellow',
     t: 'black',
   },
-  'Fundraiser': {
+  Fundraiser: {
     b: 'limegreen',
     t: 'black',
   },
-  'General': {
+  General: {
     b: 'lightgray',
     t: 'black',
   },
-  'Heritage': {
+  Heritage: {
     b: '#896400',
     t: 'white',
   },
-  'Hobbies': {
+  Hobbies: {
     b: '#212121',
     t: 'white',
   },
@@ -76,11 +76,11 @@ export const BRANCH_COLORS = {
     b: '#425b21',
     t: 'white',
   },
-  'Values': {
+  Values: {
     b: '#c5171c',
     t: 'white',
-  }
-}
+  },
+};
 
 export const PATROLS = [
   'Foxes',
@@ -91,17 +91,17 @@ export const PATROLS = [
 ];
 
 export const PATROL_COLORS = {
-  'Foxes': '#b97c38',
-  'Hawks': '#eab71b',
+  Foxes: '#b97c38',
+  Hawks: '#eab71b',
   'Mountain Lions': '#cea54a',
-  'Navigators': '#bbbdbd',
-  'Adventurers': '#8ec8e7',
+  Navigators: '#bbbdbd',
+  Adventurers: '#8ec8e7',
 };
 
 export const PATROL_LOGOS = {
-  'Foxes': FoxesLogo,
-  'Hawks': HawksLogo,
+  Foxes: FoxesLogo,
+  Hawks: HawksLogo,
   'Mountain Lions': MountainLionsLogo,
-  'Adventurers': AdventurersLogo,
-  'Navigators': NavigatorsLogo,
+  Adventurers: AdventurersLogo,
+  Navigators: NavigatorsLogo,
 };

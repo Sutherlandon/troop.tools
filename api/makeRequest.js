@@ -1,5 +1,3 @@
-import { responsiveFontSizes } from "@mui/material";
-
 /**
  * Makes a request using the fetch API
  * @param {Object} params A config object for the fetch request. Takes all the same
@@ -11,7 +9,7 @@ export default async function makeRequest({
   url,
   data,
   headers,
-  method='GET',
+  method = 'GET',
   ...rest
 }) {
   try {
@@ -19,11 +17,11 @@ export default async function makeRequest({
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
-        ...headers
+        ...headers,
       },
       body: JSON.stringify(data),
       method,
-      ...rest
+      ...rest,
     });
 
     // if the response is not ok (ie. 500, 404) return the error
@@ -34,7 +32,6 @@ export default async function makeRequest({
 
     // return the response data
     return { data: await response.json() };
-
   } catch (error) {
     // log and return any errors
     console.error('Error: makeRequest()', { url, data, error });

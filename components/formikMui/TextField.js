@@ -1,13 +1,9 @@
-import { Field, useField } from 'formik';
-import {
-  FormControl,
-  InputLabel,
-  TextField
-} from '@mui/material';
+import { useField } from 'formik';
+import { FormControl, TextField } from '@mui/material';
 
 export default function FormikMuiTextField(props) {
   const { label, ...rest } = props;
-  const [field, meta, helpers] = useField(rest);
+  const [field, meta] = useField(rest);
 
   return (
     <FormControl fullWidth sx={{ maxWidth: 500, marginBottom: 2 }}>
@@ -20,4 +16,4 @@ export default function FormikMuiTextField(props) {
       />
     </FormControl>
   );
-} 
+}

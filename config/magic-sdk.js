@@ -5,6 +5,7 @@ const testMode = false;
 // Create client-side Magic instance
 function createMagic(key) {
   return (
+    // eslint-disable-next-line eqeqeq
     typeof window != 'undefined' &&
     new Magic(key, { testMode })
   );

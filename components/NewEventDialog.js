@@ -31,7 +31,7 @@ export default function NewMemberDialog(props) {
     event,
     open,
     onUpdate,
-    handleClose
+    handleClose,
   } = props;
 
   async function handleSubmit(values) {

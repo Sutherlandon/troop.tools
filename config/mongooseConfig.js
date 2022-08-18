@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const { MONGODB_URI, NODE_ENV } = process.env
+const { MONGODB_URI, NODE_ENV } = process.env;
 
 const uri = MONGODB_URI;
 const options = {};
@@ -8,7 +8,7 @@ const options = {};
 let connection;
 
 if (!MONGODB_URI) {
-  throw new Error('Please add your Mongo URI to .env.local')
+  throw new Error('Please add your Mongo URI to .env.local');
 }
 
 if (NODE_ENV === 'development') {

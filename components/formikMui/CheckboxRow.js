@@ -9,9 +9,9 @@ function FormikMuiCheckboxRow(props) {
 
   return (
     <Field name={formikName}>
-      {({ 
+      {({
         field: { value: checked = false },
-        form: { setFieldValue }
+        form: { setFieldValue },
       }) => (
         <TableRow
           hover
@@ -30,11 +30,11 @@ function FormikMuiCheckboxRow(props) {
       )}
     </Field>
   );
-} 
+}
 
 FormikMuiCheckboxRow.propTypes = {
   groupName: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-}
+};
 
 export default FormikMuiCheckboxRow;

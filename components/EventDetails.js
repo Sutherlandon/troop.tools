@@ -39,7 +39,7 @@ function EventDetails(props) {
         <Grid item>
           <IconButton
             onClick={onEdit}
-            sx={{ 'color': 'inherit' }}
+            sx={{ color: 'inherit' }}
           >
             <EditIcon />
           </IconButton>
@@ -69,7 +69,7 @@ function EventDetails(props) {
                         backgroundColor: PATROL_COLORS[patrol],
                         padding: 1,
                         border: 0,
-                      }
+                      },
                     }}
                   >
                     <TableCell sx={{ width: 85 }}>
@@ -87,9 +87,8 @@ function EventDetails(props) {
                       </ul>
                     </TableCell>
                   </TableRow>
-                )
-              }
-              )}
+                );
+              })}
             </TableBody>
           </Table>
         </>

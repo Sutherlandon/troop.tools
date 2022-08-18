@@ -15,7 +15,7 @@ async function makeCacheRequest(params) {
 }
 
 /**
- * Calls the API to add a new member 
+ * Calls the API to add a new member
  * @param {Object} item A new member item
  * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
  *   including the new one just added
@@ -24,7 +24,7 @@ export function add(item) {
   return makeCacheRequest({
     url: '/api/members',
     method: 'POST',
-    data: item
+    data: item,
   });
 }
 
@@ -43,7 +43,7 @@ export function get() {
 }
 
 /**
- * Calls the API to add a new member 
+ * Calls the API to add a new member
  * @param {Object} item A new member item
  * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
  *   excluding the new one just removed
@@ -62,7 +62,7 @@ export function remove(id) {
  */
 export function update(formData) {
   return makeCacheRequest({
-    url: `/api/members`,
+    url: '/api/members',
     method: 'PUT',
     data: formData,
   });

@@ -25,11 +25,10 @@ const blankForm = {
   email: '',
   firstName: '',
   lastName: '',
-}
+};
 
 function LoginForm(props) {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [user, setUser] = useContext(UserContext);
   const [initialValues, setInitialValues] = useState(blankForm);
 
@@ -71,7 +70,7 @@ function LoginForm(props) {
         fontWeight: 'bold',
         textAlign: 'center'
       }}>
-        Looks like you're new here!
+        Looks like you&apos;re new here!
       </DialogTitle>
       <DialogContent>
         <Formik

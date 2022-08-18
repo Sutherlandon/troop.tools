@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 
-import Layout from '../components/layout'
+import Layout from '../components/layout';
 import UserContext from '../config/UserContext';
 import magic from '../config/magic-sdk';
 import * as UserAPI from '../api/UserAPI';
@@ -32,7 +32,6 @@ export default function MyApp({ Component, pageProps }) {
         }
 
         setUser(data);
-
       } else {
         Router.push('/login');
         setUser({ user: null });
@@ -43,7 +42,7 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   if (user.loading) {
-    return <h3>Logging you in...</h3>
+    return <h3>Logging you in...</h3>;
   }
 
   return (
@@ -52,5 +51,5 @@ export default function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </Layout>
     </UserContext.Provider>
-  )
+  );
 }
