@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { LinearProgress } from '@mui/material';
 
 import SchedulePage from './schedule';
-import * as ScheduleAPI from '../api/ScheduleAPI';
-import * as MembersAPI from '../api/MembersAPI';
+import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as MembersAPI from '../client_api/MembersAPI';
 
 function HomePage() {
   const [loading, setLoading] = useState(true);

@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 
 import CheckboxRow from '../components/formikMui/CheckboxRow';
-import * as ScheduleAPI from '../api/ScheduleAPI';
+import * as ScheduleAPI from '../client_api/ScheduleAPI';
 import {
   BRANCH_COLORS,
   PATROLS,

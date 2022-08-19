@@ -25,8 +25,8 @@ import AttendanceFormDialog from '../components/AttendanceFormDialog';
 import EventDetails from '../components/EventDetails';
 import NewEventDialog from '../components/NewEventDialog';
 import Tag from '../components/Tag';
-import * as ScheduleAPI from '../api/ScheduleAPI';
-import * as MembersAPI from '../api/MembersAPI';
+import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as MembersAPI from '../client_api/MembersAPI';
 import { BRANCH_COLORS } from '../config/constants';
 import useRoles from '../hooks/useRoles';
 

@@ -13,7 +13,7 @@ import {
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as yup from 'yup';
-import * as MembersAPI from '../api/MembersAPI';
+import * as MembersAPI from '../client_api/MembersAPI';
 import { PATROLS } from '../config/constants';
 
 const memberSchema = yup.object({

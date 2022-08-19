@@ -13,7 +13,7 @@ import {
 
 import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
-import * as ScheduleAPI from '../api/ScheduleAPI';
+import * as ScheduleAPI from '../client_api/ScheduleAPI';
 import { BRANCHES, EVENT_TYPES } from '../config/constants';
 
 const blankError = 'This field cannot be left blank';

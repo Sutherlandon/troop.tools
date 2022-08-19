@@ -13,8 +13,8 @@ import {
 } from '@mui/lab';
 
 import AttendanceForm from '../components/AttendanceForm';
-import * as ScheduleAPI from '../api/ScheduleAPI';
-import * as MembersAPI from '../api/MembersAPI';
+import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as MembersAPI from '../client_api/MembersAPI';
 import AttendanceView from '../components/AttendanceView';
 
 function Attendence(props) {

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import AppBar from '../components/AppBar';
 import UserContext from '../config/UserContext';
 import magic from '../config/magic-sdk';
-import * as UserAPI from '../api/UserAPI';
+import * as UserAPI from '../client_api/UserAPI';
 
 export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({ loading: true });

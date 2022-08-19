@@ -13,7 +13,7 @@ import {
 import TextField from '../components/formikMui/TextField';
 import UserContext from '../config/UserContext';
 import magic from '../config/magic-sdk';
-import * as UserAPI from '../api/UserAPI';
+import * as UserAPI from '../client_api/UserAPI';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),

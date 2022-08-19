@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 
 import NewMemberDialog from '../components/NewMemberDialog';
-import * as MembersAPI from '../api/MembersAPI';
+import * as MembersAPI from '../client_api/MembersAPI';
 import {
   PATROLS,
   PATROL_COLORS,
