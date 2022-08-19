@@ -12,7 +12,7 @@ import {
 
 import magic from '../config/magic-sdk';
 import UserContext from '../config/UserContext';
-import * as UserAPI from '../api/UserAPI';
+import * as UserAPI from '../client_api/UserAPI';
 
 function LoginForm(props) {
   const [email, setEmail] = useState('sutherlandon@gmail.com');
