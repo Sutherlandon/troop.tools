@@ -1,7 +1,8 @@
+import CssBaseline from '@mui/material/CssBaseline';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 
-import Layout from '../components/layout';
+import AppBar from '../components/AppBar';
 import UserContext from '../config/UserContext';
 import magic from '../config/magic-sdk';
 import * as UserAPI from '../api/UserAPI';
@@ -16,7 +17,12 @@ export default function MyApp({ Component, pageProps }) {
       const isLoggedIn = await magic.user.isLoggedIn();
 
       // if logged in with magic
-      if (isLoggedIn && !user?.issuer) {
+      if (!isLoggedIn) {
+        setUser({});
+        return Router.push('/login');
+      }
+
+      if (!user.issuer) {
         const magicMetaData = await magic.user.getMetadata();
 
         // get the user from the DB
@@ -32,14 +38,11 @@ export default function MyApp({ Component, pageProps }) {
         }
 
         setUser(data);
-      } else {
-        Router.push('/login');
-        setUser({ user: null });
       }
     }
 
     checkUser();
-  }, [user?.issuer]);
+  }, [user.issuer]);
 
   if (user.loading) {
     return <h3>Logging you in...</h3>;
@@ -47,9 +50,15 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <UserContext.Provider value={[user, setUser]}>
-      <Layout>
+      <CssBaseline />
+      <AppBar />
+      <main style={{
+        padding: 16,
+        margin: 'auto',
+        maxWidth: 650,
+      }}>
         <Component {...pageProps} />
-      </Layout>
+      </main>
     </UserContext.Provider>
   );
 }
