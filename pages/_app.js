@@ -39,7 +39,7 @@ export default function MyApp({ Component, pageProps }) {
     }
 
     checkUser();
-  }, []);
+  }, [user?.issuer]);
 
   if (user.loading) {
     return <h3>Logging you in...</h3>;
