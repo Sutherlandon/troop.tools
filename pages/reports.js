@@ -63,7 +63,7 @@ function AdvRow({ label }) {
             borderBottomColor: 'gray',
           }}
         >
-          TG Inits
+          Trail Guide
         </TableCell>
         {Object.keys(ADVANCEMENT).map((branch) => (
           <TableCell key={branch} sx={{

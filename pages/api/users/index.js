@@ -1,9 +1,6 @@
 import User from '../../../models/user.model';
-import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
-  await connection;
-
   let users;
 
   switch (req.method) {

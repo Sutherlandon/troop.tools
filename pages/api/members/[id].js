@@ -1,9 +1,6 @@
 import Member from '../../../models/member.model';
-import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
-  await connection;
-
   const { id } = req.query;
   let members = [];
 

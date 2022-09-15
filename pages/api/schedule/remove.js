@@ -1,9 +1,6 @@
 import Event from '../../../models/event.model';
-import connection from '../../../config/mongooseConfig';
 
 export default async function handler(req, res) {
-  await connection;
-
   let events;
 
   if (req.method === 'POST') {

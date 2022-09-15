@@ -1,6 +1,7 @@
 import sortBy from 'lodash.sortby';
-import mongoose from 'mongoose';
 import { nanoid } from 'nanoid';
+import mongoose from 'mongoose';
+import db from '../config/database';
 
 // define the default collection name
 let collection = 'users';
@@ -15,11 +16,8 @@ if (process.env.NODE_ENV === 'test') {
 let _users = [];
 
 const UserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    unique: true,
-  },
-  issuer: String,
+  email: { type: String, unique: true },
+  issuer: { type: String, unique: true },
   firstName: String,
   lastName: String,
   roles: Array,
@@ -67,11 +65,11 @@ if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
   // mongoose instance of User so we cant build a new one
   console.log('Rebuilding User Model');
-  delete mongoose.models.User;
+  delete db.models.User;
 
-  User = mongoose.model('User', UserSchema);
+  User = db.model('User', UserSchema);
 } else {
-  User = mongoose.models.User || mongoose.model('User', UserSchema);
+  User = db.models.User || db.model('User', UserSchema);
 }
 
 export default User;

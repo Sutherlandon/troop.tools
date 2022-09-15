@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
+import db from '../config/database';
 
 // define the default collection name
 let collection = 'events';
@@ -15,7 +16,13 @@ if (process.env.NODE_ENV === 'test') {
 let _events = [];
 
 const EventSchema = new mongoose.Schema({
-  attendance: {},
+  attendance: {
+    Foxes: {},
+    Hawks: {},
+    'Mountain Lions': {},
+    Navigators: {},
+    Adventurers: {},
+  },
   branch: String,
   date: String,
   name: String,
@@ -36,14 +43,8 @@ EventSchema.statics = {
    * @returns the updated schedule
    */
   async add(formData) {
-    const newEvent = {
-      ...formData,
-      attendance: {},
-      id: nanoid(),
-    };
-
     // create the new schedule
-    await this.create(newEvent);
+    await this.create(formData);
 
     // return the updated schedule
     const events = await this.getAll();
@@ -66,11 +67,9 @@ EventSchema.statics = {
    * @param {String} name The name of the user to delete
    * @returns The new list of events
    */
-  async remove(event) {
-    const { name, date } = event;
-
+  async remove(_id) {
     // delete the event from the DB
-    await this.deleteOne({ name, date });
+    await this.deleteOne({ _id });
 
     // return the updated schedule
     const events = await this.getAll();
@@ -134,11 +133,11 @@ if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
   // mongoose instance of Event so we cant build a new one
   console.log('Rebuilding Event Model');
-  delete mongoose.models.Event;
+  delete db.models.Event;
 
-  Event = mongoose.model('Event', EventSchema);
+  Event = db.model('Event', EventSchema);
 } else {
-  Event = mongoose.models.Event || mongoose.model('Event', EventSchema);
+  Event = db.models.Event || db.model('Event', EventSchema);
 }
 
 export default Event;

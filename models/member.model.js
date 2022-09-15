@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
+import db from '../config/database';
 
 // define the default collection name
 let collection = 'members';
@@ -97,13 +98,13 @@ MemberSchema.statics = {
 let Member;
 if (process.env.NODE_ENV === 'development') {
   // always start fresh, we need to do this because Next preserves the
-  // mongoose instance of Member so we cant build a new one
+  // db instance of Member so we cant build a new one
   console.log('Rebuilding Member Model');
-  delete mongoose.models.Member;
+  delete db.models.Member;
 
-  Member = mongoose.model('Member', MemberSchema);
+  Member = db.model('Member', MemberSchema);
 } else {
-  Member = mongoose.models.Member || mongoose.model('Member', MemberSchema);
+  Member = db.models.Member || db.model('Member', MemberSchema);
 }
 
 export default Member;
