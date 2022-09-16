@@ -19,23 +19,18 @@ import {
 
 import CheckboxRow from '../components/formikMui/CheckboxRow';
 import * as ScheduleAPI from '../client_api/ScheduleAPI';
-import {
-  BRANCH_COLORS,
-  PATROLS,
-  PATROL_COLORS,
-  PATROL_LOGOS,
-} from '../config/constants';
+import { BRANCH_COLORS, PATROLS_ARRAY } from '../config/constants';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const blankAttendance = {
-  Foxes: {},
-  Hawks: {},
-  'Mountain Lions': {},
-  // Navigators: {},
-  // Adventurers: {},
+  foxes: {},
+  hawks: {},
+  mountainLions: {},
+  navigators: {},
+  adventurers: {},
 };
 
 function AttendenceFormDialog(props) {
@@ -123,13 +118,13 @@ function AttendenceFormDialog(props) {
 
             return (
               <Form>
-                {PATROLS.map((patrol) => {
+                {PATROLS_ARRAY.map((patrol) => {
                   const patrolMembers = members
-                    .filter(member => member.patrol === patrol)
+                    .filter(member => member.patrol === patrol.name)
                     .map((member) => {
                       return (
                         <CheckboxRow
-                          groupName={patrol}
+                          groupName={patrol.key}
                           name={member.name}
                           key={member.name}
                         />
@@ -138,19 +133,19 @@ function AttendenceFormDialog(props) {
 
                   if (patrolMembers.length > 0) {
                     return (
-                      <div key={patrol}>
+                      <div key={patrol.key}>
                         <Grid
                           container
                           alignItems='center'
                           sx={{
-                            backgroundColor: PATROL_COLORS[patrol],
+                            backgroundColor: patrol.color,
                           }}
                         >
                           <Grid item sx={{ width: 60, padding: 2 }}>
-                            <Image src={PATROL_LOGOS[patrol]} alt='Patrol Logo' />
+                            <Image src={patrol.logo} alt='Patrol Logo' />
                           </Grid>
                           <Grid item>
-                            {patrol}
+                            {patrol.name}
                           </Grid>
                         </Grid>
                         <Table sx={{ marginBottom: 2 }}>

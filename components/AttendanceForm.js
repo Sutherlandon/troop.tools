@@ -12,7 +12,7 @@ import {
 
 import Select from '../components/formikMui/Select';
 import CheckboxRow from '../components/formikMui/CheckboxRow';
-import { PATROLS } from '../config/constants';
+import { PATROLS_ARRAY } from '../config/constants';
 
 function Attendence(props) {
   const { members, schedule, handleSubmit } = props;
@@ -56,9 +56,9 @@ function Attendence(props) {
                 label='Select a Patrol'
                 name='patrol'
               >
-                {PATROLS.map((name) => (
-                  <MenuItem value={name} key={name}>
-                    {name}
+                {PATROLS_ARRAY.map((patrol) => (
+                  <MenuItem value={patrol.key} key={patrol.key}>
+                    {patrol.name}
                   </MenuItem>
                 ))}
               </Select>

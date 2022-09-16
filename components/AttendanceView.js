@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { PATROL_COLORS } from '../config/constants';
+import { PATROLS } from '../config/constants';
 
 function AttendanceView(props) {
   const { schedule } = props;
@@ -43,7 +43,7 @@ function AttendanceView(props) {
               {Object.keys(event.attendance).map((patrol) => (
                 <Box
                   sx={{
-                    backgroundColor: PATROL_COLORS[patrol],
+                    backgroundColor: PATROLS[patrol].color,
                     padding: 1,
                   }}
                   key={patrol}

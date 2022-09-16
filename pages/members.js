@@ -19,11 +19,7 @@ import {
 
 import NewMemberDialog from '../components/NewMemberDialog';
 import * as MembersAPI from '../client_api/MembersAPI';
-import {
-  PATROLS,
-  PATROL_COLORS,
-  PATROL_LOGOS,
-} from '../config/constants';
+import { PATROLS_ARRAY } from '../config/constants';
 
 function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -77,6 +73,8 @@ function MembersPage() {
     }
   });
 
+  console.log(membersByPatrol);
+
   return (
     <div>
       <Grid container sx={{ marginBottom: 2 }}>
@@ -119,27 +117,27 @@ function MembersPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {PATROLS
-                .filter((patrol) => !!membersByPatrol[patrol])
-                .map((patrol) => membersByPatrol[patrol]
+              {PATROLS_ARRAY
+                .filter((patrol) => !!membersByPatrol[patrol.key])
+                .map((patrol) => membersByPatrol[patrol.key]
                   .map((member, index) => (
                     <TableRow
                       key={member.name}
                       sx={{
                         '& td': {
-                          backgroundColor: PATROL_COLORS[member.patrol],
+                          backgroundColor: patrol.color,
                         },
                       }}
                     >
                       {index === 0 &&
                         <TableCell
-                          rowSpan={membersByPatrol[patrol].length}
+                          rowSpan={membersByPatrol[patrol.key].length}
                           sx={{
                             width: 85,
                             borderRight: '1px solid rgba(224, 224, 224, 1)',
                           }}
                         >
-                          <Image src={PATROL_LOGOS[member.patrol]} alt='Patrol Logo' />
+                          <Image src={patrol.logo} alt='Patrol Logo' />
                         </TableCell>
                       }
                       <TableCell>{member.name}</TableCell>

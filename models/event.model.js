@@ -17,11 +17,11 @@ let _events = [];
 
 const EventSchema = new mongoose.Schema({
   attendance: {
-    Foxes: {},
-    Hawks: {},
-    'Mountain Lions': {},
-    Navigators: {},
-    Adventurers: {},
+    foxes: {},
+    hawks: {},
+    mountainLions: {},
+    navigators: {},
+    adventurers: {},
   },
   branch: String,
   date: String,
@@ -103,11 +103,11 @@ EventSchema.statics = {
 
     // don't save false values
     const filteredAttendance = {
-      Foxes: {},
-      Hawks: {},
-      'Mountain Lions': {},
-      Navigators: {},
-      Adventurers: {},
+      foxes: {},
+      hawks: {},
+      mountainLions: {},
+      navigators: {},
+      adventurers: {},
     };
 
     Object.keys(attendance).forEach((patrol) => {

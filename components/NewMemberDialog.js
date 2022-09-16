@@ -14,12 +14,14 @@ import Select from './formikMui/Select';
 import TextField from './formikMui/TextField';
 import * as yup from 'yup';
 import * as MembersAPI from '../client_api/MembersAPI';
-import { PATROLS } from '../config/constants';
+import { PATROLS_ARRAY } from '../config/constants';
 
 const memberSchema = yup.object({
   id: yup.string(),
   name: yup.string().required('This field cannot be left blank'),
-  patrol: yup.string().oneOf(PATROLS).required('This field cannot be left blank'),
+  patrol: yup.string()
+    .oneOf(PATROLS_ARRAY.map(patrol => patrol.key))
+    .required('This field cannot be left blank'),
 });
 
 export default function NewMemberDialog(props) {
@@ -51,7 +53,7 @@ export default function NewMemberDialog(props) {
 
   const initialValues = member || {
     name: '',
-    patrol: 'Foxes',
+    patrol: 'foxes',
   };
 
   return (
@@ -74,8 +76,10 @@ export default function NewMemberDialog(props) {
                   label='Patrol'
                   name='patrol'
                 >
-                  {PATROLS.map((patrol) => (
-                    <MenuItem value={patrol} key={patrol}>{patrol}</MenuItem>
+                  {PATROLS_ARRAY.map((patrol) => (
+                    <MenuItem value={patrol.key} key={patrol.key}>
+                      {patrol.name}
+                    </MenuItem>
                   ))}
                 </Select>
                 <Box sx={{ textAlign: 'center' }}>

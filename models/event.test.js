@@ -18,11 +18,11 @@ function makeEvent(branch) {
 
   return {
     attendance: {
-      Foxes: { [memberName]: true },
-      Hawks: { [memberName]: true },
-      'Mountain Lions': { [memberName]: true },
-      Navigators: { [memberName]: true },
-      Adventurers: { [memberName]: true },
+      foxes: { [memberName]: true },
+      hawks: { [memberName]: true },
+      mountainLions: { [memberName]: true },
+      navigators: { [memberName]: true },
+      adventurers: { [memberName]: true },
     },
     branch,
     date: `01/${eventId}`,
@@ -87,11 +87,11 @@ it('Should save attendance', async () => {
   const formData = {
     _id: testEvents[0]._id,
     attendance: {
-      Foxes: { 'first-10 last-10': true },
-      Hawks: { 'first-11 last-11': true },
-      'Mountain Lions': { 'first-12 last-12': true },
-      Navigators: { 'first-13 last-13': true },
-      Adventurers: { 'first-14 last-14': true },
+      foxes: { 'first-10 last-10': true },
+      hawks: { 'first-11 last-11': true },
+      mountainLions: { 'first-12 last-12': true },
+      navigators: { 'first-13 last-13': true },
+      adventurers: { 'first-14 last-14': true },
     }
   };
 

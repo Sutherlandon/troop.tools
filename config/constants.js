@@ -49,29 +49,44 @@ export const BRANCH_COLORS = {
   'General': { b: 'lightgray', t: 'black' },
 };
 
-export const PATROLS = [
-  'Foxes',
-  'Hawks',
-  'Mountain Lions',
-  'Navigators',
-  'Adventurers',
+export const PATROLS = {
+  foxes: {
+    name: 'Foxes',
+    color: '#b97c38',
+    logo: FoxesLogo,
+  },
+  hawks: {
+    name: 'Hawks',
+    color: '#eab71b',
+    logo: HawksLogo,
+  },
+  mountainLions: {
+    name: 'Mountain Lions',
+    color: '#cea54a',
+    logo: MountainLionsLogo
+  },
+  navigators: {
+    name: 'Navigators',
+    color: '#bbbdbd',
+    logo: NavigatorsLogo,
+  },
+  adventurers: {
+    name: 'Adventurers',
+    color: '#8ec8e7',
+    logo: AdventurersLogo,
+  }
+};
+
+export const PATROLS_ARRAY = Object.keys(PATROLS)
+  .map((key) => ({ ...PATROLS[key], key }));
+
+export const LESSON_TYPES = [
+  'core',
+  'elective',
+  'htt',
+  'makeup',
+  'other',
 ];
-
-export const PATROL_COLORS = {
-  'Foxes': '#b97c38',
-  'Hawks': '#eab71b',
-  'Mountain Lions': '#cea54a',
-  'Navigators': '#bbbdbd',
-  'Adventurers': '#8ec8e7',
-};
-
-export const PATROL_LOGOS = {
-  'Foxes': FoxesLogo,
-  'Hawks': HawksLogo,
-  'Mountain Lions': MountainLionsLogo,
-  'Adventurers': AdventurersLogo,
-  'Navigators': NavigatorsLogo,
-};
 
 export const LESSONS = {
   // Heritage

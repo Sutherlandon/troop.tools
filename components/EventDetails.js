@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 
 import Tag from '../components/Tag';
-import { PATROL_COLORS, PATROL_LOGOS } from '../config/constants';
+import { PATROLS } from '../config/constants';
 import useRoles from '../hooks/useRoles';
 
 function EventDetails(props) {
@@ -66,14 +66,14 @@ function EventDetails(props) {
                     key={patrol}
                     sx={{
                       '& td': {
-                        backgroundColor: PATROL_COLORS[patrol],
+                        backgroundColor: PATROLS[patrol].color,
                         padding: 1,
                         border: 0,
                       },
                     }}
                   >
                     <TableCell sx={{ width: 85 }}>
-                      <Image src={PATROL_LOGOS[patrol]} alt='Patrol Logo' />
+                      <Image src={PATROLS[patrol].logo} alt='Patrol Logo' />
                     </TableCell>
                     <TableCell>
                       <ul style={{ margin: 0 }}>
