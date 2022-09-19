@@ -1,21 +1,22 @@
 import Member from '../../../models/member.model';
 
 export default async function handler(req, res) {
-  let members;
+  // A list of users or the member created/updated
+  let result;
 
   switch (req.method) {
     case 'GET':
-      members = await Member.getAll();
+      result = await Member.getAll();
       break;
     case 'POST':
-      members = await Member.add(req.body);
+      result = await Member.add(req.body);
       break;
     case 'PUT':
-      members = await Member.update(req.body);
+      result = await Member.update(req.body);
       break;
     default:
       return res.status(405);
   }
 
-  return res.status(200).json(members);
+  return res.status(200).json(result);
 };
