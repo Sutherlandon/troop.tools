@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import db from '../config/database';
 
 // define the default collection name
-let collection = 'events';
+let collection = 'events2';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
@@ -44,12 +44,9 @@ EventSchema.statics = {
    */
   async add(formData) {
     // create the new schedule
-    await this.create(formData);
+    const event = await this.create(formData);
 
-    // return the updated schedule
-    const events = await this.getAll();
-
-    return events;
+    return event;
   },
 
   async getAll() {
@@ -70,11 +67,6 @@ EventSchema.statics = {
   async remove(_id) {
     // delete the event from the DB
     await this.deleteOne({ _id });
-
-    // return the updated schedule
-    const events = await this.getAll();
-
-    return events;
   },
 
   /**
@@ -85,12 +77,9 @@ EventSchema.statics = {
   async update(formData) {
     const { _id, ...eventUpdate } = formData;
 
-    await this.findOneAndUpdate({ _id }, { ...eventUpdate });
+    const event = await this.findOneAndUpdate({ _id }, { ...eventUpdate }, { new: true });
 
-    // return the updated schedule
-    const schedule = await this.getAll();
-
-    return schedule;
+    return event;
   },
 
   /**
@@ -119,12 +108,9 @@ EventSchema.statics = {
     });
 
     // put the new event in the DB
-    await this.findOneAndUpdate({ _id }, { $set: { attendance: filteredAttendance } });
+    const event = await this.findOneAndUpdate({ _id }, { $set: { attendance: filteredAttendance } }, { new: true });
 
-    // return the updated schedule
-    const schedule = await this.getAll();
-
-    return schedule;
+    return event;
   },
 };
 

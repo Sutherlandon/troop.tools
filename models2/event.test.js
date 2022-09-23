@@ -1,14 +1,11 @@
 import {
   afterAll,
-  beforeAll,
   expect,
   it,
 } from '@jest/globals';
 
 import db from '../config/database';
 import Event from './event.model';
-
-let testEvents;
 
 let index = 0;
 function makeEvent(branch) {
@@ -37,17 +34,14 @@ afterAll(async () => {
   db.close();
 });
 
-beforeAll(async () => {
+it('Should get all the event sorted by date', async () => {
   const testEventsData = [
     makeEvent('Heritage'),
     makeEvent('Hobbies'),
     makeEvent('Values'),
   ];
+  await Event.create(testEventsData);
 
-  testEvents = await Event.create(testEventsData);
-});
-
-it('Should get all the event sorted by date', async () => {
   const received = await Event.getAll();
   expect(received.length).toEqual(3);
   expect(received[0].date).toEqual('01/01');
@@ -63,29 +57,37 @@ it('Should add a new event', async () => {
   };
 
   const received = await Event.add(formData);
-  expect(received[3]).toMatchObject(formData);
-  testEvents.push(received[3]);
+  expect(received).toMatchObject(formData);
+
+  Event.deleteOne({ _id: received._id });
 });
 
 it('Should update an event', async () => {
+  const event = await Event.create({ name: 'Test name' });
   const formData = {
-    _id: testEvents[0]._id,
+    _id: event._id,
     name: 'Upated Name',
   };
 
   const received = await Event.update(formData);
-  expect(received[0]).toMatchObject(formData);
+  expect(received).toMatchObject(formData);
+
+  Event.deleteOne({ _id: event._id });
 });
 
 it('Should remove and event', async () => {
-  const received = await Event.remove(testEvents[3]._id);
-  expect(received.length).toEqual(3);
-  expect(received.filter(e => e._id === testEvents[3]._id).length).toEqual(0);
+  let event = await Event.create({ name: 'Test name' });
+
+  await Event.remove(event._id);
+  event = await Event.findOne({ _id: event._id });
+
+  expect(event).toBeNull();
 });
 
 it('Should save attendance', async () => {
+  const event = await Event.create({ name: 'Test name' });
   const formData = {
-    _id: testEvents[0]._id,
+    _id: event._id,
     attendance: {
       foxes: { 'first-10 last-10': true },
       hawks: { 'first-11 last-11': true },
@@ -96,5 +98,7 @@ it('Should save attendance', async () => {
   };
 
   const received = await Event.updateAttendance(formData);
-  expect(received[0]).toMatchObject(formData);
+  expect(received).toMatchObject(formData);
+
+  Event.deleteOne({ _id: event._id });
 });
