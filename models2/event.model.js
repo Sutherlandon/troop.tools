@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
 import db from '../config/database';
+import { LESSONS } from '../config/constants';
+import Member from './member.model';
+import isEmpty from 'lodash.isempty';
 
 // define the default collection name
 let collection = 'events2';
@@ -16,18 +19,11 @@ if (process.env.NODE_ENV === 'test') {
 let _events = [];
 
 const EventSchema = new mongoose.Schema({
-  attendance: {
-    foxes: {},
-    hawks: {},
-    mountainLions: {},
-    navigators: {},
-    adventurers: {},
-  },
-  branch: String,
+  attendance: [String],
   date: String,
-  name: String,
-  type: String,
-  year: String,
+  desc: String,
+  lessonID: Number,
+  title: String,
 }, {
   collection,
   timestamps: {
@@ -43,15 +39,39 @@ EventSchema.statics = {
    * @returns the updated schedule
    */
   async add(formData) {
-    // create the new schedule
+    // create the new event
     const event = await this.create(formData);
 
     return event;
   },
 
   async getAll() {
-    // fetch the members data
-    const events = await this.find().lean();
+    // pull all events and hydrate the lessons if they exist
+    const events = await Promise.all(
+      (await this.find().lean())
+        .map(async ({ attendance, lessonID, ...rest }) => {
+          // start with the base record
+          const event = { ...rest };
+
+          // hydrate a lesson if it exists
+          if (lessonID) {
+            event.lesson = LESSONS[lessonID];
+          }
+
+          // hydrate the members in attendence
+          if (!isEmpty(attendance)) {
+            event.attendance = (await Member.find({ _id: { $in: attendance } }))
+              .filter(({ active }) => active)
+              .map((
+                { _id, patrol, firstName, lastName }
+              ) => (
+                { _id, patrol, name: `${firstName} ${lastName}` }
+              ));
+          }
+
+          return event;
+        })
+    );
 
     // cache the events
     _events = sortBy(events, 'date');
@@ -90,25 +110,8 @@ EventSchema.statics = {
   async updateAttendance(formData) {
     const { _id, attendance } = formData;
 
-    // don't save false values
-    const filteredAttendance = {
-      foxes: {},
-      hawks: {},
-      mountainLions: {},
-      navigators: {},
-      adventurers: {},
-    };
-
-    Object.keys(attendance).forEach((patrol) => {
-      Object.keys(attendance[patrol]).forEach((member) => {
-        if (attendance[patrol][member]) {
-          filteredAttendance[patrol][member] = true;
-        }
-      });
-    });
-
     // put the new event in the DB
-    const event = await this.findOneAndUpdate({ _id }, { $set: { attendance: filteredAttendance } }, { new: true });
+    const event = await this.findOneAndUpdate({ _id }, { $set: { attendance } }, { new: true });
 
     return event;
   },

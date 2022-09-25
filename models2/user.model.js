@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import db from '../config/database';
 
 // define the default collection name
-let collection = 'users';
+let collection = 'users2';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
