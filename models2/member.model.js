@@ -19,6 +19,7 @@ let _members = [];
 const MemberSchema = new mongoose.Schema({
   active: Boolean,
   adv: [{
+    _id: false, // no _id's for $addToSet comparison to work
     date: String,
     lessonID: Number,
   }],
@@ -87,30 +88,66 @@ MemberSchema.statics = {
   },
 
   /**
+   * Updates the advancement of many members based on the formData submitted
+   * @param {Object} formData Data from the attendance form
+   */
+  async updateAdvancement(formData) {
+    const { members, lessonID, date } = formData;
+    const memberIDs = Object.keys(members);
+
+    const entry = { lessonID, date };
+    let addMembers = [];
+    let removeMembers = [];
+
+    // build the add/remove lists
+    memberIDs.forEach((_id) => {
+      if (members[_id]) {
+        addMembers.push(_id);
+      } else {
+        removeMembers.push(_id);
+      }
+    });
+
+    addMembers = await this.updateMany(
+      { _id: { $in: addMembers } },
+      { $addToSet: { adv: entry } },
+      { new: true }
+    );
+
+    removeMembers = await this.updateMany(
+      { _id: { $in: removeMembers } },
+      { $pull: { adv: entry } },
+      { new: true }
+    );
+
+    const updatedMembers = await this.find({ _id: { $in: memberIDs } });
+
+    console.log(updatedMembers[0].adv);
+
+    return updatedMembers;
+  },
+
+  /**
    * Add an advancement entry to the member's record
-   * @param {String} id Member ID
+   * @param {String} _id Member ID
    * @param {Object} entry lessonID and date of the entry
    */
-  async addAdvancement(id, entry) {
-    const update = { $push: { adv: entry } };
-    const member = await this.findOneAndUpdate({ _id: id }, update, { new: true });
+  async addAdvancement(_id, entry) {
+    const update = { $addToSet: { adv: entry } };
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
     return member;
   },
 
   /**
    * Remove an advancement entry from the member's record
-   * @param {String} id Member ID
+   * @param {String} _id Member ID
    * @param {Object} entry lessonID and date of the entry
    */
-  async removeAdvancement(id, entry) {
-    // filter the entry out of the member's list
-    const member = await this.findOne({ _id: id });
-    const filterdAdv = member.adv
-      .filter((entry2) => entry.lessonID !== entry2.lessonID || entry.date !== entry2.date);
-
-    // updated the member with the filtered adv
-    const newMember = await this.findOneAndUpdate({ _id: id }, { adv: filterdAdv }, { new: true });
-    return newMember;
+  async removeAdvancement(_id, entry) {
+    // pull the entry out of the member's advancement list
+    const update = { $pull: { adv: entry } };
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
+    return member;
   }
 };
 

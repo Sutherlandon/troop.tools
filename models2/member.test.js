@@ -29,19 +29,20 @@ afterAll(async() => {
 it('Should get all the members', async () => {
   // first-01 for sorting name along with patrol
   const adventurer = makeMember('adventurer');
-  const testUsersData = [
+  const testMembers = await Member.create([
     makeMember('fox'),
     makeMember('hawk'),
     makeMember('mountainLion'),
     makeMember('navigator'),
     makeMember('adventurer'),
     adventurer,
-  ];
-  await Member.create(testUsersData);
+  ]);
 
   const received = await Member.getAll();
   expect(received.length).toEqual(6);
   expect(received[0].firstName).toEqual('first-01');
+
+  await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
 
 it('Should add a new member', async () => {
@@ -84,7 +85,7 @@ it('Should remove a member', async () => {
   expect(member).toBeNull();
 });
 
-it('Should add an advancement entry on the member', async () => {
+it('Should add an advancement entry on one member', async () => {
   const member = await Member.create(makeMember('hawk')); // 10th
   const testEntry = { lessonID: 1, date: '2022-09-18' };
 
@@ -94,7 +95,7 @@ it('Should add an advancement entry on the member', async () => {
   await Member.deleteOne({ _id: member._id });
 });
 
-it('Should removed an advancement entry on the member', async () => {
+it('Should removed an advancement entry on one member', async () => {
   const testEntry = { lessonID: 1, date: '2022-09-18' };
   const member = await Member.create(makeMember('hawk', [testEntry])); // 11th
 
@@ -102,4 +103,28 @@ it('Should removed an advancement entry on the member', async () => {
   expect(received.adv.length).toEqual(0);
 
   await Member.deleteOne({ _id: member._id });
+});
+
+it('Should update the advancement entries on many members', async () => {
+  const testEntry = { lessonID: 1, date: '2022-09-18' };
+  const testMembers = await Member.create([
+    makeMember('hawk', [testEntry]),
+    makeMember('fox'),
+    makeMember('adventurer', [testEntry]),
+  ]);
+  const formData = {
+    members: {
+      [testMembers[0]._id]: true,
+      [testMembers[1]._id]: true,
+      [testMembers[2]._id]: false,
+    },
+    ...testEntry,
+  };
+
+  const received = await Member.updateAdvancement(formData);
+  expect(received[0].adv.length).toEqual(1); // doesn't add duplicates
+  expect(received[1].adv.length).toEqual(1); // adds if true and not present
+  expect(received[2].adv.length).toEqual(0); // removes if false and present
+
+  await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
