@@ -2,11 +2,12 @@
 // TODO: add notistack for form feedback
 // TODO: add loading icons to buttons that trigger request (ie submit) for immediate feedback
 
-import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { DateTime } from 'luxon';
+import { Fragment, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -143,6 +144,8 @@ function SchedulePage() {
                 const branchText = BRANCH_COLORS[event.branch]?.t;
                 const borderColor = '#464646';
 
+                const displayDate = DateTime.fromISO(event.date).toFormat('LL/dd');
+
                 return (
                   <Fragment key={event.name + event.date}>
                     <TableRow
@@ -165,8 +168,8 @@ function SchedulePage() {
                     >
                       <TableCell sx={{ textAlign: 'left' }}>
                         {highlight || expanded
-                          ? <Box sx={{ pl: 2 }}>{event.date}</Box>
-                          : <Tag text={event.date} variant={event.branch} />
+                          ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
+                          : <Tag text={displayDate} variant={event.branch} />
                         }
                       </TableCell>
                       <TableCell>{event.name}</TableCell>

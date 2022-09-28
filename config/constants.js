@@ -6,20 +6,20 @@ import MountainLionsLogo from '../images/mountainLionsLogo.png';
 import AdventurersLogo from '../images/adventuersLogo.png';
 import NavigatorsLogo from '../images/navigatorsLogo.png';
 
-export const EVENT_TYPES = [
-  'Core',
-  'Elective',
-  'HTT',
-  'Other',
-];
+// export const EVENT_TYPES = [
+//   'Core',
+//   'Elective',
+//   'HTT',
+//   'Other',
+// ];
 
 export const ADVANCEMENT = {
   'Heritage': { core: 2, elective: 1, htt: 1 },
   'Hobbies': { core: 1, elective: 2, htt: 1 },
   'Life Skills': { core: 3, elective: 1, htt: 1 },
   'Outdoor Skills': { core: 3, elective: 1, htt: 1 },
-  'Science/Tech': { core: 2, elective: 1, htt: 1 },
-  'Sports/Fitness': { core: 2, elective: 1, htt: 1 },
+  'Science & Technology': { core: 2, elective: 1, htt: 1 },
+  'Sports & Fitness': { core: 2, elective: 1, htt: 1 },
   'Values': { core: 2, elective: 1, htt: 1 },
 };
 
@@ -38,9 +38,10 @@ export const BRANCH_COLORS = {
   'Hobbies': { b: '#212121', t: 'white' },
   'Life Skills': { b: '#8c1006', t: 'white' },
   'Outdoor Skills': { b: '#005283', t: 'white' },
-  'Science/Tech': { b: '#ffb130', t: 'black' },
-  'Sports/Fitness': { b: '#425b21', t: 'white' },
+  'Science & Technology': { b: '#ffb130', t: 'black' },
+  'Sports & Fitness': { b: '#425b21', t: 'white' },
   'Values': { b: '#c5171c', t: 'white' },
+
   'Award': { b: 'purple', t: 'white' },
   'Board': { b: 'lightgray', t: 'black' },
   'Camp': { b: 'yellow', t: 'black' },
@@ -80,13 +81,13 @@ export const PATROLS = {
 export const PATROLS_ARRAY = Object.keys(PATROLS)
   .map((key) => ({ ...PATROLS[key], key }));
 
-export const LESSON_TYPES = [
-  'core',
-  'elective',
-  'htt',
-  'makeup',
-  'other',
-];
+export const LESSON_TYPES = {
+  'core': 'Core',
+  'elective': 'Elective',
+  'htt': 'HTT',
+  'makeup': 'Makeup',
+  'other': 'Other',
+};
 
 export const LESSONS = {
   // Heritage

@@ -6,6 +6,8 @@ import AppBar from '../components/AppBar';
 import UserContext from '../config/UserContext';
 import magic from '../config/magic-sdk';
 import * as UserAPI from '../client_api/UserAPI';
+import { LocalizationProvider } from '@mui/lab';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({ loading: true });
@@ -51,14 +53,16 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <UserContext.Provider value={[user, setUser]}>
       <CssBaseline />
-      <AppBar />
-      <main style={{
-        padding: 16,
-        margin: 'auto',
-        maxWidth: 650,
-      }}>
-        <Component {...pageProps} />
-      </main>
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <AppBar />
+        <main style={{
+          padding: 16,
+          margin: 'auto',
+          maxWidth: 650,
+        }}>
+          <Component {...pageProps} />
+        </main>
+      </LocalizationProvider>
     </UserContext.Provider>
   );
 }

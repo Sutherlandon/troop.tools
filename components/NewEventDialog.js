@@ -1,8 +1,8 @@
 // TODO: add close icon to dialogs
 import * as yup from 'yup';
-import { Formik, Form } from 'formik';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Formik, Form } from 'formik';
 import {
   Box,
   Dialog,
@@ -11,19 +11,27 @@ import {
   MenuItem,
 } from '@mui/material';
 
-import Select from './formikMui/Select';
-import TextField from './formikMui/TextField';
 import * as ScheduleAPI from '../client_api/ScheduleAPI';
-import { BRANCHES, EVENT_TYPES } from '../config/constants';
+import { DateTime } from 'luxon';
+import { BRANCHES, LESSONS, LESSON_TYPES } from '../config/constants';
+import {
+  DatePicker,
+  Select,
+  TextField,
+} from './formikMui';
+import isEmpty from 'lodash.isempty';
 
 const blankError = 'This field cannot be left blank';
 const EventSchema = yup.object({
-  attendance: yup.object(),
-  branch: yup.string().oneOf(BRANCHES).required(blankError),
+  attendance: yup.array(),
   date: yup.string().required(blankError),
-  name: yup.string().required(blankError),
-  type: yup.string().oneOf(EVENT_TYPES).required(blankError),
-  year: yup.number(),
+  desc: yup.string(),
+  lessonID: yup.number(),
+  title: yup.string()
+    .when('lesson', {
+      is: '',
+      then: yup.string().required('A title is required when no lesson is selected.')
+    }),
 });
 
 export default function NewMemberDialog(props) {
@@ -35,14 +43,25 @@ export default function NewMemberDialog(props) {
   } = props;
 
   async function handleSubmit(values) {
-    console.log('submitting', { values });
+    const formData = {
+      ...values,
+      date: values.date.toString(),
+    };
+
+    // map lesson to lessonID and delete lesson for transmission
+    if (!isEmpty(values.lesson)) {
+      formData.lessonID = values.lesson.id;
+      delete formData.lesson;
+    }
+
+    console.log('submitting', formData);
 
     // If the event already exists, update it, otherwise add it
     let data, error;
     if (event) {
-      ({ data, error } = await ScheduleAPI.update(values));
+      ({ data, error } = await ScheduleAPI.update(formData));
     } else {
-      ({ data, error } = await ScheduleAPI.add(values));
+      ({ data, error } = await ScheduleAPI.add(formData));
     }
 
     if (error) {
@@ -54,11 +73,11 @@ export default function NewMemberDialog(props) {
   }
 
   const initialValues = event || {
-    date: '',
     branch: 'Heritage',
-    type: 'Core',
-    name: '',
-    year: '2022',
+    date: DateTime.now(),
+    desc: '',
+    lessonID: '',
+    title: '',
   };
 
   return (
@@ -71,9 +90,13 @@ export default function NewMemberDialog(props) {
           validationSchema={EventSchema}
         >
           {({ values, isSubmitting }) => {
+            const lessonOptions = Object.keys(LESSONS)
+              .filter((key) => LESSONS[key].branch === values.branch && LESSONS[key].type !== 'makeup')
+              .map((key) => LESSONS[key]);
+
             return (
               <Form style={{ paddingTop: 16 }}>
-                <TextField
+                <DatePicker
                   label='Date'
                   name='date'
                 />
@@ -87,19 +110,26 @@ export default function NewMemberDialog(props) {
                     </MenuItem>
                   ))}
                 </Select>
-                <Select
-                  label='Type'
-                  name='type'
-                >
-                  {EVENT_TYPES.map((type) => (
-                    <MenuItem value={type} key={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
+                {lessonOptions.length > 0 &&
+                  <Select
+                    label='Lesson'
+                    name='lesson'
+                  >
+                    {lessonOptions.map((lesson) => (
+                      <MenuItem value={lesson} key={lesson.id}>
+                        {LESSON_TYPES[lesson.type]}: {lesson.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                }
                 <TextField
-                  label='Name'
-                  name='name'
+                  label='Title'
+                  name='title'
+                />
+                <TextField
+                  label='Description'
+                  name='desc'
+                  multiline
                 />
                 <Box sx={{ textAlign: 'center' }}>
                   <LoadingButton
