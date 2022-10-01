@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 
 import Tag from '../components/Tag';
-import { PATROLS } from '../config/constants';
+import { LESSON_TYPES, PATROLS } from '../config/constants';
 import useRoles from '../hooks/useRoles';
 
 function EventDetails(props) {
@@ -33,8 +33,8 @@ function EventDetails(props) {
     <Box>
       <Grid container justifyContent='space-between' alignItems='center'>
         <Grid item>
-          <Tag variant={event.branch} />
-          <Tag variant={event.type} />
+          {event.lesson?.branch && <Tag variant={event.lesson.branch} />}
+          {event.lesson?.type && <Tag variant={LESSON_TYPES[event.lesson?.type]} />}
         </Grid>
         <Grid item>
           <IconButton
@@ -45,6 +45,9 @@ function EventDetails(props) {
           </IconButton>
         </Grid>
       </Grid>
+      {event.desc &&
+        <div sx={{ py: 2 }}>{event.desc}</div>
+      }
       {!isEmpty(event.attendance) &&
         Object.keys(event.attendance)
           .filter(key => !isEmpty(event.attendance[key]))

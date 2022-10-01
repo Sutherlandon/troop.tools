@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import db from '../config/database';
 
 // define the default collection name
-let collection = 'users2';
+let collection = 'users';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
@@ -38,7 +38,7 @@ UserSchema.statics = {
 
   async get(id) {
     // not sure whether email or issuer will be more consistently used
-    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] }).lean();
+    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] });
 
     return user;
   },

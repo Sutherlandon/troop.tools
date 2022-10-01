@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import db from '../config/database';
 
 // define the default collection name
-let collection = 'members';
+let collection = 'members2';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
@@ -18,7 +18,13 @@ let _members = [];
 // Model Schema
 const MemberSchema = new mongoose.Schema({
   active: Boolean,
-  name: String,
+  adv: [{
+    _id: false, // no _id's for $addToSet comparison to work
+    date: String,
+    lessonID: Number,
+  }],
+  firstName: String,
+  lastName: String,
   patrol: String,
 }, {
   collection,
@@ -35,16 +41,11 @@ MemberSchema.statics = {
    * @param {Obejct} formData Form data contianing the new item
    * @returns All members including the new one
    */
-  async add (formData) {
-    const newMember = { ...formData };
-
+  async add(formData) {
     // put the new member in the DB
-    await this.create(newMember);
+    const member = await this.create(formData);
 
-    // return a new list of all memebers
-    const members = await this.getAll();
-
-    return members;
+    return member;
   },
 
   /**
@@ -57,7 +58,7 @@ MemberSchema.statics = {
     const members = await this.find().lean();
 
     // cache the members
-    _members = sortBy(members, ['patrol', 'name']);
+    _members = sortBy(members, ['patrol', 'firstName']);
 
     return _members;
   },
@@ -71,12 +72,9 @@ MemberSchema.statics = {
     const { _id, ...update } = formData;
 
     // make the update
-    await this.findOneAndUpdate({ _id }, { ...update });
+    const member = await this.findOneAndUpdate({ _id }, { ...update }, { new: true });
 
-    // return the updated memberList
-    const members = await this.getAll();
-
-    return members;
+    return member;
   },
 
   /**
@@ -87,12 +85,70 @@ MemberSchema.statics = {
   async remove(_id) {
     // delete the member from the DB
     await this.deleteOne({ _id });
-
-    // return a new list of all memebers
-    const members = await this.getAll();
-
-    return members;
   },
+
+  /**
+   * Updates the advancement of many members based on the formData submitted
+   * @param {Object} formData Data from the attendance form
+   */
+  async updateAdvancement(formData) {
+    const { members, lessonID, date } = formData;
+    const memberIDs = Object.keys(members);
+
+    const entry = { lessonID, date };
+    let addMembers = [];
+    let removeMembers = [];
+
+    // build the add/remove lists
+    memberIDs.forEach((_id) => {
+      if (members[_id]) {
+        addMembers.push(_id);
+      } else {
+        removeMembers.push(_id);
+      }
+    });
+
+    addMembers = await this.updateMany(
+      { _id: { $in: addMembers } },
+      { $addToSet: { adv: entry } },
+      { new: true }
+    );
+
+    removeMembers = await this.updateMany(
+      { _id: { $in: removeMembers } },
+      { $pull: { adv: entry } },
+      { new: true }
+    );
+
+    const updatedMembers = await this.find({ _id: { $in: memberIDs } });
+
+    console.log(updatedMembers[0].adv);
+
+    return updatedMembers;
+  },
+
+  /**
+   * Add an advancement entry to the member's record
+   * @param {String} _id Member ID
+   * @param {Object} entry lessonID and date of the entry
+   */
+  async addAdvancement(_id, entry) {
+    const update = { $addToSet: { adv: entry } };
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
+    return member;
+  },
+
+  /**
+   * Remove an advancement entry from the member's record
+   * @param {String} _id Member ID
+   * @param {Object} entry lessonID and date of the entry
+   */
+  async removeAdvancement(_id, entry) {
+    // pull the entry out of the member's advancement list
+    const update = { $pull: { adv: entry } };
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
+    return member;
+  }
 };
 
 let Member;

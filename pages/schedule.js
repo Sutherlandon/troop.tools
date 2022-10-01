@@ -70,7 +70,7 @@ function SchedulePage() {
 
   // Handle removing an event from the list
   async function handleRemove(event) {
-    if (confirm(`Are you sure you want to delete ${event.name}`)) {
+    if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name}`)) {
       const { data, error } = await ScheduleAPI.remove(event);
 
       if (error) {
@@ -140,14 +140,14 @@ function SchedulePage() {
                 const highlight = event.type === 'HTT' ||
                   ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
 
-                const branchColor = BRANCH_COLORS[event.branch]?.b;
-                const branchText = BRANCH_COLORS[event.branch]?.t;
+                const branchColor = BRANCH_COLORS[event.lesson.branch]?.b;
+                const branchText = BRANCH_COLORS[event.lesson.branch]?.t;
                 const borderColor = '#464646';
 
                 const displayDate = DateTime.fromISO(event.date).toFormat('LL/dd');
 
                 return (
-                  <Fragment key={event.name + event.date}>
+                  <Fragment key={event.title + event.date}>
                     <TableRow
                       onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
                       sx={{
@@ -169,10 +169,10 @@ function SchedulePage() {
                       <TableCell sx={{ textAlign: 'left' }}>
                         {highlight || expanded
                           ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
-                          : <Tag text={displayDate} variant={event.branch} />
+                          : <Tag text={displayDate} variant={event.lesson.branch} />
                         }
                       </TableCell>
-                      <TableCell>{event.name}</TableCell>
+                      <TableCell>{event.title || event.lesson.name}</TableCell>
                       <TableCell sx={{ textAlign: 'right' }}>
                         {showDetails === index
                           ? <CloseIcon />

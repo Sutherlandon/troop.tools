@@ -13,5 +13,6 @@ module.exports = {
       functions: 'never',
     }],
     'space-before-function-paren': 'off',
+    'multiline-ternary': 'off',
   },
 };

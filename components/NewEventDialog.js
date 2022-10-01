@@ -34,6 +34,14 @@ const EventSchema = yup.object({
     }),
 });
 
+const blankForm = {
+  branch: 'Heritage',
+  date: DateTime.now(),
+  desc: '',
+  lessonID: '',
+  title: '',
+};
+
 export default function NewMemberDialog(props) {
   const {
     event,
@@ -72,12 +80,11 @@ export default function NewMemberDialog(props) {
     handleClose();
   }
 
-  const initialValues = event || {
-    branch: 'Heritage',
-    date: DateTime.now(),
-    desc: '',
-    lessonID: '',
-    title: '',
+  const initialValues = {
+    ...blankForm,
+    ...event,
+    lessonID: event?.lesson?.id,
+    branch: event?.lesson?.branch || '',
   };
 
   return (
@@ -113,10 +120,10 @@ export default function NewMemberDialog(props) {
                 {lessonOptions.length > 0 &&
                   <Select
                     label='Lesson'
-                    name='lesson'
+                    name='lessonID'
                   >
                     {lessonOptions.map((lesson) => (
-                      <MenuItem value={lesson} key={lesson.id}>
+                      <MenuItem value={lesson.id} key={lesson.id}>
                         {LESSON_TYPES[lesson.type]}: {lesson.name}
                       </MenuItem>
                     ))}

@@ -38,7 +38,7 @@ UserSchema.statics = {
 
   async get(id) {
     // not sure whether email or issuer will be more consistently used
-    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] });
+    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] }).lean();
 
     return user;
   },

@@ -8,10 +8,12 @@ export default async function handler(req, res) {
       events = await Event.getAll();
       break;
     case 'POST':
-      events = await Event.add(req.body);
+      await Event.add(req.body);
+      events = await Event.getAll();
       break;
     case 'PUT':
-      events = await Event.update(req.body);
+      await Event.update(req.body);
+      events = await Event.getAll();
       break;
     default:
       return res.status(405);
