@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'test') {
   collection = `${collection}-${nanoid()}`;
 }
 
-// cached schedule for repeated get calls this cache is updated
+// cached users for repeated get calls this cache is updated
 // everytime an upate is made to the list
 let _users = [];
 

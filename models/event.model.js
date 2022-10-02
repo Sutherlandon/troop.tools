@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'test') {
   collection = `${collection}-${nanoid()}`;
 }
 
-// cached schedule for repeated get calls this cache is updated
+// cached events for repeated get calls this cache is updated
 // everytime an upate is made to the list
 let _events = [];
 
@@ -34,9 +34,9 @@ const EventSchema = new mongoose.Schema({
 
 EventSchema.statics = {
   /**
-   * Adds a new event to the schedule
+   * Adds a new event to the list of events
    * @param {Obejct} formData Form data contianing the new item
-   * @returns the updated schedule
+   * @returns the event that was created
    */
   async add(formData) {
     // create the new event
@@ -80,7 +80,7 @@ EventSchema.statics = {
   },
 
   /**
-   * Deletes a event from the DB and returns the updated schedule
+   * Deletes a event from the DB
    * @param {String} name The name of the user to delete
    * @returns The new list of events
    */
@@ -108,7 +108,9 @@ EventSchema.statics = {
    * @returns The new list of events
    */
   async updateAttendance(formData) {
-    const { _id, attendance } = formData;
+    const { _id } = formData;
+    const attendance = Object.keys(formData.attendance)
+      .filter((key) => formData.attendance[key]);
 
     // put the new event in the DB
     const event = await this.findOneAndUpdate({ _id }, { $set: { attendance } }, { new: true });

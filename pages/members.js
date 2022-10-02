@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import NewMemberDialog from '../components/NewMemberDialog';
+import MemberFormDialog from '../components/MemberFormDialog';
 import * as MembersAPI from '../client_api/MembersAPI';
 import { PATROLS_ARRAY } from '../config/constants';
 
@@ -95,12 +95,12 @@ function MembersPage() {
           </Button>
         </Grid>
       </Grid>
-      <NewMemberDialog
+      <MemberFormDialog
         open={newOpen}
         onUpdate={(updatedMembers) => setMembers(updatedMembers)}
         handleClose={() => setNewOpen(false)}
       />
-      <NewMemberDialog
+      <MemberFormDialog
         {...editInfo}
         handleClose={() => setEditInfo({ open: false })}
         onUpdate={(memberList) => setMembers(memberList)}
@@ -122,7 +122,7 @@ function MembersPage() {
                 .map((patrol) => membersByPatrol[patrol.key]
                   .map((member, index) => (
                     <TableRow
-                      key={member.name}
+                      key={`${member.firstName} ${member.lastName}`}
                       sx={{
                         '& td': {
                           backgroundColor: patrol.color,
@@ -140,7 +140,7 @@ function MembersPage() {
                           <Image src={patrol.logo} alt='Patrol Logo' />
                         </TableCell>
                       }
-                      <TableCell>{member.name}</TableCell>
+                      <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         <IconButton
                           onClick={() => openEdit(member)}

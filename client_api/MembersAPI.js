@@ -58,7 +58,7 @@ export function remove(id) {
 /**
  * Calls the API to update a member
  * @param {Object} formData The form data form the update form
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members
  */
 export function update(formData) {
   return makeCacheRequest({

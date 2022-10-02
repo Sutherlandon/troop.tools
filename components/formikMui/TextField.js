@@ -12,7 +12,6 @@ export default function FormikMuiTextField(props) {
         {...field}
         {...props}
         error={meta.touched && !!meta.error}
-        helperText={meta.touched && meta.error}
       />
     </FormControl>
   );

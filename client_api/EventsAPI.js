@@ -1,7 +1,7 @@
 import makeRequest from './makeRequest';
 
-// cache the members when fetched
-let _schedule;
+// cache the events when fetched
+let _events;
 
 /**
  * Make the request but cache the results for repeated gets
@@ -9,7 +9,7 @@ let _schedule;
 async function makeCacheRequest(params) {
   const { data, error } = await makeRequest(params);
 
-  _schedule = data;
+  _events = data;
 
   return { data, error };
 }
@@ -17,11 +17,11 @@ async function makeCacheRequest(params) {
 /**
  * Calls the API to add a new event
  * @param {Object} item A new event item
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function add(item) {
   return makeCacheRequest({
-    url: '/api/schedule',
+    url: '/api/events',
     method: 'POST',
     data: item,
   });
@@ -30,38 +30,38 @@ export function add(item) {
 /**
  * Calls the API to add attendence for a patrol on certain event
  * @param {Object} formData Data from the attendance form
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function attendance(formData) {
   return makeCacheRequest({
-    url: '/api/schedule/attendance',
+    url: '/api/events/attendance',
     method: 'POST',
     data: formData,
   });
 }
 
 /**
- * Fetches the schedule
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * Fetches the list of events
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function get() {
-  if (_schedule) {
-    return { data: _schedule };
+  if (_events) {
+    return { data: _events };
   }
 
   return makeCacheRequest({
-    url: '/api/schedule',
+    url: '/api/events',
   });
 }
 
 /**
  * Calls the API to remove a specified event
  * @param {Object} item The event item to remove
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function remove(item) {
   return makeCacheRequest({
-    url: '/api/schedule/remove',
+    url: '/api/events/remove',
     method: 'POST',
     data: item,
   });
@@ -70,11 +70,11 @@ export function remove(item) {
 /**
  * Calls the API to update
  * @param {Object} formData The form data form the update form
- * @returns <Promise> An object contianing `data` or `error`. `data` contians the schedule
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function update(formData) {
   return makeCacheRequest({
-    url: '/api/schedule',
+    url: '/api/events',
     method: 'PUT',
     data: formData,
   });

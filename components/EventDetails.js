@@ -29,6 +29,16 @@ function EventDetails(props) {
 
   const { isAdmin, isTrailGuide } = useRoles();
 
+  // group event.attendance by patrol into an object
+  const attendance = {};
+  event.attendance.forEach(({ name, patrol }) => {
+    if (!attendance[patrol]) {
+      attendance[patrol] = [name];
+    } else {
+      attendance[patrol].push(name);
+    }
+  });
+
   return (
     <Box>
       <Grid container justifyContent='space-between' alignItems='center'>
@@ -45,25 +55,22 @@ function EventDetails(props) {
           </IconButton>
         </Grid>
       </Grid>
-      {event.desc &&
-        <div sx={{ py: 2 }}>{event.desc}</div>
+      {event.title && event.lesson &&
+        <Box sx={{ p: 1, fontWeight: 'bold' }}>
+          {event.lesson.name}
+        </Box>
       }
-      {!isEmpty(event.attendance) &&
-        Object.keys(event.attendance)
-          .filter(key => !isEmpty(event.attendance[key]))
-          .length > 0 &&
+      {event.desc &&
+        <Box sx={{ p: 1 }}>{event.desc}</Box>
+      }
+      {!isEmpty(attendance) &&
         <>
           <Typography variant='h6'>
             Attendance
           </Typography>
           <Table>
             <TableBody>
-              {Object.keys(event.attendance).map((patrol) => {
-                // don't show empty patrols
-                if (isEmpty(event.attendance[patrol])) {
-                  return null;
-                }
-
+              {Object.keys(attendance).map((patrol) => {
                 return (
                   <TableRow
                     key={patrol}
@@ -80,12 +87,13 @@ function EventDetails(props) {
                     </TableCell>
                     <TableCell>
                       <ul style={{ margin: 0 }}>
-                        {Object
-                          .keys(event.attendance[patrol])
-                          .map(name => name.split(' ').reverse().join(', '))
+                        {attendance[patrol]
+                          .map((name) => name.split(' ').reverse().join(', '))
                           .sort()
                           .map((name) => (
-                            <li className='member-name' key={name}>{name}</li>
+                            <li className='member-name' key={name}>
+                              {name}
+                            </li>
                           ))}
                       </ul>
                     </TableCell>

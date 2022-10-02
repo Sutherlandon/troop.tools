@@ -52,34 +52,38 @@ export const BRANCH_COLORS = {
 
 export const PATROLS = {
   foxes: {
+    key: 'foxes',
     name: 'Foxes',
     color: '#b97c38',
     logo: FoxesLogo,
   },
   hawks: {
+    key: 'hawks',
     name: 'Hawks',
     color: '#eab71b',
     logo: HawksLogo,
   },
   mountainLions: {
+    key: 'mountainLions',
     name: 'Mountain Lions',
     color: '#cea54a',
     logo: MountainLionsLogo
   },
   navigators: {
+    key: 'navigators',
     name: 'Navigators',
     color: '#bbbdbd',
     logo: NavigatorsLogo,
   },
   adventurers: {
+    key: 'adventurers',
     name: 'Adventurers',
     color: '#8ec8e7',
     logo: AdventurersLogo,
   }
 };
 
-export const PATROLS_ARRAY = Object.keys(PATROLS)
-  .map((key) => ({ ...PATROLS[key], key }));
+export const PATROLS_ARRAY = Object.values(PATROLS);
 
 export const LESSON_TYPES = {
   'core': 'Core',

@@ -92,8 +92,8 @@ MemberSchema.statics = {
    * @param {Object} formData Data from the attendance form
    */
   async updateAdvancement(formData) {
-    const { members, lessonID, date } = formData;
-    const memberIDs = Object.keys(members);
+    const { attendance, lessonID, date } = formData;
+    const memberIDs = Object.keys(attendance);
 
     const entry = { lessonID, date };
     let addMembers = [];
@@ -101,7 +101,7 @@ MemberSchema.statics = {
 
     // build the add/remove lists
     memberIDs.forEach((_id) => {
-      if (members[_id]) {
+      if (attendance[_id]) {
         addMembers.push(_id);
       } else {
         removeMembers.push(_id);
@@ -121,8 +121,6 @@ MemberSchema.statics = {
     );
 
     const updatedMembers = await this.find({ _id: { $in: memberIDs } });
-
-    console.log(updatedMembers[0].adv);
 
     return updatedMembers;
   },

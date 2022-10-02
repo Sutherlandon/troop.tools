@@ -1,6 +1,5 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
-// TODO: add loading icons to buttons that trigger request (ie submit) for immediate feedback
 
 import Link from 'next/link';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,9 +23,9 @@ import {
 
 import AttendanceFormDialog from '../components/AttendanceFormDialog';
 import EventDetails from '../components/EventDetails';
-import NewEventDialog from '../components/NewEventDialog';
+import EventFormDialog from '../components/EventFormDialog';
 import Tag from '../components/Tag';
-import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as EventsAPI from '../client_api/EventsAPI';
 import * as MembersAPI from '../client_api/MembersAPI';
 import { BRANCH_COLORS } from '../config/constants';
 import useRoles from '../hooks/useRoles';
@@ -36,22 +35,22 @@ function SchedulePage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [newOpen, setNewOpen] = useState(false);
-  const [schedule, setSchedule] = useState([]);
+  const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
   const { isAdmin, isTrailGuide } = useRoles();
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data: schedule, error: scheduleErr } = await ScheduleAPI.get();
+      const { data: events, error: eventsErr } = await EventsAPI.get();
       const { data: members, error: memberErr } = await MembersAPI.get();
 
-      if (scheduleErr || memberErr) {
-        return console.error(scheduleErr || memberErr);
+      if (eventsErr || memberErr) {
+        return console.error(eventsErr || memberErr);
       }
 
       setMembers(members);
-      setSchedule(schedule);
+      setSchedule(events);
       setLoading(false);
     }
 
@@ -71,7 +70,7 @@ function SchedulePage() {
   // Handle removing an event from the list
   async function handleRemove(event) {
     if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name}`)) {
-      const { data, error } = await ScheduleAPI.remove(event);
+      const { data, error } = await EventsAPI.remove(event);
 
       if (error) {
         return console.error(error);
@@ -103,12 +102,12 @@ function SchedulePage() {
           </Grid>
         }
       </Grid>
-      <NewEventDialog
+      <EventFormDialog
         handleClose={() => setNewOpen(false)}
         open={newOpen}
         onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
       />
-      <NewEventDialog
+      <EventFormDialog
         {...editInfo}
         handleClose={() => setEditInfo({ open: false })}
         onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
@@ -121,7 +120,7 @@ function SchedulePage() {
           setSchedule(data);
           setAttInfo({ open: false });
         }}
-        schedule={schedule}
+        eventsList={events}
       />
       {loading
         ? <LinearProgress />
@@ -135,7 +134,7 @@ function SchedulePage() {
               </TableRow >
             </TableHead >
             <TableBody>
-              {schedule.map((event, index) => {
+              {events.map((event, index) => {
                 const expanded = showDetails === index;
                 const highlight = event.type === 'HTT' ||
                   ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);

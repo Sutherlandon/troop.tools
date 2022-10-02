@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
-import isEmpty from 'lodash.isempty';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { DateTime } from 'luxon';
 import { Form, Formik } from 'formik';
 import {
   Box,
@@ -18,24 +18,17 @@ import {
 } from '@mui/material';
 
 import CheckboxRow from '../components/formikMui/CheckboxRow';
-import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as EventsAPI from '../client_api/EventsAPI';
 import { BRANCH_COLORS, PATROLS_ARRAY } from '../config/constants';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const blankAttendance = {
-  foxes: {},
-  hawks: {},
-  mountainLions: {},
-  navigators: {},
-  adventurers: {},
-};
-
 function AttendenceFormDialog(props) {
   const {
     event,
+    // eventsList,
     handleClose,
     members,
     open,
@@ -47,9 +40,15 @@ function AttendenceFormDialog(props) {
     return null;
   }
 
-  const initialValues = !isEmpty(event.attendance)
-    ? event.attendance
-    : blankAttendance;
+  // list of member._id's mapped to an obect { [_id]: true } or {} if undefined
+  const membersList = members.reduce((acc, member) => ({ ...acc, [member._id]: false }), {});
+  const attendanceList = event.attendance?.reduce((acc, member) => ({ ...acc, [member._id]: true }), {}) || {};
+  const initialValues = {
+    ...membersList,
+    ...attendanceList,
+  };
+
+  console.log(membersList, attendanceList, initialValues);
 
   /**
    * Submits attendance to the API
@@ -57,24 +56,29 @@ function AttendenceFormDialog(props) {
    * @param {*} formik The Formik Bag
    */
   async function handleSubmit(values, formik) {
+    // assemble the data
     const formData = {
       _id: event._id,
       attendance: values,
+      date: event.date,
+      lessonID: event.lesson.id,
     };
 
     console.log('data submitted', formData);
 
-    const { data, error } = await ScheduleAPI.attendance(formData);
+    const { data, error } = await EventsAPI.attendance(formData);
 
     if (error) {
       return console.log(error);
     }
 
+    // TODO: For network data efficiency
+    // replace the event in the list with the return value
+    // const updatedEventsList = eventsList.map((event) => event._id === data._id ? data : event);
+
     onSubmit(data);
     formik.resetForm();
   }
-
-  console.log({ event });
 
   return (
     <Dialog
@@ -84,7 +88,7 @@ function AttendenceFormDialog(props) {
       scroll='paper'
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ backgroundColor: BRANCH_COLORS[event.branch]?.b }}>
+      <DialogTitle sx={{ backgroundColor: BRANCH_COLORS[event.lesson.branch]?.b }}>
         <Grid
           container
           spacing={2}
@@ -92,7 +96,7 @@ function AttendenceFormDialog(props) {
           wrap='nowrap'
         >
           <Grid item>
-            {event.date} - {event.name}
+            {DateTime.fromISO(event.date).toLocaleString()} - {event.title || event.lesson.name}
           </Grid>
           <Grid item>
             <IconButton
@@ -103,7 +107,6 @@ function AttendenceFormDialog(props) {
             </IconButton>
           </Grid>
         </Grid>
-
       </DialogTitle>
       <DialogContent>
         <Box sx={{ fontWeight: 'bold', py: 2 }}>
@@ -120,13 +123,14 @@ function AttendenceFormDialog(props) {
               <Form>
                 {PATROLS_ARRAY.map((patrol) => {
                   const patrolMembers = members
-                    .filter(member => member.patrol === patrol.name)
+                    .filter(member => member.patrol === patrol.key)
                     .map((member) => {
+                      const label = `${member.firstName} ${member.lastName}`;
                       return (
                         <CheckboxRow
-                          groupName={patrol.key}
-                          name={member.name}
-                          key={member.name}
+                          label={label}
+                          name={member._id}
+                          key={member._id}
                         />
                       );
                     });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { LinearProgress } from '@mui/material';
 
 import SchedulePage from './schedule';
-import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as EventsAPI from '../client_api/EventsAPI';
 import * as MembersAPI from '../client_api/MembersAPI';
 
 function HomePage() {
@@ -12,7 +12,7 @@ function HomePage() {
   useEffect(() => {
     async function cacheData() {
       await Promise.all([
-        ScheduleAPI.get(),
+        EventsAPI.get(),
         MembersAPI.get(),
       ]);
 

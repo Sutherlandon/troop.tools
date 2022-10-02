@@ -113,7 +113,7 @@ it('Should update the advancement entries on many members', async () => {
     makeMember('adventurer', [testEntry]),
   ]);
   const formData = {
-    members: {
+    attendance: {
       [testMembers[0]._id]: true,
       [testMembers[1]._id]: true,
       [testMembers[2]._id]: false,

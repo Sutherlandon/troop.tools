@@ -1,39 +1,32 @@
 import PropTypes from 'prop-types';
 import { Checkbox, TableRow, TableCell } from '@mui/material';
-import { Field } from 'formik';
+import { useField } from 'formik';
 
 function FormikMuiCheckboxRow(props) {
-  const { groupName, name, ...rest } = props;
-
-  const formikName = `${groupName}.${name}`;
+  const { groupName, label, name, ...rest } = props;
+  const formikName = groupName ? `${groupName}.${name}` : name;
+  const [{ value }, , helpers] = useField(formikName);
 
   return (
-    <Field name={formikName}>
-      {({
-        field: { value: checked = false },
-        form: { setFieldValue },
-      }) => (
-        <TableRow
-          hover
-          onClick={() => setFieldValue(formikName, !checked)}
-          role='checkbox'
-          {...rest}
-        >
-          <TableCell padding='checkbox'>
-            <Checkbox
-              color='primary'
-              checked={checked}
-            />
-          </TableCell>
-          <TableCell>{name}</TableCell>
-        </TableRow>
-      )}
-    </Field>
+    <TableRow
+      hover
+      onClick={() => helpers.setValue(!value)}
+      role='checkbox'
+      {...rest}
+    >
+      <TableCell padding='checkbox'>
+        <Checkbox
+          color='primary'
+          checked={value}
+        />
+      </TableCell>
+      <TableCell>{label || name}</TableCell>
+    </TableRow>
   );
 }
 
 FormikMuiCheckboxRow.propTypes = {
-  groupName: PropTypes.string.isRequired,
+  groupName: PropTypes.string,
   name: PropTypes.string.isRequired,
 };
 

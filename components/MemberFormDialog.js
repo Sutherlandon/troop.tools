@@ -10,21 +10,28 @@ import {
   MenuItem,
 } from '@mui/material';
 
-import Select from './formikMui/Select';
-import TextField from './formikMui/TextField';
 import * as yup from 'yup';
 import * as MembersAPI from '../client_api/MembersAPI';
 import { PATROLS_ARRAY } from '../config/constants';
+import { Checkbox, Select, TextField } from './formikMui';
 
 const memberSchema = yup.object({
-  id: yup.string(),
-  name: yup.string().required('This field cannot be left blank'),
+  active: yup.boolean(),
+  firstName: yup.string().required('This field cannot be left blank'),
+  lastName: yup.string().required('This field cannot be left blank'),
   patrol: yup.string()
     .oneOf(PATROLS_ARRAY.map(patrol => patrol.key))
     .required('This field cannot be left blank'),
 });
 
-export default function NewMemberDialog(props) {
+const blankForm = {
+  active: true,
+  firstName: '',
+  lastName: '',
+  patrol: 'foxes',
+};
+
+export default function MemberFormDialog(props) {
   const {
     member,
     open,
@@ -51,9 +58,9 @@ export default function NewMemberDialog(props) {
     handleClose();
   }
 
-  const initialValues = member || {
-    name: '',
-    patrol: 'foxes',
+  const initialValues = {
+    ...blankForm,
+    ...member,
   };
 
   return (
@@ -66,11 +73,17 @@ export default function NewMemberDialog(props) {
           validationSchema={memberSchema}
         >
           {({ values, isSubmitting }) => {
+            // console.log('VALUES', values);
+
             return (
               <Form style={{ paddingTop: 16 }}>
                 <TextField
-                  label='Name'
-                  name='name'
+                  label='First Name'
+                  name='firstName'
+                />
+                <TextField
+                  label='Last Name'
+                  name='lastName'
                 />
                 <Select
                   label='Patrol'
@@ -82,6 +95,11 @@ export default function NewMemberDialog(props) {
                     </MenuItem>
                   ))}
                 </Select>
+                <Checkbox
+                  disabled
+                  label='Active'
+                  name='active'
+                />
                 <Box sx={{ textAlign: 'center' }}>
                   <LoadingButton
                     loading={isSubmitting}

@@ -11,9 +11,9 @@ import {
   MenuItem,
 } from '@mui/material';
 
-import * as ScheduleAPI from '../client_api/ScheduleAPI';
+import * as EventsAPI from '../client_api/EventsAPI';
 import { DateTime } from 'luxon';
-import { BRANCHES, LESSONS, LESSON_TYPES } from '../config/constants';
+import { ADVANCEMENT, BRANCHES, LESSONS, LESSON_TYPES } from '../config/constants';
 import {
   DatePicker,
   Select,
@@ -42,7 +42,7 @@ const blankForm = {
   title: '',
 };
 
-export default function NewMemberDialog(props) {
+export default function EventFormDialog(props) {
   const {
     event,
     open,
@@ -67,9 +67,9 @@ export default function NewMemberDialog(props) {
     // If the event already exists, update it, otherwise add it
     let data, error;
     if (event) {
-      ({ data, error } = await ScheduleAPI.update(formData));
+      ({ data, error } = await EventsAPI.update(formData));
     } else {
-      ({ data, error } = await ScheduleAPI.add(formData));
+      ({ data, error } = await EventsAPI.add(formData));
     }
 
     if (error) {
@@ -101,6 +101,8 @@ export default function NewMemberDialog(props) {
               .filter((key) => LESSONS[key].branch === values.branch && LESSONS[key].type !== 'makeup')
               .map((key) => LESSONS[key]);
 
+            const titleOptional = values.branch === '' || Object.keys(ADVANCEMENT).includes(values.branch);
+
             return (
               <Form style={{ paddingTop: 16 }}>
                 <DatePicker
@@ -130,11 +132,12 @@ export default function NewMemberDialog(props) {
                   </Select>
                 }
                 <TextField
-                  label='Title'
+                  label={`Title${titleOptional ? ' (optional)' : ''}`}
                   name='title'
+                  helperText={titleOptional && 'Defaults to lesson name' }
                 />
                 <TextField
-                  label='Description'
+                  label='Description (optional)'
                   name='desc'
                   multiline
                 />
