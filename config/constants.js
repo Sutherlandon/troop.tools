@@ -1,39 +1,22 @@
 /* eslint-disable quote-props */
-
 import FoxesLogo from '../images/foxesLogo.png';
 import HawksLogo from '../images/hawksLogo.png';
 import MountainLionsLogo from '../images/mountainLionsLogo.png';
 import AdventurersLogo from '../images/adventuersLogo.png';
 import NavigatorsLogo from '../images/navigatorsLogo.png';
 
-// export const EVENT_TYPES = [
-//   'Core',
-//   'Elective',
-//   'HTT',
-//   'Other',
-// ];
-
 export const ADVANCEMENT = {
-  'Heritage': { core: 2, elective: 1, htt: 1 },
-  'Hobbies': { core: 1, elective: 2, htt: 1 },
-  'Life Skills': { core: 3, elective: 1, htt: 1 },
-  'Outdoor Skills': { core: 3, elective: 1, htt: 1 },
-  'Science & Technology': { core: 2, elective: 1, htt: 1 },
-  'Sports & Fitness': { core: 2, elective: 1, htt: 1 },
-  'Values': { core: 2, elective: 1, htt: 1 },
+  'Heritage': { core: 2, elective: 1, htt: 1, makeup: 1 },
+  'Hobbies': { core: 1, elective: 2, htt: 1, makeup: 1 },
+  'Life Skills': { core: 3, elective: 1, htt: 1, makeup: 1 },
+  'Outdoor Skills': { core: 3, elective: 1, htt: 1, makeup: 1 },
+  'Science & Technology': { core: 2, elective: 1, htt: 1, makeup: 1 },
+  'Sports & Fitness': { core: 2, elective: 1, htt: 1, makeup: 1 },
+  'Values': { core: 2, elective: 1, htt: 1, makeup: 1 },
 };
 
-export const BRANCHES = [
-  ...Object.keys(ADVANCEMENT),
-  'Award',
-  'Board',
-  'Camp',
-  'Fundraiser',
-  'General',
-  'Day Hike',
-];
-
 export const BRANCH_COLORS = {
+  // TL Branches
   'Heritage': { b: '#896400', t: 'white' },
   'Hobbies': { b: '#212121', t: 'white' },
   'Life Skills': { b: '#8c1006', t: 'white' },
@@ -42,6 +25,7 @@ export const BRANCH_COLORS = {
   'Sports & Fitness': { b: '#425b21', t: 'white' },
   'Values': { b: '#c5171c', t: 'white' },
 
+  // Other categories to
   'Award': { b: 'purple', t: 'white' },
   'Board': { b: 'lightgray', t: 'black' },
   'Camp': { b: 'yellow', t: 'black' },
@@ -49,6 +33,8 @@ export const BRANCH_COLORS = {
   'Fundraiser': { b: 'limegreen', t: 'black' },
   'General': { b: 'lightgray', t: 'black' },
 };
+
+export const BRANCHES = Object.keys(BRANCH_COLORS);
 
 export const PATROLS = {
   foxes: {

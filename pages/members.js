@@ -20,6 +20,7 @@ import {
 import MemberFormDialog from '../components/MemberFormDialog';
 import * as MembersAPI from '../client_api/MembersAPI';
 import { PATROLS_ARRAY } from '../config/constants';
+import Link from 'next/link';
 
 function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -141,6 +142,9 @@ function MembersPage() {
                         </TableCell>
                       }
                       <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
+                      <TableCell>
+                        <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         <IconButton
                           onClick={() => openEdit(member)}
