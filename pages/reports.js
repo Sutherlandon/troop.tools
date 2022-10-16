@@ -1,4 +1,5 @@
 import {
+  Box,
   Table,
   TableBody,
   TableHead,
@@ -11,70 +12,53 @@ import {
   BRANCH_COLORS,
 } from '../config/constants';
 
+function Cell(props) {
+  const {
+    top,
+    bottom,
+    branch
+  } = props;
+
+  return (
+    <TableCell key={branch} sx={{
+      background: BRANCH_COLORS[branch]?.b,
+      borderBottom: '3px solid gray',
+      color: BRANCH_COLORS[branch]?.t,
+      whiteSpace: 'nowrap',
+      width: 130,
+      padding: 0,
+    }}>
+      <Box sx={{
+        borderBottom: '1px solid gray',
+        padding: '6px 16px 0 16px'
+      }}>
+        {top}
+      </Box>
+      <Box sx={{ padding: '0 16px 6px 16px' }}>
+        {bottom}
+      </Box>
+    </TableCell>
+  );
+}
+
 function AdvRow({ label }) {
   return (
     <>
       <TableRow>
         <TableCell
-          rowSpan={3}
           sx={{
             borderTop: 3,
             borderTopColor: 'gray',
             borderBottom: 3,
             borderBottomColor: 'gray',
+            width: 130,
           }}
         >
           {label}
         </TableCell>
-        <TableCell
-          sx={{
-            borderTop: 3,
-            borderTopColor: 'gray',
-          }}
-        >
-          Date
-        </TableCell>
+        <Cell top='Date' bottom='Step #' />
         {Object.keys(ADVANCEMENT).map((branch) => (
-          <TableCell key={branch} sx={{
-            background: BRANCH_COLORS[branch].b,
-            color: BRANCH_COLORS[branch].t,
-            whiteSpace: 'nowrap',
-            minWidth: 80,
-          }}>
-          </TableCell>
-        ))}
-      </TableRow>
-      <TableRow>
-        <TableCell>Step</TableCell>
-        {Object.keys(ADVANCEMENT).map((branch) => (
-          <TableCell key={branch} sx={{
-            background: BRANCH_COLORS[branch].b,
-            color: BRANCH_COLORS[branch].t,
-            whiteSpace: 'nowrap',
-            minWidth: 80,
-          }}>
-          </TableCell>
-        ))}
-      </TableRow>
-      <TableRow>
-        <TableCell
-          sx={{
-            borderBottom: 3,
-            borderBottomColor: 'gray',
-          }}
-        >
-          Trail Guide
-        </TableCell>
-        {Object.keys(ADVANCEMENT).map((branch) => (
-          <TableCell key={branch} sx={{
-            background: BRANCH_COLORS[branch].b,
-            color: BRANCH_COLORS[branch].t,
-            whiteSpace: 'nowrap',
-            minWidth: 80,
-            borderBottom: 3,
-            borderBottomColor: 'gray',
-          }}>
-          </TableCell>
+          <Cell key={branch} branch={branch} />
         ))}
       </TableRow>
     </>
@@ -86,16 +70,15 @@ function BookReport(props) {
     <Table size='small'>
       <TableHead>
         <TableRow>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
+          <TableCell sx={{ width: 130, borderBottom: '3px solid gray' }}></TableCell>
+          <TableCell sx={{ width: 130, borderBottom: '3px solid gray' }}></TableCell>
           {Object.keys(ADVANCEMENT).map((branch) => (
             <TableCell key={branch} sx={{
               background: BRANCH_COLORS[branch].b,
               borderBottom: 3,
               borderBottomColor: 'gray',
               color: BRANCH_COLORS[branch].t,
-              whiteSpace: 'nowrap',
-              minWidth: 80,
+              width: 130,
             }}>
               {branch}
             </TableCell>

@@ -58,7 +58,6 @@ export default function MyApp({ Component, pageProps }) {
         <main style={{
           padding: 16,
           margin: 'auto',
-          maxWidth: 650,
         }}>
           <Component {...pageProps} />
         </main>
