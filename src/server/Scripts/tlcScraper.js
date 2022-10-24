@@ -54,7 +54,7 @@ const opts = new chrome.Options();
 
     const trailmenArray = [...foxes, ...hawks, ...mountainLions];
 
-    console.log(trailmenArray);
+    // console.log(trailmenArray);
 
     /**
      * Build Advancement Data
@@ -65,14 +65,37 @@ const opts = new chrome.Options();
     const selectAll = await driver.findElement(By.id('s2-togall-trailmen-select'));
     selectAll.click(); // select all trailmen
 
-    const advRows = await driver.findElements(By.css('#table_items tr'));
-    advRows.forEach(async (row) => {
-      const cells = await row.findElements(By.css('td'));
+    // open the badge list
+    const badgeSelectElement = await driver.findElement(By.css('span[data-select2-id="2"]'));
+    badgeSelectElement.click();
 
-      // TODO: process cells
-      // <td><div id=<lessonID>_<memberID>_<patrolID> data-original-title="Earned on: 02/10/2022"><i /></div></td>
-      // advacement grid item
-    });
+    // explicit wait for the results to appear
+    await driver.wait(until.elementLocated(By.className('select2-results')));
+
+    // select the first elements in the branches list
+    const badgeBranchGroup = await driver.findElement(By.css('.select2-results ul li'));
+    const badgeBranches = await badgeBranchGroup.findElements(By.css('li'));
+    badgeBranches[0].click();
+
+    // wait for the table to appear
+    await driver.wait(until.elementLocated(By.id('table_items')));
+
+    const advRows = await driver.findElements(By.css('#table_items tr'));
+    // advRows.forEach(async (row) => {
+    const cells = await advRows[1].findElements(By.css('td'));
+    const lessonNameText = await cells[0].getText();
+    const lessonName = lessonNameText.substring(0, lessonNameText.indexOf('\n'));
+
+    if (cells.length > 1) {
+      const cellDiv = await cells[1].findElement(By.css('div'));
+      const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
+      console.log({ lessonName, lessonID, memberID, patrolID });
+    }
+
+    // TODO: process cells
+    // <td><div id=<lessonID>_<memberID>_<patrolID> data-original-title="Earned on: 02/10/2022"><i /></div></td>
+    // advacement grid item
+    // });
   } catch (error) {
     console.error(error);
   }

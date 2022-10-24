@@ -1,5 +1,5 @@
 {
-  "name": "troop1412-api",
+  "name": "troop1412",
   "version": "1.0.0",
   "description": "The Api backend for the Trail Life Attendence app",
   "main": "index.js",
