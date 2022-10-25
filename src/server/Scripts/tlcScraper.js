@@ -80,22 +80,52 @@ const opts = new chrome.Options();
     // wait for the table to appear
     await driver.wait(until.elementLocated(By.id('table_items')));
 
+    const lessons = [];
+    const advacement = {};
+
     const advRows = await driver.findElements(By.css('#table_items tr'));
-    // advRows.forEach(async (row) => {
-    const cells = await advRows[1].findElements(By.css('td'));
-    const lessonNameText = await cells[0].getText();
-    const lessonName = lessonNameText.substring(0, lessonNameText.indexOf('\n'));
+    advRows.splice(advRows.length - 7);
+    await Promise.all(
+      advRows.map(async (row) => {
+        const cells = await row.findElements(By.css('td'));
+        const lessonNameText = await cells[0].getText();
+        const lessonName = lessonNameText.split('\n')[0];
+        let saveLesson = true;
 
-    if (cells.length > 1) {
-      const cellDiv = await cells[1].findElement(By.css('div'));
-      const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
-      console.log({ lessonName, lessonID, memberID, patrolID });
-    }
+        if (cells.length > 1) {
+          for (let i = 1; i < cells.length; i++) {
+            const cellDiv = await cells[i].findElement(By.css('div'));
+            const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
 
-    // TODO: process cells
-    // <td><div id=<lessonID>_<memberID>_<patrolID> data-original-title="Earned on: 02/10/2022"><i /></div></td>
-    // advacement grid item
-    // });
+            if (![lessonID, memberID].includes('ave')) {
+              // check for date completed. Record the advancement if it exists
+              const earnedOn = await cellDiv.findElement(By.css('i')).getAttribute('data-original-title');
+              if (earnedOn) {
+                const dateCompleted = earnedOn.split(': ')[1].split('<br>')[0];
+                // add to the list or start it.
+                if (advacement[memberID]) {
+                  advacement[memberID].push({ patrolID, lessonID, date: dateCompleted });
+                } else {
+                  advacement[memberID] = [{ patrolID, lessonID, date: dateCompleted }];
+                }
+              }
+
+              if (saveLesson) {
+                console.log(`${lessonID} - ${lessonName}`);
+                lessons.push({ lessonName, lessonID });
+                saveLesson = false;
+              }
+            }
+          }
+        }
+
+        // TODO: process cells
+        // <td><div id=<lessonID>_<memberID>_<patrolID> data-original-title="Earned on: 02/10/2022"><i /></div></td>
+        // advacement grid item
+      })
+    );
+
+    console.log(advacement);
   } catch (error) {
     console.error(error);
   }
