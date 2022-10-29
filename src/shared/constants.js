@@ -38,30 +38,35 @@ export const BRANCHES = Object.keys(BRANCH_COLORS);
 
 export const PATROLS = {
   foxes: {
+    id: 'l3c59dc048e8',
     key: 'foxes',
     name: 'Foxes',
     color: '#b97c38',
     logo: FoxesLogo,
   },
   hawks: {
+    id: 'ib6d767d2f8e',
     key: 'hawks',
     name: 'Hawks',
     color: '#eab71b',
     logo: HawksLogo,
   },
   mountainLions: {
+    id: 'k37693cfc748',
     key: 'mountainLions',
     name: 'Mountain Lions',
     color: '#cea54a',
     logo: MountainLionsLogo
   },
   navigators: {
+    id: 'j8e296a067a3',
     key: 'navigators',
     name: 'Navigators',
     color: '#bbbdbd',
     logo: NavigatorsLogo,
   },
   adventurers: {
+    id: 'x1ff1de77400',
     key: 'adventurers',
     name: 'Adventurers',
     color: '#8ec8e7',

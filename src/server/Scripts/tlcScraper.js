@@ -1,3 +1,4 @@
+const fs = require('fs/promises');
 const { By, Key, until } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
@@ -18,13 +19,16 @@ const opts = new chrome.Options();
     const lastName = name[0];
     const id = await kid.getAttribute('value');
 
-    return { firstName, lastName, id, patrol };
+    return { firstName, lastName, id, patrol, adv: [] };
   }
 
   const driver = new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(opts)
     .build();
+
+  const lessons = [];
+  const members = {};
 
   try {
     await driver.get('https://www.traillifeconnect.com/dashboard');
@@ -52,12 +56,13 @@ const opts = new chrome.Options();
     const mlOptions = await driver.findElements(By.css('#trailmen-select optgroup[label="Mountain Lions"] option'));
     const mountainLions = await Promise.all(mlOptions.map((kid) => parseKid(kid, 'mountainLions')));
 
-    const trailmenArray = [...foxes, ...hawks, ...mountainLions];
-
-    // console.log(trailmenArray);
+    // assemble the trailmen in into member records so they are accessable by id
+    [...foxes, ...hawks, ...mountainLions].forEach((trailman) => {
+      members[trailman.id] = trailman;
+    });
 
     /**
-     * Build Advancement Data
+     * Build Advancement and Lesson Data
      * advacement grid item id=<lessonID>_<memberID>_<patrolID>
      */
     const trailmenSelectInput = await driver.findElement(By.className('select2-search__field'));
@@ -65,67 +70,82 @@ const opts = new chrome.Options();
     const selectAll = await driver.findElement(By.id('s2-togall-trailmen-select'));
     selectAll.click(); // select all trailmen
 
-    // open the badge list
-    const badgeSelectElement = await driver.findElement(By.css('span[data-select2-id="2"]'));
-    badgeSelectElement.click();
+    // Loop over each branch
+    for (let branch = 0; branch <= 6; branch++) {
+      const lessonTypes = ['core', 'elective', 'htt', 'makeup'];
+      let typeIndex = -1;
 
-    // explicit wait for the results to appear
-    await driver.wait(until.elementLocated(By.className('select2-results')));
+      // open the badge list
+      const badgeSelectElement = await driver.findElement(By.css('span[data-select2-id="2"]'));
+      badgeSelectElement.click();
 
-    // select the first elements in the branches list
-    const badgeBranchGroup = await driver.findElement(By.css('.select2-results ul li'));
-    const badgeBranches = await badgeBranchGroup.findElements(By.css('li'));
-    badgeBranches[0].click();
+      // explicit wait for the results to appear
+      await driver.wait(until.elementLocated(By.className('select2-results')));
 
-    // wait for the table to appear
-    await driver.wait(until.elementLocated(By.id('table_items')));
+      // select the first elements in the branches list
+      const badgeBranchGroup = await driver.findElement(By.css('.select2-results ul li'));
+      const badgeBranches = await badgeBranchGroup.findElements(By.css('li'));
+      const branchName = (await badgeBranches[branch].getText()).replace(' Branch', '');
+      badgeBranches[branch].click();
 
-    const lessons = [];
-    const advacement = {};
+      // find the level select buttons and Loop over each patrol
+      const trackLevelButtons = await driver.wait(until.elementsLocated(By.css('#div-track-level-select label')));
+      for (let level = 1; level <= 3; level++) {
+        await driver.wait(until.elementIsVisible(trackLevelButtons[level]));
+        trackLevelButtons[level].click();
 
-    const advRows = await driver.findElements(By.css('#table_items tr'));
-    advRows.splice(advRows.length - 7);
-    await Promise.all(
-      advRows.map(async (row) => {
-        const cells = await row.findElements(By.css('td'));
-        const lessonNameText = await cells[0].getText();
-        const lessonName = lessonNameText.split('\n')[0];
-        let saveLesson = true;
+        // wait for the loader then the table to appear again
+        await driver.wait(until.elementLocated(By.css('#award_html h4')));
+        await driver.wait(until.elementLocated(By.id('table_items')));
 
-        if (cells.length > 1) {
-          for (let i = 1; i < cells.length; i++) {
-            const cellDiv = await cells[i].findElement(By.css('div'));
-            const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
+        const advRows = await driver.findElements(By.css('#table_items tr'));
+        advRows.splice(advRows.length - 7);
 
-            if (![lessonID, memberID].includes('ave')) {
-              // check for date completed. Record the advancement if it exists
-              const earnedOn = await cellDiv.findElement(By.css('i')).getAttribute('data-original-title');
-              if (earnedOn) {
-                const dateCompleted = earnedOn.split(': ')[1].split('<br>')[0];
-                // add to the list or start it.
-                if (advacement[memberID]) {
-                  advacement[memberID].push({ patrolID, lessonID, date: dateCompleted });
-                } else {
-                  advacement[memberID] = [{ patrolID, lessonID, date: dateCompleted }];
+        for (let j = 0; j < advRows.length; j++) {
+          const cells = await advRows[j].findElements(By.css('td'));
+          const lessonNameText = await cells[0].getText();
+          const lessonName = lessonNameText.split('\n')[0];
+          let saveLesson = true;
+
+          // TODO: Low nesting output to say it's working
+
+          // if length === 1, then it's a type header so advance the type index
+          if (cells.length === 1) {
+            typeIndex += 1;
+          } else {
+            for (let i = 1; i < cells.length; i++) {
+              const cellDiv = await cells[i].findElement(By.css('div'));
+              const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
+
+              if (![lessonID, memberID].includes('ave')) {
+                // check for date completed. Record the advancement if it exists
+                const earnedOn = await cellDiv.findElement(By.css('i')).getAttribute('data-original-title');
+                if (earnedOn) {
+                  const dateCompleted = earnedOn.split(': ')[1].split('<br>')[0];
+                  members[memberID].adv.push({ patrolID, lessonID, date: dateCompleted });
                 }
-              }
 
-              if (saveLesson) {
-                console.log(`${lessonID} - ${lessonName}`);
-                lessons.push({ lessonName, lessonID });
-                saveLesson = false;
+                if (saveLesson) {
+                  const lesson = {
+                    lessonID,
+                    branch: branchName,
+                    name: lessonName,
+                    type: lessonTypes[typeIndex],
+                  };
+
+                  lessons.push(lesson);
+                  saveLesson = false;
+                }
               }
             }
           }
         }
+      }
+    }
 
-        // TODO: process cells
-        // <td><div id=<lessonID>_<memberID>_<patrolID> data-original-title="Earned on: 02/10/2022"><i /></div></td>
-        // advacement grid item
-      })
-    );
-
-    console.log(advacement);
+    // write out to files
+    await fs.writeFile('./output/members.json', JSON.stringify(members));
+    await fs.writeFile('./output/lessons.json', JSON.stringify(lessons));
   } catch (error) {
     console.error(error);
   }
