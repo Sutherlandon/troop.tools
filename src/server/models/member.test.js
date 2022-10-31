@@ -1,11 +1,15 @@
+import { DateTime } from 'luxon';
 import {
   afterAll,
+  beforeAll,
   expect,
   it,
 } from '@jest/globals';
 
 import db from '../config/database';
+import Lesson from './lessons.model';
 import Member from './member.model';
+import { PATROLS } from '../../shared/constants';
 
 let index = 0;
 function makeMember(patrol, adv = []) {
@@ -21,14 +25,42 @@ function makeMember(patrol, adv = []) {
   };
 }
 
-afterAll(async() => {
+const testDate = DateTime.now().toLocaleString(DateTime.DATE_SHORT);
+const testLessons = [{
+  lessonID: 'hbhmknwaozr5',
+  branch: 'Heritage',
+  name: 'Christian Heritage',
+  type: 'core'
+}, {
+  lessonID: '33vyzrr0umju',
+  branch: 'Heritage',
+  name: 'Flag Etiquette and History',
+  type: 'core'
+}, {
+  lessonID: 'etq3e8060lwm',
+  branch: 'Heritage',
+  name: 'Founding Fathers',
+  type: 'core'
+}];
+
+beforeAll(async () => {
+  await Lesson.create(testLessons);
+});
+
+afterAll(async () => {
   await Member.collection.drop();
+  await Lesson.collection.drop();
   db.close();
 });
 
 it('Should get all the members', async () => {
   // first-01 for sorting name along with patrol
-  const adventurer = makeMember('adventurer');
+  const testAdvEntry = {
+    date: testDate,
+    lessonID: testLessons[0].lessonID,
+    patrolID: PATROLS.adventurers.id,
+  };
+  const adventurer = makeMember('adventurer', [testAdvEntry]);
   const testMembers = await Member.create([
     makeMember('fox'),
     makeMember('hawk'),
@@ -41,6 +73,11 @@ it('Should get all the members', async () => {
   const received = await Member.getAll();
   expect(received.length).toEqual(6);
   expect(received[0].firstName).toEqual('first-01');
+  expect(received[0].adv[0]).toMatchObject({
+    ...testAdvEntry,
+    ...testLessons[0],
+    patrol: 'adventurers',
+  });
 
   await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
@@ -87,7 +124,7 @@ it('Should remove a member', async () => {
 
 it('Should add an advancement entry on one member', async () => {
   const member = await Member.create(makeMember('hawk')); // 10th
-  const testEntry = { lessonID: 1, date: '2022-09-18' };
+  const testEntry = { lessonID: testLessons[0].lessonID, date: '2022-09-18' };
 
   const received = await Member.addAdvancement(member._id, testEntry);
   expect(received.adv[0]).toMatchObject(testEntry);
@@ -96,7 +133,7 @@ it('Should add an advancement entry on one member', async () => {
 });
 
 it('Should removed an advancement entry on one member', async () => {
-  const testEntry = { lessonID: 1, date: '2022-09-18' };
+  const testEntry = { lessonID: testLessons[0].lessonID, date: '2022-09-18' };
   const member = await Member.create(makeMember('hawk', [testEntry])); // 11th
 
   const received = await Member.removeAdvancement(member._id, testEntry);
@@ -106,7 +143,7 @@ it('Should removed an advancement entry on one member', async () => {
 });
 
 it('Should update the advancement entries on many members', async () => {
-  const testEntry = { lessonID: 1, date: '2022-09-18' };
+  const testEntry = { lessonID: testLessons[0].lessonID, date: '2022-09-18' };
   const testMembers = await Member.create([
     makeMember('hawk', [testEntry]),
     makeMember('fox'),

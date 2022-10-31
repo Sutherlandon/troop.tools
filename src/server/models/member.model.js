@@ -2,9 +2,11 @@ import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
 import db from '../config/database';
+import Lesson from './lessons.model';
+import { PATROLS_ARRAY } from '../../shared/constants';
 
 // define the default collection name
-let collection = 'members2';
+let collection = 'members';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
@@ -21,7 +23,8 @@ const MemberSchema = new mongoose.Schema({
   adv: [{
     _id: false, // no _id's for $addToSet comparison to work
     date: String,
-    lessonID: Number,
+    lessonID: String,
+    patrolID: String,
   }],
   firstName: String,
   lastName: String,
@@ -56,9 +59,26 @@ MemberSchema.statics = {
   async getAll() {
     // fetch the members data
     const members = await this.find().lean();
+    const lessonsDB = await Lesson.getAll();
+    const patrolKeysById = {};
+    PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
+
+    // index the lessons
+    const lessons = {};
+    lessonsDB.forEach((lesson) => (lessons[lesson.lessonID] = lesson));
+
+    const membersHydratedd = members.map((member) => {
+      const advHydratedd = member.adv
+        .map((entry) => ({
+          ...entry,
+          ...lessons[entry.lessonID],
+          patrol: patrolKeysById[entry.patrolID]
+        }));
+      return { ...member, adv: advHydratedd };
+    });
 
     // cache the members
-    _members = sortBy(members, ['patrol', 'firstName']);
+    _members = sortBy(membersHydratedd, ['patrol', 'firstName']);
 
     return _members;
   },

@@ -144,7 +144,7 @@ const opts = new chrome.Options();
     }
 
     // write out to files
-    await fs.writeFile('./output/members.json', JSON.stringify(members));
+    await fs.writeFile('./output/members.json', JSON.stringify(Object.values(members)));
     await fs.writeFile('./output/lessons.json', JSON.stringify(lessons));
   } catch (error) {
     console.error(error);

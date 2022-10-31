@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import * as MembersAPI from '@client/MembersAPI';
-import { ADVANCEMENT, LESSONS } from '@shared/constants';
+import * as MembersAPI from '@client/api/MembersAPI';
+import { ADVANCEMENT } from '@shared/constants';
 import {
   LinearProgress,
   Typography,
@@ -50,10 +50,7 @@ function AdvancementReportPage(props) {
   // process advancement to match the shape of the ADVANCMENT constanst
   const adv = { ...blankAdvancement };
   console.log(adv);
-  member.adv.forEach((entry) => {
-    // const date = DateTime.fromISO(entry.date);
-    const lesson = LESSONS[entry.lessonID];
-    console.log(lesson);
+  member.adv.forEach((lesson) => {
     adv[lesson.branch][lesson.type] += 1;
   });
 

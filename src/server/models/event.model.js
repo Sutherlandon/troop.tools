@@ -8,7 +8,7 @@ import Member from './member.model';
 import isEmpty from 'lodash.isempty';
 
 // define the default collection name
-let collection = 'events2';
+let collection = 'events';
 
 // use a random table name for testing
 if (process.env.NODE_ENV === 'test') {
