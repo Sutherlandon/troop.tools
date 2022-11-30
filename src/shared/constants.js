@@ -6,24 +6,73 @@ import AdventurersLogo from './images/adventuersLogo.png';
 import NavigatorsLogo from './images/navigatorsLogo.png';
 
 export const ADVANCEMENT = {
-  'Heritage': { core: 2, elective: 1, htt: 1, makeup: 1 },
-  'Hobbies': { core: 1, elective: 2, htt: 1, makeup: 1 },
-  'Life Skills': { core: 3, elective: 1, htt: 1, makeup: 1 },
-  'Outdoor Skills': { core: 3, elective: 1, htt: 1, makeup: 1 },
-  'Science & Technology': { core: 2, elective: 1, htt: 1, makeup: 1 },
-  'Sports & Fitness': { core: 2, elective: 1, htt: 1, makeup: 1 },
-  'Values': { core: 2, elective: 1, htt: 1, makeup: 1 },
+  'Heritage': { core: 2, elective: 1, htt: 1, makeup: 2 },
+  'Hobbies': { core: 1, elective: 2, htt: 1, makeup: 2 },
+  'Life Skills': { core: 3, elective: 1, htt: 1, makeup: 2 },
+  'Outdoor Skills': { core: 3, elective: 1, htt: 1, makeup: 2 },
+  'Science & Technology': { core: 2, elective: 1, htt: 1, makeup: 2 },
+  'Sports & Fitness': { core: 2, elective: 1, htt: 1, makeup: 2 },
+  'Values': { core: 2, elective: 1, htt: 1, makeup: 2 },
+};
+
+export const ADVANCEMENT_BLANK = {
+  'Heritage': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Hobbies': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Life Skills': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Outdoor Skills': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Science & Technology': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Sports & Fitness': { core: 0, elective: 0, htt: 0, makeup: 0 },
+  'Values': { core: 0, elective: 0, htt: 0, makeup: 0 },
+};
+
+export const BRANCHES = {
+  'Heritage': {
+    name: 'Heritage',
+    id: 'acvhb63my62f',
+    b: '#896400',
+    t: 'white',
+  },
+  'Hobbies': {
+    name: 'Hobbies',
+    id: 'acn7nd1otizl',
+    b: '#212121',
+    t: 'white',
+  },
+  'Life Skills': {
+    name: 'Life Skills',
+    id: 'ac5takv44649',
+    b: '#8c1006',
+    t: 'white',
+  },
+  'Outdoor Skills': {
+    name: 'Outdoor Skills',
+    id: 'ac9hfgsftr4d',
+    b: '#005283',
+    t: 'white',
+  },
+  'Science & Technology': {
+    name: 'Science & Technology',
+    id: 'acbj0h1vca1j',
+    b: '#ffb130',
+    t: 'black',
+  },
+  'Sports & Fitness': {
+    name: 'Sports & Fitness',
+    id: 'ac9r5nt7904r',
+    b: '#425b21',
+    t: 'white',
+  },
+  'Values': {
+    name: 'Values',
+    id: 'acgn1dpdw6jt',
+    b: '#c5171c',
+    t: 'white',
+  },
 };
 
 export const BRANCH_COLORS = {
   // TL Branches
-  'Heritage': { b: '#896400', t: 'white' },
-  'Hobbies': { b: '#212121', t: 'white' },
-  'Life Skills': { b: '#8c1006', t: 'white' },
-  'Outdoor Skills': { b: '#005283', t: 'white' },
-  'Science & Technology': { b: '#ffb130', t: 'black' },
-  'Sports & Fitness': { b: '#425b21', t: 'white' },
-  'Values': { b: '#c5171c', t: 'white' },
+  ...BRANCHES,
 
   // Other categories to
   'Award': { b: 'purple', t: 'white' },
@@ -34,7 +83,7 @@ export const BRANCH_COLORS = {
   'General': { b: 'lightgray', t: 'black' },
 };
 
-export const BRANCHES = Object.keys(BRANCH_COLORS);
+export const BRANCH_NAMES = Object.keys(BRANCH_COLORS);
 
 export const PATROLS = {
   foxes: {

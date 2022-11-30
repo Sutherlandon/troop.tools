@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 
 import * as EventsAPI from '@client/api/EventsAPI';
-import { ADVANCEMENT, BRANCHES, LESSONS, LESSON_TYPES } from '@shared/constants';
+import { ADVANCEMENT, BRANCH_NAMES, LESSONS, LESSON_TYPES } from '@shared/constants';
 import {
   DatePicker,
   Select,
@@ -113,7 +113,7 @@ export default function EventFormDialog(props) {
                   label='Branch'
                   name='branch'
                 >
-                  {BRANCHES.map((branch) => (
+                  {BRANCH_NAMES.map((branch) => (
                     <MenuItem value={branch} key={branch}>
                       {branch}
                     </MenuItem>

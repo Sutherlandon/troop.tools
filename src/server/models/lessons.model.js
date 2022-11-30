@@ -54,9 +54,9 @@ if (process.env.NODE_ENV === 'development') {
   console.log('Rebuilding Lesson Model');
   delete db.models.Lesson;
 
-  Lesson = db.model('Member', LessonSchema);
+  Lesson = db.model('Lesson', LessonSchema);
 } else {
-  Lesson = db.models.Member || db.model('Lesson', LessonSchema);
+  Lesson = db.models.Lesson || db.model('Lesson', LessonSchema);
 }
 
 export default Lesson;

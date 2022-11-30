@@ -1,25 +1,12 @@
+import cloneDeep from 'lodash.clonedeep';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import * as MembersAPI from '@client/api/MembersAPI';
-import { ADVANCEMENT } from '@shared/constants';
+import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 import {
-  LinearProgress,
+  CircularProgress,
   Typography,
 } from '@mui/material';
-// import { DateTime } from 'luxon';
-
-const blankAdvancement = Object.keys(ADVANCEMENT).reduce(
-  (acc, branch) => ({
-    ...acc,
-    [branch]: {
-      core: 0,
-      elective: 0,
-      htt: 0,
-      makeup: 0,
-    }
-  }),
-  {}
-);
 
 function AdvancementReportPage(props) {
   const { query } = useRouter();
@@ -35,6 +22,7 @@ function AdvancementReportPage(props) {
 
       // find the member passed in by the query
       const member = data.filter((m) => m._id === query.id)[0];
+
       setMember(member);
     }
 
@@ -42,16 +30,19 @@ function AdvancementReportPage(props) {
   }, [query]);
 
   if (!member) {
-    return <LinearProgress />;
+    return <CircularProgress />;
   }
 
-  console.log(member);
-
   // process advancement to match the shape of the ADVANCMENT constanst
-  const adv = { ...blankAdvancement };
-  console.log(adv);
+  const adv = {
+    [PATROLS.foxes.id]: cloneDeep(ADVANCEMENT_BLANK),
+    [PATROLS.hawks.id]: cloneDeep(ADVANCEMENT_BLANK),
+    [PATROLS.mountainLions.id]: cloneDeep(ADVANCEMENT_BLANK)
+  };
+
+  // fill the advancement with lessons
   member.adv.forEach((lesson) => {
-    adv[lesson.branch][lesson.type] += 1;
+    adv[lesson.patrolID][lesson.branch][lesson.type] += 1;
   });
 
   return (
@@ -59,6 +50,17 @@ function AdvancementReportPage(props) {
       <Typography variant='h5'>
         Advancement Report for {member.firstName} {member.lastName}
       </Typography>
+      <AdvancementPage title='Fox' adv={Object.values(adv)[0]} />
+      <AdvancementPage title='Hawk' adv={Object.values(adv)[1]} />
+      <AdvancementPage title='Mountain Lion' adv={Object.values(adv)[2]} />
+    </div>
+  );
+}
+
+function AdvancementPage({ adv, title }) {
+  return (
+    <div>
+      <Typography variant='h4'>{title}</Typography>
       <ul>
         {Object.keys(adv).map((branch) => (
           <li key={branch}>
@@ -73,7 +75,6 @@ function AdvancementReportPage(props) {
           </li>
         ))}
       </ul>
-      { }
     </div>
   );
 }

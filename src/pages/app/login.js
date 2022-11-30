@@ -30,7 +30,8 @@ function LoginForm(props) {
     // Trigger Magic link to be sent to user
     const didToken = await magic.auth.loginWithMagicLink({
       email,
-      // redirectURI: new URL('/callback', window.location.origin).href // optional redirect back to your app after magic link is clicked
+      // optional redirect back to your app after magic link is clicked
+      // redirectURI: new URL('/callback', window.location.origin).href
     });
 
     // -- Below here runs AFTER the magic link is clicked --
@@ -42,6 +43,8 @@ function LoginForm(props) {
     if (res.status === 200) {
       const magicMetadata = await magic.user.getMetadata();
       const { data, error } = await UserAPI.get(magicMetadata.issuer);
+
+      console.log({ data, error });
 
       if (error === 'USER_NOT_FOUND') {
         return Router.push('/app/onboarding');

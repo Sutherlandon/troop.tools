@@ -34,7 +34,7 @@ function LoginForm(props) {
 
   // Redirect to / if the user is logged in
   useEffect(() => {
-    user?.issuer && Router.push('/');
+    user?.issuer && Router.push('/app');
   }, [user]);
 
   // Since they are not logged in, prep the form
