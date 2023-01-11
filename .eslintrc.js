@@ -5,6 +5,7 @@ module.exports = {
   ],
   rules: {
     semi: [2, 'always'],
+    camelcase: 'off',
     'comma-dangle': ['error', {
       arrays: 'only-multiline',
       objects: 'only-multiline',

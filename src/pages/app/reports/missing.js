@@ -43,6 +43,7 @@ function missingCredits(row, branch) {
 
 function MissingReportPage(props) {
   const [members, setMembers] = useState();
+  const [summary, setSummary] = useState({});
 
   useEffect(() => {
     async function loadMembers() {
@@ -67,8 +68,20 @@ function MissingReportPage(props) {
       <Typography variant='h5' sx={{ mb: 2 }}>
         Missing Lessons Report
       </Typography>
-      <Box sx={{ mb: 3, maxWidth: 300 }}>
-        <Table size='small'>
+      <Box sx={{ mb: 3, maxWidth: 200 }}>
+        <Table
+          size='small'
+          sx={{
+            '& th': {
+              backgroundColor: 'black',
+              color: 'white',
+              px: 1,
+            },
+            '& td': {
+              backgroundColor: 'lightgray',
+            },
+          }}
+        >
           <TableHead>
             <TableRow>
               <TableCell colSpan={2}>Legend</TableCell>
@@ -97,7 +110,12 @@ function MissingReportPage(props) {
       <Grid container spacing={2}>
         {Object.keys(BRANCHES).map((branchName) => (
           <Grid item key={branchName}>
-            <BranchGrid branch={branchName} members={members} />
+            <BranchGrid
+              branch={branchName}
+              members={members}
+              setSummary={setSummary}
+              summary={summary}
+            />
           </Grid>
         ))}
       </Grid>
@@ -105,10 +123,13 @@ function MissingReportPage(props) {
   );
 }
 
-function BranchGrid({ branch, members }) {
+function BranchGrid(props) {
+  const { branch, members } = props;
+
   const oneLessonAway = { branch: 0, star: 0 };
 
   // build the grid
+
   const theGrid = members.map((member) => {
     const name = `${member.firstName} ${member.lastName}`;
     const row = {
@@ -138,8 +159,18 @@ function BranchGrid({ branch, members }) {
     return row;
   });
 
+  // save the one Lesson away up state
+
   return (
-    <Table size='small'>
+    <Table
+      size='small'
+      padding='none'
+      sx={{
+        '& td, & th': {
+          px: 1,
+        }
+      }}
+    >
       <TableHead>
         <TableRow sx={{
           '& th': {
