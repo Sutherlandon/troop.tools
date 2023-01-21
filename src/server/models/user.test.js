@@ -9,8 +9,8 @@ function makeUser() {
   const userId = `${index}`.padStart(2, '0');
 
   return {
-    email: `test-${userId}@gmail.com`,
-    issuer: `testrandomtokenstringthing-${userId}`,
+    email: `test-${userId}@troop.tools`,
+    troop: 'NM1412',
     firstName: `first-${userId}`,
     lastName: `last-${userId}`,
   };
@@ -63,14 +63,15 @@ it('Should get all the users sorted by last name', async () => {
 
 it('should update a user\'s name with new values', async () => {
   const user = await User.create(makeUser());
+
   const formData = {
-    _id: user._id,
+    email: user.email,
     firstName: 'Randle',
     lastName: 'Boss',
   };
 
   const received = await User.update(formData);
-  expect(received[0]).toMatchObject(formData);
+  expect(received).toMatchObject(formData);
 
   await User.deleteOne({ _id: user._id });
 });

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Router from 'next/router';
 import { useContext } from 'react';
 import { Logout } from '@mui/icons-material';
 import {
@@ -10,21 +9,11 @@ import {
   Typography,
 } from '@mui/material';
 
-import magic from '../config/magic-sdk';
+import { signOut } from 'next-auth/react';
 import UserContext from './UserContext';
 
 function AppBar() {
-  const [user, setUser] = useContext(UserContext);
-
-  /**
-   * Logs the user out of the magic session
-   */
-  function logout() {
-    magic.user.logout().then(() => {
-      setUser({ user: null });
-      Router.push('/app/login');
-    });
-  }
+  const [user] = useContext(UserContext);
 
   return (
       <MuiAppBar position='static'>
@@ -33,16 +22,16 @@ function AppBar() {
             <Link href='/' passHref>
               <Box sx={{ width: 'fit-content' }}>
                 <Typography variant='h6' component='div' sx={{ padding: 2, cursor: 'pointer' }}>
-                  Troop 1412
+                  Troop Tools
                 </Typography>
               </Box>
             </Link>
           </Grid>
-          {user?.issuer &&
+          {user?.firstName &&
             <Grid item>
               {user.firstName}
               <IconButton
-                onClick={logout}
+                onClick={() => signOut()}
                 sx={{ color: 'inherit', paddingRight: 2 }}
               >
                 <Logout />

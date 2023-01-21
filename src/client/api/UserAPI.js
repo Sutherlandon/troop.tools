@@ -39,3 +39,11 @@ export function add(data) {
     data,
   });
 }
+
+export function update(data) {
+  return makeRequest({
+    url: '/api/users',
+    method: 'PUT',
+    data,
+  });
+}

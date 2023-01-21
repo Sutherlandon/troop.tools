@@ -17,10 +17,10 @@ let _users = [];
 
 const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
-  issuer: { type: String, unique: true },
   firstName: String,
   lastName: String,
   roles: Array,
+  troop: String,
 }, {
   collection,
   timestamps: {
@@ -52,11 +52,12 @@ UserSchema.statics = {
   },
 
   async update(formData) {
-    const { _id, firstName, lastName } = formData;
-
-    await this.findOneAndUpdate({ _id }, { firstName, lastName }).lean();
-
-    return this.getAll();
+    const { email, firstName, lastName } = formData;
+    return this.findOneAndUpdate(
+      { email },
+      { firstName, lastName },
+      { new: true }
+    ).lean();
   },
 };
 

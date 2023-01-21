@@ -27,6 +27,21 @@ export const authOptions = {
       from: 'no-reply@troop.tools',
     }),
   ],
+
+  callbacks: {
+    async session({ session, token, user }) {
+      // add the users's name and roles to the session;
+      session.user.firstName = user.firstName;
+      session.user.lastName = user.lastName;
+      session.user.roles = user.roles || [];
+
+      return session;
+    }
+  },
+
+  // pages: {
+  //   signIn: '/app/auth/signin'
+  // }
 };
 
 export default NextAuth(authOptions);

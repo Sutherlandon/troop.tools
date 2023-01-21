@@ -1,11 +1,11 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import { SessionProvider } from 'next-auth/react';
 import Router from 'next/router';
+import isEmpty from 'lodash.isempty';
+import { SessionProvider } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 import AppBar from '@client/components/AppBar';
 import UserContext from '@client/components/UserContext';
-import magic from '@client/config/magic-sdk';
 import * as UserAPI from '@client/api/UserAPI';
 import { LocalizationProvider } from '@mui/lab';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -19,55 +19,33 @@ export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     async function fetchSession() {
       const { data: session, error } = await UserAPI.getSession();
+      console.log({ session });
 
       if (error) {
         return console.error(error);
       }
 
       // if no session exists, redirect to sign in.
-      if (!session) {
+      if (isEmpty(session)) {
         setSession({});
         return Router.push('/api/auth/signin');
       }
 
-      setSession(session);
+      // set user so we can use it's context
       setUser(session.user);
+
+      // if the user doesn't have a name, finish the onboarding
+      if (!session.user.firstName || !session.user.lastName) {
+        return Router.push('/app/onboarding');
+      }
+
+      // this may be unneccessary as we only use the user
+      setSession(session);
+      Router.push('/app');
     }
 
     fetchSession();
   }, []);
-
-  // useEffect(() => {
-  //   async function checkUser() {
-  //     const isLoggedIn = await magic.user.isLoggedIn();
-
-  //     // if logged in with magic
-  //     if (!isLoggedIn) {
-  //       setUser({});
-  //       return Router.push('/app/login');
-  //     }
-
-  //     if (!user.issuer) {
-  //       const magicMetaData = await magic.user.getMetadata();
-
-  //       // get the user from the DB
-  //       const { data, error } = await UserAPI.get(magicMetaData.issuer);
-
-  //       if (error) {
-  //         return console.error(error);
-  //       }
-
-  //       // if the user doesn't have a name, finish the onboarding
-  //       if (!data.firstName || !data.lastName) {
-  //         Router.push('/app/onboarding');
-  //       }
-
-  //       setUser(data);
-  //     }
-  //   }
-
-  //   checkUser();
-  // }, [user.issuer]);
 
   if (user.loading) {
     return <h3>Logging you in...</h3>;

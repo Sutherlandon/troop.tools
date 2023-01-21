@@ -12,7 +12,6 @@ import {
 
 import TextField from '@client/components/formikMui/TextField';
 import UserContext from '@client/components/UserContext';
-import magic from '@client/config/magic-sdk';
 import * as UserAPI from '@client/api/UserAPI';
 
 const UserSchema = yup.object({
@@ -21,41 +20,23 @@ const UserSchema = yup.object({
   lastName: yup.string().required('Required'),
 });
 
-const blankForm = {
-  email: '',
-  firstName: '',
-  lastName: '',
-};
-
-function LoginForm(props) {
+function OnboardingForm(props) {
   const [loading] = useState(false);
   const [user, setUser] = useContext(UserContext);
-  const [initialValues, setInitialValues] = useState(blankForm);
+  const initialValues = {
+    email: user.email,
+    troop: 'NM1412',
+    firstName: '',
+    lastName: '',
+  };
 
   // Redirect to / if the user is logged in
   useEffect(() => {
-    user?.issuer && Router.push('/app');
+    user?.firstName && Router.push('/app');
   }, [user]);
 
-  // Since they are not logged in, prep the form
-  useEffect(() => {
-    async function loadMetadata() {
-      const { email, issuer } = await magic.user.getMetadata();
-      const initialValues = {
-        email,
-        issuer,
-        firstName: '',
-        lastName: '',
-      };
-
-      setInitialValues(initialValues);
-    }
-
-    loadMetadata();
-  });
-
   async function handleSubmit(values) {
-    const { data, error } = await UserAPI.add(values);
+    const { data, error } = await UserAPI.update(values);
 
     if (error) {
       return console.error(error);
@@ -86,6 +67,11 @@ function LoginForm(props) {
               name='email'
             />
             <TextField
+              disabled
+              label='Trail Life Troop'
+              name='troop'
+            />
+            <TextField
               label='First Name'
               name='firstName'
             />
@@ -112,4 +98,4 @@ function LoginForm(props) {
   );
 }
 
-export default LoginForm;
+export default OnboardingForm;
