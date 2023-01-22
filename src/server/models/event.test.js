@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { LESSONS } from '@shared/constants';
+import { LESSONS } from '../../shared/constants';
 import {
   afterAll,
   beforeAll,
@@ -14,10 +14,11 @@ import Member from './member.model';
 let testMembers;
 const testDate = DateTime.fromISO('2022-01-01');
 const testEvent = {
-  title: 'Test name',
-  lessonID: 2,
+  branch: 'General',
   date: testDate.toString(),
   desc: 'Hello TLUSA',
+  lessonID: 2,
+  title: 'Test name',
 };
 
 beforeAll(async () => {

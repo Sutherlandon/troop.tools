@@ -6,7 +6,6 @@ import Image from 'next/image';
 import {
   Box,
   Button,
-  IconButton,
   Grid,
   Typography,
   Table,
@@ -31,7 +30,7 @@ function EventDetails(props) {
 
   // group event.attendance by patrol into an object
   const attendance = {};
-  event.attendance.forEach(({ name, patrol }) => {
+  event.attendance?.forEach(({ name, patrol }) => {
     if (!attendance[patrol]) {
       attendance[patrol] = [name];
     } else {
@@ -43,16 +42,8 @@ function EventDetails(props) {
     <Box>
       <Grid container justifyContent='space-between' alignItems='center'>
         <Grid item>
-          {event.lesson?.branch && <Tag variant={event.lesson.branch} />}
+          {event.branch && <Tag variant={event.branch} />}
           {event.lesson?.type && <Tag variant={LESSON_TYPES[event.lesson?.type]} />}
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={onEdit}
-            sx={{ color: 'inherit' }}
-          >
-            <EditIcon />
-          </IconButton>
         </Grid>
       </Grid>
       {event.title && event.lesson &&
@@ -117,14 +108,25 @@ function EventDetails(props) {
           </Button>
         }
         {isAdmin &&
+        <>
+          <Button
+            color='secondary'
+            onClick={onEdit}
+            size='small'
+            variant='outlined'
+            sx={{ marginRight: 1 }}
+          >
+            <EditIcon />
+          </Button>
           <Button
             color='error'
             onClick={onDelete}
             size='small'
             variant='outlined'
           >
-            <DeleteIcon /> Delete
+            <DeleteIcon />
           </Button>
+        </>
         }
       </Box>
     </Box>

@@ -48,7 +48,7 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   if (user.loading) {
-    return <h3>Logging you in...</h3>;
+    return <h3>Checking your session, hang tight...</h3>;
   }
 
   return (

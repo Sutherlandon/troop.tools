@@ -16,6 +16,7 @@ export const authOptions = {
   // Configure one or more authentication providers
   providers: [
     EmailProvider({
+      id: 'email',
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: 587,

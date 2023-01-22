@@ -14,7 +14,12 @@ import {
 } from '@mui/material';
 
 import * as EventsAPI from '@client/api/EventsAPI';
-import { ADVANCEMENT, BRANCH_NAMES, LESSONS, LESSON_TYPES } from '@shared/constants';
+import {
+  ADVANCEMENT,
+  BRANCH_NAMES,
+  LESSONS,
+  LESSON_TYPES,
+} from '@shared/constants';
 import {
   DatePicker,
   Select,
@@ -24,6 +29,7 @@ import {
 const blankError = 'This field cannot be left blank';
 const EventSchema = yup.object({
   attendance: yup.array(),
+  branch: yup.string().required(blankError),
   date: yup.string().required(blankError),
   desc: yup.string(),
   lessonID: yup.number(),

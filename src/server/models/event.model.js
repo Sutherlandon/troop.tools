@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
-import { LESSONS } from '@shared/constants';
+import { LESSONS } from '../../shared/constants';
 
 import db from '../config/database';
 import Member from './member.model';
@@ -21,6 +21,7 @@ let _events = [];
 
 const EventSchema = new mongoose.Schema({
   attendance: [String],
+  branch: String,
   date: String,
   desc: String,
   lessonID: Number,

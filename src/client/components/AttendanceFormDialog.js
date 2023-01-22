@@ -61,7 +61,7 @@ function AttendenceFormDialog(props) {
       _id: event._id,
       attendance: values,
       date: event.date,
-      lessonID: event.lesson.id,
+      lessonID: event.lesson?.id,
     };
 
     console.log('data submitted', formData);
@@ -88,7 +88,7 @@ function AttendenceFormDialog(props) {
       scroll='paper'
       TransitionComponent={Transition}
     >
-      <DialogTitle sx={{ backgroundColor: BRANCH_COLORS[event.lesson.branch]?.b }}>
+      <DialogTitle sx={{ backgroundColor: BRANCH_COLORS[event.branch]?.b }}>
         <Grid
           container
           spacing={2}
@@ -117,7 +117,7 @@ function AttendenceFormDialog(props) {
           onSubmit={handleSubmit}
         >
           {({ values, isSubmitting }) => {
-            console.log('Values', values);
+            // console.log('Values', values);
 
             return (
               <Form>

@@ -22,7 +22,7 @@ function AppBar() {
             <Link href='/' passHref>
               <Box sx={{ width: 'fit-content' }}>
                 <Typography variant='h6' component='div' sx={{ padding: 2, cursor: 'pointer' }}>
-                  Troop Tools
+                  Troop.Tools
                 </Typography>
               </Box>
             </Link>

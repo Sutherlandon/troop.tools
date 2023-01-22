@@ -19,7 +19,7 @@ const opts = new chrome.Options();
     const lastName = name[0];
     const id = await kid.getAttribute('value');
 
-    return { firstName, lastName, id, patrol, adv: [] };
+    return { firstName, lastName, id, patrol, adv: [], active: true };
   }
 
   const driver = new webdriver.Builder()

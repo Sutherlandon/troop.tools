@@ -139,10 +139,9 @@ function SchedulePage() {
                 const highlight = event.type === 'HTT' ||
                   ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
 
-                const branchColor = BRANCH_COLORS[event.lesson.branch]?.b;
-                const branchText = BRANCH_COLORS[event.lesson.branch]?.t;
+                const branchColor = BRANCH_COLORS[event.branch]?.b;
+                const branchText = BRANCH_COLORS[event.branch]?.t;
                 const borderColor = '#464646';
-
                 const displayDate = DateTime.fromISO(event.date).toFormat('LL/dd');
 
                 return (
@@ -168,7 +167,7 @@ function SchedulePage() {
                       <TableCell sx={{ textAlign: 'left' }}>
                         {highlight || expanded
                           ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
-                          : <Tag text={displayDate} variant={event.lesson.branch} />
+                          : <Tag text={displayDate} variant={event.branch} />
                         }
                       </TableCell>
                       <TableCell>{event.title || event.lesson.name}</TableCell>

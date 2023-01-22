@@ -8,8 +8,13 @@ export default async function handler(req, res) {
 
   const formData = req.body;
 
+  // record event attendance
   await Event.updateAttendance(formData);
-  await Member.updateAdvancement(formData);
+
+  // only update advancement if there is a lesson to give credit for
+  if (formData.lessonID) {
+    await Member.updateAdvancement(formData);
+  }
 
   const events = await Event.getAll();
 
