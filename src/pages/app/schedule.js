@@ -1,7 +1,6 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
 
-import Link from 'next/link';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -38,7 +37,7 @@ function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  const { isAdmin, isTrailGuide } = useRoles();
+  const { isAdmin } = useRoles();
 
   useEffect(() => {
     async function loadSchedule() {
@@ -85,13 +84,13 @@ function SchedulePage() {
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            Schedule 2022
+            Schedule 2023
           </Typography>
         </Grid>
         {isAdmin &&
           <Grid item>
             <Button
-              color='primary'
+              color='secondary'
               onClick={() => setNewOpen(true)}
               startIcon={<AddIcon />}
               variant='outlined'
@@ -203,20 +202,6 @@ function SchedulePage() {
             </TableBody>
           </Table >
         </Paper >
-      }
-      {isTrailGuide &&
-        <Grid container justifyContent='space-around' sx={{ marginBottom: 2 }}>
-          <Grid item sx={{ marginBottom: 1 }}>
-            <Link href='/app/members' passHref>
-              <Button
-                color='secondary'
-                variant='contained'
-              >
-                Members List
-              </Button>
-            </Link>
-          </Grid>
-        </Grid>
       }
     </div >
   );

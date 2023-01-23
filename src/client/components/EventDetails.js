@@ -98,7 +98,7 @@ function EventDetails(props) {
       <Box sx={{ my: 2, textAlign: 'center' }}>
         {isTrailGuide &&
           <Button
-            color='primary'
+            color='secondary'
             onClick={onAttendance}
             size='small'
             variant='outlined'
@@ -110,7 +110,7 @@ function EventDetails(props) {
         {isAdmin &&
         <>
           <Button
-            color='secondary'
+            color='dark'
             onClick={onEdit}
             size='small'
             variant='outlined'

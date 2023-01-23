@@ -9,6 +9,8 @@ import UserContext from '@client/components/UserContext';
 import * as UserAPI from '@client/api/UserAPI';
 import { LocalizationProvider } from '@mui/lab';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ThemeProvider } from '@mui/material';
+import { theme } from '@client/components/CustomTheme';
 
 export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({ loading: true });
@@ -55,14 +57,17 @@ export default function MyApp({ Component, pageProps }) {
     <SessionProvider session={session}>
       <UserContext.Provider value={[user, setUser]}>
         <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <CssBaseline />
-          <AppBar />
-          <main style={{
-            padding: 16,
-            margin: 'auto',
-          }}>
-            <Component {...pageProps} />
-          </main>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <AppBar />
+            <main style={{
+              padding: 16,
+              margin: 'auto',
+              marginTop: 56
+            }}>
+              <Component {...pageProps} />
+            </main>
+          </ThemeProvider>
         </LocalizationProvider>
       </UserContext.Provider>
     </SessionProvider>
