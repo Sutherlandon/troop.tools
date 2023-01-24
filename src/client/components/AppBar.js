@@ -15,11 +15,13 @@ import Typography from '@mui/material/Typography';
 
 import Router from 'next/router';
 import Link from 'next/link';
-import { Logout, AccountCircle, CalendarMonth, People, BarChart } from '@mui/icons-material';
+import { Logout, CalendarMonth, People, BarChart } from '@mui/icons-material';
 
 import { signOut } from 'next-auth/react';
 import UserContext from './UserContext';
 import useRoles from '@client/hooks/useRoles';
+import Image from 'next/image';
+import logoLight from '@shared/images/brand/Logo-light.png';
 
 const drawerWidth = 240;
 
@@ -64,19 +66,28 @@ function ResponsiveDrawer(props) {
         <MenuItem
           icon={<CalendarMonth />}
           text='Schedule'
-          onClick={() => Router.push('/app')}
+          onClick={() => {
+            Router.push('/app');
+            handleDrawerToggle();
+          }}
         />
         {isTrailGuide &&
           <MenuItem
             icon={<People />}
             text='Members'
-            onClick={() => Router.push('/app/members')}
+            onClick={() => {
+              Router.push('/app/members');
+              handleDrawerToggle();
+            }}
           />
         }
         <MenuItem
           icon={<BarChart />}
           text='Missing Report'
-          onClick={() => Router.push('/app/reports/missing')}
+          onClick={() => {
+            Router.push('/app/reports/missing');
+            handleDrawerToggle();
+          }}
         />
         <MenuItem
           icon={<Logout />}
@@ -84,6 +95,16 @@ function ResponsiveDrawer(props) {
           onClick={() => signOut()}
         />
       </List>
+      <Divider />
+      {user?.firstName &&
+        <Typography variant='body1' component='div' sx={{ p: 1, textAlign: 'center' }}>
+          {user.firstName} signed in
+        </Typography>
+      }
+      <Divider />
+      <Typography variant='body1' component='div' sx={{ pt: 1, pl: 1, pr: 1, textAlign: 'center' }}>
+        © Sutherlandon, llc. 2023
+      </Typography>
     </div>
   );
 
@@ -97,6 +118,15 @@ function ResponsiveDrawer(props) {
         }}
       >
         <Toolbar>
+          <Box sx={{ width: '30px', mr: 2 }}>
+            <Image src={logoLight} alt='troop.tools logo' />
+          </Box>
+          <Link href='/' passHref>
+            <Typography variant='h6' component='div' sx={{ cursor: 'pointer' }}>
+              NM1412
+            </Typography>
+          </Link>
+          <Box sx={{ flexGrow: 1 }} />
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -104,27 +134,9 @@ function ResponsiveDrawer(props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
           >
-            <MenuIcon />
+            <MenuIcon fontSize='large'/>
           </IconButton>
 
-          <Link href='/' passHref>
-            <Typography variant='h6' component='div' sx={{ cursor: 'pointer' }}>
-              Troop.Tools
-            </Typography>
-          </Link>
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          {user?.firstName &&
-            <>
-              <Box sx={{ mr: 1, pt: '6px' }}>
-                <AccountCircle />
-              </Box>
-              <Typography variant='h6' component='div'>
-                {user.firstName}
-              </Typography>
-            </>
-          }
         </Toolbar>
       </AppBar>
       <Box
@@ -134,6 +146,7 @@ function ResponsiveDrawer(props) {
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
+          anchor='right'
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}

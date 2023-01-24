@@ -3,13 +3,13 @@ import Router from 'next/router';
 import isEmpty from 'lodash.isempty';
 import { SessionProvider } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { LocalizationProvider } from '@mui/lab';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ThemeProvider } from '@mui/material';
 
 import AppBar from '@client/components/AppBar';
 import UserContext from '@client/components/UserContext';
 import * as UserAPI from '@client/api/UserAPI';
-import { LocalizationProvider } from '@mui/lab';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { ThemeProvider } from '@mui/material';
 import { theme } from '@client/components/CustomTheme';
 
 export default function MyApp({ Component, pageProps }) {
