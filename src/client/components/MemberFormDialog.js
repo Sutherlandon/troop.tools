@@ -96,7 +96,6 @@ export default function MemberFormDialog(props) {
                   ))}
                 </Select>
                 <Checkbox
-                  disabled
                   label='Active'
                   name='active'
                 />

@@ -1,3 +1,9 @@
+/**
+ * Requires the latest chrome driver be installed and available in your PATH
+ * download here: http://chromedriver.storage.googleapis.com/index.html
+ * location: C:/Users/Landon
+ */
+
 const fs = require('fs/promises');
 const { By, Key, until } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver');
@@ -72,6 +78,7 @@ const opts = new chrome.Options();
 
     // Loop over each branch
     for (let branch = 0; branch <= 6; branch++) {
+      console.log({ branch });
       const lessonTypes = ['core', 'elective', 'htt', 'makeup'];
       let typeIndex = -1;
 
@@ -91,6 +98,7 @@ const opts = new chrome.Options();
       // find the level select buttons and Loop over each patrol
       const trackLevelButtons = await driver.wait(until.elementsLocated(By.css('#div-track-level-select label')));
       for (let level = 1; level <= 3; level++) {
+        console.log({ level });
         await driver.wait(until.elementIsVisible(trackLevelButtons[level]));
         trackLevelButtons[level].click();
 
@@ -102,8 +110,11 @@ const opts = new chrome.Options();
         advRows.splice(advRows.length - 7);
 
         for (let j = 0; j < advRows.length; j++) {
+          console.log({ j });
           const cells = await advRows[j].findElements(By.css('td'));
+          console.log('j1');
           const lessonNameText = await cells[0].getText();
+          console.log('j2');
           const lessonName = lessonNameText.split('\n')[0];
           let saveLesson = true;
 
@@ -114,6 +125,7 @@ const opts = new chrome.Options();
             typeIndex += 1;
           } else {
             for (let i = 1; i < cells.length; i++) {
+              console.log({ i });
               const cellDiv = await cells[i].findElement(By.css('div'));
               const [lessonID, memberID, patrolID] = (await cellDiv.getAttribute('id')).split('_');
 

@@ -47,7 +47,10 @@ function ResponsiveDrawer(props) {
 
   const drawer = (
     <div>
-      <Toolbar>
+      <Toolbar sx={(theme) => ({
+        background: theme.palette.primary.main,
+        color: 'white',
+      })}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -58,7 +61,7 @@ function ResponsiveDrawer(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' component='div' sx={{ cursor: 'pointer' }}>
-            Menu
+            Troop.Tools
           </Typography>
       </Toolbar>
       <Divider />

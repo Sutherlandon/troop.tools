@@ -1,6 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -49,19 +48,6 @@ function MembersPage() {
       member,
       open: true,
     });
-  }
-
-  // Handle removing a member from the list
-  async function handleRemove(member) {
-    if (confirm(`Are you sure you want to delete ${member.name}`)) {
-      const { data, error } = await MembersAPI.remove(member._id);
-
-      if (error) {
-        return console.error(error);
-      }
-
-      setMembers(data);
-    }
   }
 
   // calculate the rows that each logo needs to span
@@ -151,12 +137,6 @@ function MembersPage() {
                           sx={{ color: 'inherit' }}
                         >
                           <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          color='error'
-                          onClick={() => handleRemove(member)}
-                        >
-                          <DeleteIcon />
                         </IconButton>
                       </TableCell>
                     </TableRow>

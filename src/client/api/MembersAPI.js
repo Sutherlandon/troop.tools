@@ -43,19 +43,6 @@ export function get() {
 }
 
 /**
- * Calls the API to add a new member
- * @param {Object} item A new member item
- * @returns <Promise> An object contianing `data` or `error`. `data` contians list of members
- *   excluding the new one just removed
- */
-export function remove(id) {
-  return makeCacheRequest({
-    url: `/api/members/${id}`,
-    method: 'DELETE',
-  });
-}
-
-/**
  * Calls the API to update a member
  * @param {Object} formData The form data form the update form
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members

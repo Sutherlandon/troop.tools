@@ -11,7 +11,7 @@ export const authOptions = {
   adapter: MongoDBAdapter(Promise.resolve(mongoClient)),
 
   // gimme those messages...
-  debug: true,
+  // debug: true,
 
   // Configure one or more authentication providers
   providers: [
