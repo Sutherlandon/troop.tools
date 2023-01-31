@@ -26,8 +26,9 @@ export default async function makeRequest({
 
     // if the response is not ok (ie. 500, 404) return the error
     if (!response.ok) {
-      const { error } = await response.json();
-      return { error };
+      console.error(await response.text());
+      // const { error } = await response.json();
+      // return { error };
     }
 
     // return the response data

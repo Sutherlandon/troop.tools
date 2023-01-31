@@ -12,6 +12,8 @@ import UserContext from '@client/components/UserContext';
 import * as UserAPI from '@client/api/UserAPI';
 import { theme } from '@client/components/CustomTheme';
 
+import '@client/styles.css';
+
 export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({ loading: true });
   const [session, setSession] = useState();
@@ -61,6 +63,7 @@ export default function MyApp({ Component, pageProps }) {
             <CssBaseline />
             <AppBar />
             <main style={{
+              backgroundColor: theme.palette.light.main,
               padding: 16,
               margin: 'auto',
               marginTop: 56

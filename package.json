@@ -22,6 +22,7 @@
     "@mui/lab": "^5.0.0-alpha.76",
     "@mui/material": "^5.5.1",
     "@next-auth/mongodb-adapter": "^1.1.1",
+    "caniuse-lite": "^1.0.30001449",
     "date-fns": "^2.28.0",
     "formik": "^2.2.9",
     "lodash.capitalize": "^4.2.1",

@@ -1,17 +1,14 @@
 import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import mongooseClient from '@server/config/database';
-
-// extract the MongoDB Client from the mongoose instance
-const mongoClient = mongooseClient.db.s.client;
+import clientPromise from '@server/config/databasePromise';
 
 export const authOptions = {
   // add a database adapter for saving verification links
-  adapter: MongoDBAdapter(Promise.resolve(mongoClient)),
+  adapter: MongoDBAdapter(clientPromise),
 
   // gimme those messages...
-  // debug: true,
+  debug: true,
 
   // Configure one or more authentication providers
   providers: [

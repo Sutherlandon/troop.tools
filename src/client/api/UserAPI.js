@@ -1,25 +1,5 @@
 import makeRequest from './makeRequest';
 
-export function login2(didToken) {
-  return makeRequest({
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + didToken,
-    },
-  });
-}
-
-export function login(didToken) {
-  return fetch('/api/users/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + didToken,
-    },
-  });
-}
-
 export function getSession() {
   return makeRequest({
     url: '/api/auth/session'
