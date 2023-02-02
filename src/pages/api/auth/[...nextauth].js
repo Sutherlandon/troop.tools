@@ -28,17 +28,16 @@ export const authOptions = {
 
   callbacks: {
     async session({ session, token, user }) {
-      // add the users's name and roles to the session;
-      session.user.firstName = user.firstName;
-      session.user.lastName = user.lastName;
-      session.user.roles = user.roles || [];
+      // construct the session user object
+      const { email, firstName, lastName, roles } = user;
+      session.user = { email, firstName, lastName, roles };
 
       return session;
     }
   },
 
   // pages: {
-  //   signIn: '/app/auth/signin'
+  //   signIn: '/auth/signin'
   // }
 };
 

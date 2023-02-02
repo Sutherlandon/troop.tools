@@ -1,18 +1,20 @@
 import { useSession } from 'next-auth/react';
 
-export default function useRoles() {
+export default function useUser() {
   const session = useSession();
 
-  if (!session) {
+  if (!session.data) {
     return {
       isAdmin: false,
       isTrailGuide: false,
     };
   }
+
   const isAdmin = Boolean(session.data.user.roles?.includes('admin'));
   const isTrailGuide = isAdmin || Boolean(session.data.user.roles?.includes('trail-guide'));
 
   return {
+    ...session.data.user,
     isAdmin,
     isTrailGuide,
   };

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -18,8 +18,7 @@ import Link from 'next/link';
 import { Logout, CalendarMonth, People, BarChart } from '@mui/icons-material';
 
 import { signOut } from 'next-auth/react';
-import UserContext from './UserContext';
-import useRoles from '@client/hooks/useRoles';
+import useUser from '@client/hooks/useUser';
 import Image from 'next/image';
 import logoLight from '@shared/images/brand/Logo-light.png';
 
@@ -37,8 +36,7 @@ function MenuItem({ icon, text, onClick }) {
 }
 
 function ResponsiveDrawer(props) {
-  const [user] = useContext(UserContext);
-  const { isTrailGuide } = useRoles();
+  const user = useUser();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -70,16 +68,16 @@ function ResponsiveDrawer(props) {
           icon={<CalendarMonth />}
           text='Schedule'
           onClick={() => {
-            Router.push('/app');
+            Router.push('/');
             handleDrawerToggle();
           }}
         />
-        {isTrailGuide &&
+        {user.isTrailGuide &&
           <MenuItem
             icon={<People />}
             text='Members'
             onClick={() => {
-              Router.push('/app/members');
+              Router.push('/members');
               handleDrawerToggle();
             }}
           />
@@ -88,7 +86,7 @@ function ResponsiveDrawer(props) {
           icon={<BarChart />}
           text='Missing Report'
           onClick={() => {
-            Router.push('/app/reports/missing');
+            Router.push('/reports/missing');
             handleDrawerToggle();
           }}
         />
@@ -122,10 +120,21 @@ function ResponsiveDrawer(props) {
       >
         <Toolbar>
           <Box sx={{ width: '30px', mr: 2 }}>
-            <Image src={logoLight} alt='troop.tools logo' />
+            <Image
+              src={logoLight}
+              alt='troop.tools logo'
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+            />
           </Box>
-          <Link href='/' passHref>
-            <Typography variant='h6' component='div' sx={{ cursor: 'pointer' }}>
+          <Link href='/' passHref style={{
+            textDecoration: 'none',
+            cursor: 'pointer',
+            color: 'white',
+          }}>
+            <Typography variant='h6'>
               NM1412
             </Typography>
           </Link>

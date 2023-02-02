@@ -129,7 +129,7 @@ function MembersPage() {
                       }
                       <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
                       <TableCell>
-                        <Link href={`/app/reports/advancement?id=${member._id}`}>Adv Report</Link>
+                        <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         <IconButton

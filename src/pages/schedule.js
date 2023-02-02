@@ -1,5 +1,7 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
+import { getServerSession } from 'next-auth';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,9 +29,9 @@ import Tag from '@client/components/Tag';
 import * as EventsAPI from '@client/api/EventsAPI';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { BRANCH_COLORS } from '@shared/constants';
-import useRoles from '@client/hooks/useRoles';
+import useUser from '@client/hooks/useUser';
 
-function SchedulePage() {
+export default function SchedulePage() {
   const [attInfo, setAttInfo] = useState({ open: false });
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  const { isAdmin } = useRoles();
+  const user = useUser();
 
   useEffect(() => {
     async function loadSchedule() {
@@ -87,7 +89,7 @@ function SchedulePage() {
             Schedule 2023
           </Typography>
         </Grid>
-        {isAdmin &&
+        {user.isAdmin &&
           <Grid item>
             <Button
               color='secondary'
@@ -207,4 +209,17 @@ function SchedulePage() {
   );
 }
 
-export default SchedulePage;
+export async function getServerSideProps({ req, res }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: { session } };
+}

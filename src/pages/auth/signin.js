@@ -25,7 +25,7 @@ export default function SignIn() {
       Router.push(res.url);
     }
 
-    Router.push('/app');
+    Router.push('/');
   }
 
   return (

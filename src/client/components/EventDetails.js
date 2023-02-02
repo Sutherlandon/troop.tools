@@ -16,7 +16,7 @@ import {
 
 import Tag from './Tag';
 import { LESSON_TYPES, PATROLS } from '@shared/constants';
-import useRoles from '@client/hooks/useRoles';
+import useUser from '@client/hooks/useUser';
 
 function EventDetails(props) {
   const {
@@ -26,7 +26,7 @@ function EventDetails(props) {
     onDelete,
   } = props;
 
-  const { isAdmin, isTrailGuide } = useRoles();
+  const { isAdmin, isTrailGuide } = useUser();
 
   // group event.attendance by patrol into an object
   const attendance = {};

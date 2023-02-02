@@ -32,7 +32,7 @@ function OnboardingForm(props) {
 
   // Redirect to / if the user is logged in
   useEffect(() => {
-    user?.firstName && Router.push('/app');
+    user?.firstName && Router.push('/');
   }, [user]);
 
   async function handleSubmit(values) {
