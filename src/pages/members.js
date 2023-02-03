@@ -159,16 +159,6 @@ export default function MembersPage() {
 export async function getServerSideProps({ req, res }) {
   const session = await getServerSession(req, res, authOptions);
 
-  // no session, send to login
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      }
-    };
-  }
-
   // Onboard if we don't have all the info we need
   if (!session.user?.firstName || !session.user?.lastName) {
     return {

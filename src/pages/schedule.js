@@ -212,17 +212,8 @@ export default function SchedulePage() {
 export async function getServerSideProps({ req, res }) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      }
-    };
-  }
-
   // Onboard if we don't have all the info we need
-  if (!session.user?.firstName || !session.user?.lastName) {
+  if (session && (!session.user?.firstName || !session.user?.lastName)) {
     return {
       redirect: {
         destination: '/onboarding',

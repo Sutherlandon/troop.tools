@@ -99,16 +99,6 @@ export default function OnboardingForm(props) {
 export async function getServerSideProps({ req, res }) {
   const session = await getServerSession(req, res, authOptions);
 
-  // no session, send to login
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      }
-    };
-  }
-
   // no reason to be here if we have the information we need
   if (session.user?.firstName && session.user?.lastName) {
     return {

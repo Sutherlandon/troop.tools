@@ -4,8 +4,6 @@ import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import clientPromise from '@server/config/databasePromise';
 import logo from '@shared/images/brand/Logo-light.png';
 
-console.log(logo);
-
 export const authOptions = {
   // add a database adapter for saving verification links
   adapter: MongoDBAdapter(clientPromise),
