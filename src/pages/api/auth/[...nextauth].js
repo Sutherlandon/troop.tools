@@ -2,6 +2,9 @@ import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import clientPromise from '@server/config/databasePromise';
+import logo from '@shared/images/brand/Logo-light.png';
+
+console.log(logo);
 
 export const authOptions = {
   // add a database adapter for saving verification links
@@ -30,7 +33,12 @@ export const authOptions = {
     async session({ session, token, user }) {
       // construct the session user object
       const { email, firstName, lastName, roles } = user;
-      session.user = { email, firstName, lastName, roles };
+      session.user = { email };
+
+      // only include fields if they have value
+      if (roles) { session.user.roles = roles; }
+      if (firstName) { session.user.firstName = firstName; }
+      if (lastName) { session.user.lastName = lastName; }
 
       return session;
     }
@@ -39,6 +47,11 @@ export const authOptions = {
   // pages: {
   //   signIn: '/auth/signin'
   // }
+
+  theme: {
+    brandColor: '#228B22',
+    logo: logo.src,
+  },
 };
 
 export default NextAuth(authOptions);

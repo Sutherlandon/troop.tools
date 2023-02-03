@@ -2,6 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
 import { useState, useEffect } from 'react';
 import {
   Button,
@@ -20,12 +21,15 @@ import {
 import MemberFormDialog from '@client/components/MemberFormDialog';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { PATROLS_ARRAY } from '@shared/constants';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
+import useUser from '@client/hooks/useUser';
 
-function MembersPage() {
+export default function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
+  const user = useUser();
 
   useEffect(() => {
     async function loadMembers() {
@@ -59,8 +63,6 @@ function MembersPage() {
       membersByPatrol[member.patrol] = [member];
     }
   });
-
-  console.log(membersByPatrol);
 
   return (
     <div>
@@ -100,7 +102,9 @@ function MembersPage() {
               <TableRow>
                 <TableCell>Patrol</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Actions</TableCell>
+                {user.isTrailGuide &&
+                  <TableCell>Actions</TableCell>
+                }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -131,14 +135,16 @@ function MembersPage() {
                       <TableCell>
                         <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                        <IconButton
-                          onClick={() => openEdit(member)}
-                          sx={{ color: 'inherit' }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </TableCell>
+                      {user.isTrailGuide &&
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                          <IconButton
+                            onClick={() => openEdit(member)}
+                            sx={{ color: 'inherit' }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      }
                     </TableRow>
                   ))
                 )}
@@ -150,4 +156,28 @@ function MembersPage() {
   );
 }
 
-export default MembersPage;
+export async function getServerSideProps({ req, res }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  // no session, send to login
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  // Onboard if we don't have all the info we need
+  if (!session.user?.firstName || !session.user?.lastName) {
+    return {
+      redirect: {
+        destination: '/onboarding',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: { session } };
+}

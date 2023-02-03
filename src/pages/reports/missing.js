@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { ADVANCEMENT, BRANCHES, BRANCH_COLORS, PATROLS } from '@shared/constants';
 import {
@@ -41,7 +43,7 @@ function missingCredits(row, branch) {
   return [branchPin, starPin];
 }
 
-function MissingReportPage(props) {
+export default function MissingReportPage(props) {
   const [members, setMembers] = useState();
   const [summary, setSummary] = useState({});
 
@@ -179,7 +181,7 @@ function BranchGrid(props) {
             borderTop: '1px solid black',
             borderBottom: '1px solid black',
           },
-          '& th:first-child': {
+          '& th:first-of-type': {
             borderLeft: '1px solid black',
           },
           '& th:last-child': {
@@ -277,4 +279,27 @@ function BranchGrid(props) {
   );
 }
 
-export default MissingReportPage;
+export async function getServerSideProps({ req, res }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  // Onboard if we don't have all the info we need
+  if (!session.user?.firstName || !session.user?.lastName) {
+    return {
+      redirect: {
+        destination: '/onboarding',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: { session } };
+}

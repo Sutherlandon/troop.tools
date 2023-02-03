@@ -1,14 +1,17 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import * as MembersAPI from '@client/api/MembersAPI';
-import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
+import { getServerSession } from 'next-auth';
 import {
   CircularProgress,
   Typography,
 } from '@mui/material';
 
-function AdvancementReportPage(props) {
+import { authOptions } from 'pages/api/auth/[...nextauth]';
+import * as MembersAPI from '@client/api/MembersAPI';
+import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
+
+export default function AdvancementReportPage(props) {
   const { query } = useRouter();
   const [member, setMember] = useState();
 
@@ -79,4 +82,27 @@ function AdvancementPage({ adv, title }) {
   );
 }
 
-export default AdvancementReportPage;
+export async function getServerSideProps({ req, res }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  // Onboard if we don't have all the info we need
+  if (!session.user?.firstName || !session.user?.lastName) {
+    return {
+      redirect: {
+        destination: '/onboarding',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: { session } };
+}

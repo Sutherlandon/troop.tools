@@ -1,9 +1,10 @@
-import Router from 'next/router';
 import * as yup from 'yup';
+import Router from 'next/router';
 import { Save } from '@mui/icons-material';
+import { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
+import { getServerSession } from 'next-auth';
 import { Formik, Form } from 'formik';
-import { useContext, useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,8 +12,9 @@ import {
 } from '@mui/material';
 
 import TextField from '@client/components/formikMui/TextField';
-import UserContext from '@client/components/UserContext';
 import * as UserAPI from '@client/api/UserAPI';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
+import useUser from '@client/hooks/useUser';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),
@@ -20,29 +22,25 @@ const UserSchema = yup.object({
   lastName: yup.string().required('Required'),
 });
 
-function OnboardingForm(props) {
+export default function OnboardingForm(props) {
   const [loading] = useState(false);
-  const [user, setUser] = useContext(UserContext);
+  const user = useUser();
   const initialValues = {
-    email: user.email,
+    email: user.email || '',
     troop: 'NM1412',
     firstName: '',
     lastName: '',
+    roles: [],
   };
 
-  // Redirect to / if the user is logged in
-  useEffect(() => {
-    user?.firstName && Router.push('/');
-  }, [user]);
-
   async function handleSubmit(values) {
-    const { data, error } = await UserAPI.update(values);
+    const { error } = await UserAPI.update(values);
 
     if (error) {
       return console.error(error);
     }
 
-    setUser(data);
+    Router.push('/?onboard=true');
   }
 
   return (
@@ -98,4 +96,28 @@ function OnboardingForm(props) {
   );
 }
 
-export default OnboardingForm;
+export async function getServerSideProps({ req, res }) {
+  const session = await getServerSession(req, res, authOptions);
+
+  // no session, send to login
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  // no reason to be here if we have the information we need
+  if (session.user?.firstName && session.user?.lastName) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: {} };
+}
