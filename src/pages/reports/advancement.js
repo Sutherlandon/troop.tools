@@ -1,15 +1,14 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { getServerSession } from 'next-auth';
 import {
   CircularProgress,
   Typography,
 } from '@mui/material';
 
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
+import serverCheckSession from 'lib/serverCheckSession';
 
 export default function AdvancementReportPage(props) {
   const { query } = useRouter();
@@ -83,17 +82,6 @@ function AdvancementPage({ adv, title }) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-
-  // Onboard if we don't have all the info we need
-  if (!session.user?.firstName || !session.user?.lastName) {
-    return {
-      redirect: {
-        destination: '/onboarding',
-        permanent: false,
-      }
-    };
-  }
-
+  const session = await serverCheckSession(req, res);
   return { props: { session } };
 }

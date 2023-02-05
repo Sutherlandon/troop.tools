@@ -2,7 +2,6 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getServerSession } from 'next-auth';
 import { useState, useEffect } from 'react';
 import {
   Button,
@@ -21,8 +20,8 @@ import {
 import MemberFormDialog from '@client/components/MemberFormDialog';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { PATROLS_ARRAY } from '@shared/constants';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 import useUser from '@client/hooks/useUser';
+import serverCheckSession from 'lib/serverCheckSession';
 
 export default function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -157,17 +156,6 @@ export default function MembersPage() {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-
-  // Onboard if we don't have all the info we need
-  if (!session.user?.firstName || !session.user?.lastName) {
-    return {
-      redirect: {
-        destination: '/onboarding',
-        permanent: false,
-      }
-    };
-  }
-
-  return { props: { session } };
+  const props = await serverCheckSession(req, res);
+  return props;
 }

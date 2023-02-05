@@ -3,7 +3,6 @@ import Router from 'next/router';
 import { Save } from '@mui/icons-material';
 import { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { getServerSession } from 'next-auth';
 import { Formik, Form } from 'formik';
 import {
   Dialog,
@@ -13,8 +12,8 @@ import {
 
 import TextField from '@client/components/formikMui/TextField';
 import * as UserAPI from '@client/api/UserAPI';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 import useUser from '@client/hooks/useUser';
+import serverCheckSession from 'lib/serverCheckSession';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),
@@ -97,17 +96,6 @@ export default function OnboardingForm(props) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-
-  // no reason to be here if we have the information we need
-  if (session.user?.firstName && session.user?.lastName) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      }
-    };
-  }
-
-  return { props: {} };
+  const props = serverCheckSession(req, res, true);
+  return props;
 }

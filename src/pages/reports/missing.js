@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { getServerSession } from 'next-auth';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { ADVANCEMENT, BRANCHES, BRANCH_COLORS, PATROLS } from '@shared/constants';
 import {
@@ -14,6 +12,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import serverCheckSession from 'lib/serverCheckSession';
 
 /**
  * Calculates how many credits remain to earn a branch pin
@@ -280,17 +279,6 @@ function BranchGrid(props) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-
-  // Onboard if we don't have all the info we need
-  if (!session.user?.firstName || !session.user?.lastName) {
-    return {
-      redirect: {
-        destination: '/onboarding',
-        permanent: false,
-      }
-    };
-  }
-
+  const session = await serverCheckSession(req, res);
   return { props: { session } };
 }

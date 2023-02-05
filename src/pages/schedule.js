@@ -1,7 +1,5 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
-import { getServerSession } from 'next-auth';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,6 +28,7 @@ import * as EventsAPI from '@client/api/EventsAPI';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { BRANCH_COLORS } from '@shared/constants';
 import useUser from '@client/hooks/useUser';
+import serverCheckSession from 'lib/serverCheckSession';
 
 export default function SchedulePage() {
   const [attInfo, setAttInfo] = useState({ open: false });
@@ -210,17 +209,6 @@ export default function SchedulePage() {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
-
-  // Onboard if we don't have all the info we need
-  if (session && (!session.user?.firstName || !session.user?.lastName)) {
-    return {
-      redirect: {
-        destination: '/onboarding',
-        permanent: false,
-      }
-    };
-  }
-
-  return { props: { session } };
+  const props = await serverCheckSession(req, res);
+  return props;
 }

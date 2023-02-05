@@ -46,6 +46,7 @@ export const authOptions = {
   //   signIn: '/auth/signin'
   // }
 
+  // add the logo and theme color to the default sign in pages
   theme: {
     brandColor: '#228B22',
     logo: logo.src,
