@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   firstName: String,
   lastName: String,
-  roles: Array,
+  roles: Object,
   troop: String,
 }, {
   collection,
@@ -52,12 +52,15 @@ UserSchema.statics = {
   },
 
   async update(formData) {
-    const { email, firstName, lastName } = formData;
-    return this.findOneAndUpdate(
+    const { email, firstName, lastName, roles } = formData;
+
+    await this.findOneAndUpdate(
       { email },
-      { firstName, lastName },
+      { firstName, lastName, roles },
       { new: true }
     ).lean();
+
+    return this.getAll();
   },
 };
 

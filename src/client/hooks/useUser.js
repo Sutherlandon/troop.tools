@@ -10,20 +10,22 @@ export default function useUser() {
     };
   }
 
-  const isAdmin = Boolean(session.data.user.roles?.includes('admin'));
-  const isTrailGuide = isAdmin || Boolean(session.data.user.roles?.includes('trail-guide'));
+  const isAdmin = Boolean(session.data.user.roles?.admin);
+  const isTrailGuide = isAdmin || Boolean(session.data.user.roles?.trailguide);
+  const isParent = isAdmin || isTrailGuide || Boolean(session.data.user.roles?.trailguide);
 
   return {
     ...session.data.user,
     isAdmin,
     isTrailGuide,
+    isParent,
   };
 }
 
 export function isAdmin(user) {
-  return Boolean(user.roles?.includes('admin'));
+  return Boolean(user.roles?.admin);
 }
 
 export function isTrailGuide(user) {
-  return isAdmin(user) || Boolean(user.roles?.includes('trail-guide'));
+  return isAdmin(user) || Boolean(user.roles?.['trail-guide']);
 }

@@ -8,7 +8,7 @@ export function getSession() {
 
 export function get(email) {
   return makeRequest({
-    url: `/api/users/${email}`,
+    url: `/api/users/${email || ''}`,
   });
 }
 

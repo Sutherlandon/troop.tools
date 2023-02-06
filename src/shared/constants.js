@@ -1,9 +1,14 @@
 /* eslint-disable quote-props */
 import FoxesLogo from './images/foxesLogo.png';
+import FoxesIcon from './images/fox_head_180.png';
 import HawksLogo from './images/hawksLogo.png';
+import HawksIcon from './images/hawk_head_180.png';
 import MountainLionsLogo from './images/mountainLionsLogo.png';
+import MountainLionsIcon from './images/mountain_lion_head_180.png';
 import AdventurersLogo from './images/adventuersLogo.png';
 import NavigatorsLogo from './images/navigatorsLogo.png';
+
+export const USER_ROLES = ['admin', 'parent', 'trailguide'];
 
 export const ADVANCEMENT = {
   'Heritage': { core: 2, elective: 1, htt: 1, makeup: 2 },
@@ -92,6 +97,7 @@ export const PATROLS = {
     name: 'Foxes',
     color: '#b97c38',
     logo: FoxesLogo,
+    icon: FoxesIcon,
   },
   hawks: {
     id: 'ib6d767d2f8e',
@@ -99,13 +105,15 @@ export const PATROLS = {
     name: 'Hawks',
     color: '#eab71b',
     logo: HawksLogo,
+    icon: HawksIcon,
   },
   mountainLions: {
     id: 'k37693cfc748',
     key: 'mountainLions',
     name: 'Mountain Lions',
     color: '#cea54a',
-    logo: MountainLionsLogo
+    logo: MountainLionsLogo,
+    icon: MountainLionsIcon,
   },
   navigators: {
     id: 'j8e296a067a3',

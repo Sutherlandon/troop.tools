@@ -3,14 +3,15 @@ import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { useField } from 'formik';
 
 function FormikMuiCheckbox(props) {
-  const { groupName, name, ...rest } = props;
-  const formikName = groupName ? `${groupName}.${name}` : name;
-  const [{ value }, , helpers] = useField(formikName);
+  const { formGroupSx, name, label, ...rest } = props;
+  const [{ value }, , helpers] = useField(name);
+
+  console.log({ name, label, value });
 
   return (
-    <FormGroup sx={{ mb: 1 }}>
+    <FormGroup sx={{ mb: 1, ...formGroupSx }}>
       <FormControlLabel
-        label={name}
+        label={label || name}
         onChange={() => helpers.setValue(!value)}
         control={
           <Checkbox
@@ -25,7 +26,8 @@ function FormikMuiCheckbox(props) {
 }
 
 FormikMuiCheckbox.propTypes = {
-  groupName: PropTypes.string,
+  formGroupSx: PropTypes.object,
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
 };
 

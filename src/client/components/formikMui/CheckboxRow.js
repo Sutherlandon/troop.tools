@@ -26,6 +26,7 @@ function FormikMuiCheckboxRow(props) {
 }
 
 FormikMuiCheckboxRow.propTypes = {
+  label: PropTypes.string,
   groupName: PropTypes.string,
   name: PropTypes.string.isRequired,
 };

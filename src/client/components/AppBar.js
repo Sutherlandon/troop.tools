@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 
 import Router from 'next/router';
 import Link from 'next/link';
-import { Logout, CalendarMonth, People, BarChart } from '@mui/icons-material';
+import { Logout, CalendarMonth, People, BarChart, SupervisedUserCircle } from '@mui/icons-material';
 
 import { signOut } from 'next-auth/react';
 import useUser from '@client/hooks/useUser';
@@ -82,14 +82,26 @@ function ResponsiveDrawer(props) {
             }}
           />
         }
-        <MenuItem
-          icon={<BarChart />}
-          text='Missing Report'
-          onClick={() => {
-            Router.push('/reports/missing');
-            handleDrawerToggle();
-          }}
-        />
+        {user.isTrailGuide &&
+          <MenuItem
+            icon={<BarChart />}
+            text='Missing Report'
+            onClick={() => {
+              Router.push('/reports/missing');
+              handleDrawerToggle();
+            }}
+          />
+        }
+        {user.isAdmin &&
+          <MenuItem
+            icon={<SupervisedUserCircle />}
+            text='Users'
+            onClick={() => {
+              Router.push('/admin/users');
+              handleDrawerToggle();
+            }}
+          />
+        }
         <MenuItem
           icon={<Logout />}
           text='Logout'
