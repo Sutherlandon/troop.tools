@@ -127,7 +127,7 @@ export default function MembersPage() {
                             borderRight: '1px solid rgba(224, 224, 224, 1)',
                           }}
                         >
-                          <Image src={patrol.icon} alt='Patrol Logo' style={{ width: 100, height: 100 }} />
+                          <Image src={patrol.icon} alt='Patrol Logo' width={50} />
                         </TableCell>
                       }
                       <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>

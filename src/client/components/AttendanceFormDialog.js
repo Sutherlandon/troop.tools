@@ -48,8 +48,6 @@ function AttendenceFormDialog(props) {
     ...attendanceList,
   };
 
-  console.log(membersList, attendanceList, initialValues);
-
   /**
    * Submits attendance to the API
    * @param {*} values Values from the Formik form
@@ -146,7 +144,11 @@ function AttendenceFormDialog(props) {
                           }}
                         >
                           <Grid item sx={{ width: 60, padding: 2 }}>
-                            <Image src={patrol.logo} alt='Patrol Logo' />
+                            <Image
+                              src={patrol.logo}
+                              alt='Patrol Logo'
+                              width={28}
+                            />
                           </Grid>
                           <Grid item>
                             {patrol.name}

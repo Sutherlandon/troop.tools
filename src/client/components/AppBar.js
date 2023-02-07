@@ -1,129 +1,29 @@
 import { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
+import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import Image from 'next/image';
+import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import Router from 'next/router';
-import Link from 'next/link';
-import { Logout, CalendarMonth, People, BarChart, SupervisedUserCircle } from '@mui/icons-material';
-
-import { signOut } from 'next-auth/react';
-import useUser from '@client/hooks/useUser';
-import Image from 'next/image';
 import logoLight from '@shared/images/brand/Logo-light.png';
+import AppMenu from './AppMenu';
 
 const drawerWidth = 240;
 
-function MenuItem({ icon, text, onClick }) {
-  return (
-    <ListItem disablePadding>
-      <ListItemButton onClick={onClick}>
-        <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItemButton>
-    </ListItem>
-  );
-}
-
-function ResponsiveDrawer(props) {
-  const user = useUser();
+function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
-    <div>
-      <Toolbar sx={(theme) => ({
-        background: theme.palette.primary.main,
-        color: 'white',
-      })}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant='h6' component='div' sx={{ cursor: 'pointer' }}>
-            Troop.Tools
-          </Typography>
-      </Toolbar>
-      <Divider />
-      <List>
-        <MenuItem
-          icon={<CalendarMonth />}
-          text='Schedule'
-          onClick={() => {
-            Router.push('/');
-            handleDrawerToggle();
-          }}
-        />
-        {user.isTrailGuide &&
-          <MenuItem
-            icon={<People />}
-            text='Members'
-            onClick={() => {
-              Router.push('/members');
-              handleDrawerToggle();
-            }}
-          />
-        }
-        {user.isTrailGuide &&
-          <MenuItem
-            icon={<BarChart />}
-            text='Missing Report'
-            onClick={() => {
-              Router.push('/reports/missing');
-              handleDrawerToggle();
-            }}
-          />
-        }
-        {user.isAdmin &&
-          <MenuItem
-            icon={<SupervisedUserCircle />}
-            text='Users'
-            onClick={() => {
-              Router.push('/admin/users');
-              handleDrawerToggle();
-            }}
-          />
-        }
-        <MenuItem
-          icon={<Logout />}
-          text='Logout'
-          onClick={() => signOut()}
-        />
-      </List>
-      <Divider />
-      {user?.firstName &&
-        <Typography variant='body1' component='div' sx={{ p: 1, textAlign: 'center' }}>
-          {user.firstName} signed in
-        </Typography>
-      }
-      <Divider />
-      <Typography variant='body1' component='div' sx={{ pt: 1, pl: 1, pr: 1, textAlign: 'center' }}>
-        © Sutherlandon, llc. 2023
-      </Typography>
-    </div>
-  );
-
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar
+      <MuiAppBar
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
@@ -158,11 +58,11 @@ function ResponsiveDrawer(props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: 'none' } }}
           >
-            <MenuIcon fontSize='large'/>
+            <MenuIcon fontSize='large' />
           </IconButton>
 
         </Toolbar>
-      </AppBar>
+      </MuiAppBar>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -182,7 +82,7 @@ function ResponsiveDrawer(props) {
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          {drawer}
+          <AppMenu handleDrawerToggle={handleDrawerToggle} />
         </Drawer>
         <Drawer
           variant="permanent"
@@ -192,11 +92,11 @@ function ResponsiveDrawer(props) {
           }}
           open
         >
-          {drawer}
+          <AppMenu handleDrawerToggle={handleDrawerToggle} />
         </Drawer>
       </Box>
     </Box >
   );
 }
 
-export default ResponsiveDrawer;
+export default AppBar;
