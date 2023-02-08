@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import dayjs from 'dayjs';
 import {
   afterAll,
   beforeAll,
@@ -25,7 +25,7 @@ function makeMember(patrol, adv = []) {
   };
 }
 
-const testDate = DateTime.now().toLocaleString(DateTime.DATE_SHORT);
+const testDate = dayjs().format('DD/MM/YYYY');
 const testLessons = [{
   lessonID: 'hbhmknwaozr5',
   branch: 'Heritage',

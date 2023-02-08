@@ -95,7 +95,7 @@ function AppBar(props) {
           <AppMenu handleDrawerToggle={handleDrawerToggle} />
         </Drawer>
       </Box>
-    </Box >
+    </Box>
   );
 }
 

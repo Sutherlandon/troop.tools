@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { SessionProvider } from 'next-auth/react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Box, ThemeProvider } from '@mui/material';
 
 import AppBar from '@client/components/AppBar';
@@ -16,7 +16,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <SessionProvider session={session}>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <AppBar />

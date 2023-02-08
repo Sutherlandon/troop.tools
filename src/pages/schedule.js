@@ -1,10 +1,10 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
 
+import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { DateTime } from 'luxon';
 import { Fragment, useEffect, useState } from 'react';
 import {
   Box,
@@ -142,7 +142,7 @@ export default function SchedulePage() {
                 const branchColor = BRANCH_COLORS[event.branch]?.b;
                 const branchText = BRANCH_COLORS[event.branch]?.t;
                 const borderColor = '#464646';
-                const displayDate = DateTime.fromISO(event.date).toFormat('LL/dd');
+                const displayDate = dayjs(event.date).format('MM/DD');
 
                 return (
                   <Fragment key={event.title + event.date}>

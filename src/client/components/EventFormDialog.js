@@ -1,9 +1,9 @@
 // TODO: add close icon to dialogs
 import * as yup from 'yup';
+import dayjs from 'dayjs';
 import isEmpty from 'lodash.isempty';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DateTime } from 'luxon';
 import { Formik, Form } from 'formik';
 import {
   Box,
@@ -42,7 +42,7 @@ const EventSchema = yup.object({
 
 const blankForm = {
   branch: 'Heritage',
-  date: DateTime.now(),
+  date: dayjs(),
   desc: '',
   lessonID: '',
   title: '',

@@ -1,9 +1,9 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DateTime } from 'luxon';
 import { Form, Formik } from 'formik';
 import {
   Box,
@@ -94,7 +94,7 @@ function AttendenceFormDialog(props) {
           wrap='nowrap'
         >
           <Grid item>
-            {DateTime.fromISO(event.date).toLocaleString()} - {event.title || event.lesson.name}
+            {dayjs(event.date).format('M/D/YY')} - {event.title || event.lesson.name}
           </Grid>
           <Grid item>
             <IconButton

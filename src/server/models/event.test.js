@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import dayjs from 'dayjs';
 import { LESSONS } from '../../shared/constants';
 import {
   afterAll,
@@ -12,7 +12,7 @@ import Event from './event.model';
 import Member from './member.model';
 
 let testMembers;
-const testDate = DateTime.fromISO('2022-01-01');
+const testDate = dayjs('2022-01-01');
 const testEvent = {
   branch: 'General',
   date: testDate.toString(),
