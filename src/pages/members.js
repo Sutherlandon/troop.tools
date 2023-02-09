@@ -17,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 
+import AccessDenied from '@client/components/AccessDenied';
 import MemberFormDialog from '@client/components/MemberFormDialog';
 import * as MembersAPI from '@client/api/MembersAPI';
 import { PATROLS_ARRAY } from '@shared/constants';
@@ -62,6 +63,15 @@ export default function MembersPage() {
       membersByPatrol[member.patrol] = [member];
     }
   });
+
+  if (!user.isParent) {
+    return (
+      <AccessDenied>
+        You have not been granted access to the troop member list. Please
+        contact your Troop Master and ask them to grant you the <b>Parent</b> role.
+      </AccessDenied>
+    );
+  }
 
   return (
     <div>

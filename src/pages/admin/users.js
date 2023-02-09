@@ -18,6 +18,8 @@ import {
 import UserFormDialog from '@client/components/UserFormDialog';
 import * as UsersAPI from '@client/api/UserAPI';
 import serverCheckSession from 'lib/serverCheckSession';
+import AccessDenied from '@client/components/AccessDenied';
+import useUser from '@client/hooks/useUser';
 
 function RoleIcon({ role }) {
   return {
@@ -31,6 +33,7 @@ export default function UsersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const user = useUser();
 
   useEffect(() => {
     async function loadUsers() {
@@ -55,12 +58,21 @@ export default function UsersPage() {
     });
   }
 
+  if (!user.isAdmin) {
+    return (
+      <AccessDenied>
+        You have not been granted access to the users list. Please
+        contact your Troop Master and ask them to grant you the <b>Admin</b> role.
+      </AccessDenied>
+    );
+  }
+
   return (
     <div>
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            NM1412 App Users
+            {user.troop} App Users
           </Typography>
         </Grid>
         {/* <Grid item>

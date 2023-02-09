@@ -70,11 +70,13 @@ export default function AppMenu(props) {
       </Toolbar>
       <Divider />
       <List>
-        <MenuItemLink
-          icon={<CalendarMonth />}
-          text='Schedule'
-          href='/schedule'
-        />
+        {user.isParent &&
+          <MenuItemLink
+            icon={<CalendarMonth />}
+            text='Schedule'
+            href='/schedule'
+          />
+        }
         {user.isTrailGuide &&
           <MenuItemLink
             icon={<People />}

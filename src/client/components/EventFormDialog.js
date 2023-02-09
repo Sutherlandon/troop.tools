@@ -59,7 +59,7 @@ export default function EventFormDialog(props) {
   async function handleSubmit(values) {
     const formData = {
       ...values,
-      date: values.date.toString(),
+      date: dayjs(values.date).format(),
     };
 
     // map lesson to lessonID and delete lesson for transmission
@@ -68,7 +68,7 @@ export default function EventFormDialog(props) {
       delete formData.lesson;
     }
 
-    console.log('submitting', formData);
+    // console.log('submitting', formData);
 
     // If the event already exists, update it, otherwise add it
     let data, error;

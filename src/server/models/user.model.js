@@ -52,11 +52,11 @@ UserSchema.statics = {
   },
 
   async update(formData) {
-    const { email, firstName, lastName, roles } = formData;
+    const { email, firstName, lastName, roles, troop } = formData;
 
     await this.findOneAndUpdate(
       { email },
-      { firstName, lastName, roles },
+      { firstName, lastName, roles, troop },
       { new: true }
     ).lean();
 

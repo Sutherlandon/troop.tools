@@ -29,6 +29,7 @@ import * as MembersAPI from '@client/api/MembersAPI';
 import { BRANCH_COLORS } from '@shared/constants';
 import useUser from '@client/hooks/useUser';
 import serverCheckSession from 'lib/serverCheckSession';
+import AccessDenied from '@client/components/AccessDenied';
 
 export default function SchedulePage() {
   const [attInfo, setAttInfo] = useState({ open: false });
@@ -78,6 +79,15 @@ export default function SchedulePage() {
 
       setSchedule(data);
     }
+  }
+
+  if (!user.isParent) {
+    return (
+      <AccessDenied>
+        You have not been granted access to the schedule. Please
+        contact your Troop Master and ask them to grant you the <b>Parent</b> role.
+      </AccessDenied>
+    );
   }
 
   return (

@@ -7,11 +7,14 @@ import {
 } from '@mui/material';
 
 import * as MembersAPI from '@client/api/MembersAPI';
-import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
+import AccessDenied from '@client/components/AccessDenied';
 import serverCheckSession from 'lib/serverCheckSession';
+import useUser from '@client/hooks/useUser';
+import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 
 export default function AdvancementReportPage(props) {
   const { query } = useRouter();
+  const user = useUser();
   const [member, setMember] = useState();
 
   useEffect(() => {
@@ -30,6 +33,15 @@ export default function AdvancementReportPage(props) {
 
     loadMembers();
   }, [query]);
+
+  if (!user.isParent) {
+    return (
+      <AccessDenied>
+        You have not been granted access to the advancement report. Please
+        contact your Troop Master and ask them to grant you the <b>Parent</b> role.
+      </AccessDenied>
+    );
+  }
 
   if (!member) {
     return <CircularProgress />;
@@ -82,6 +94,6 @@ function AdvancementPage({ adv, title }) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await serverCheckSession(req, res);
-  return { props: { session } };
+  const props = await serverCheckSession(req, res);
+  return props;
 }

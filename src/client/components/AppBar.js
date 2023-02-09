@@ -11,11 +11,13 @@ import Typography from '@mui/material/Typography';
 
 import logoLight from '@shared/images/brand/Logo-light.png';
 import AppMenu from './AppMenu';
+import useUser from '@client/hooks/useUser';
 
 const drawerWidth = 240;
 
 function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const user = useUser();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -47,7 +49,7 @@ function AppBar(props) {
             color: 'white',
           }}>
             <Typography variant='h6'>
-              NM1412
+              {user.troop}
             </Typography>
           </Link>
           <Box sx={{ flexGrow: 1 }} />

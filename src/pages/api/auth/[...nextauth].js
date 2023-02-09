@@ -9,7 +9,7 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
 
   // gimme those messages...
-  debug: true,
+  debug: false,
 
   // Configure one or more authentication providers
   providers: [
@@ -30,13 +30,14 @@ export const authOptions = {
   callbacks: {
     async session({ session, token, user }) {
       // construct the session user object
-      const { email, firstName, lastName, roles } = user;
+      const { email, firstName, lastName, roles, troop } = user;
       session.user = { email };
 
       // only include fields if they have value
-      if (roles) { session.user.roles = roles; }
       if (firstName) { session.user.firstName = firstName; }
       if (lastName) { session.user.lastName = lastName; }
+      if (roles) { session.user.roles = roles; }
+      if (troop) { session.user.troop = troop; }
 
       return session;
     }

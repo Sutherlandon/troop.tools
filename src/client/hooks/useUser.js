@@ -6,6 +6,7 @@ export default function useUser() {
   if (!session.data) {
     return {
       isAdmin: false,
+      isParent: false,
       isTrailGuide: false,
     };
   }
@@ -17,8 +18,8 @@ export default function useUser() {
   return {
     ...session.data.user,
     isAdmin,
-    isTrailGuide,
     isParent,
+    isTrailGuide,
   };
 }
 

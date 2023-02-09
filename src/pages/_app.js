@@ -12,8 +12,6 @@ import '@client/styles.css';
 export default function MyApp({ Component, pageProps }) {
   const { session } = pageProps;
 
-  console.log('_app session', session);
-
   return (
     <SessionProvider session={session}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

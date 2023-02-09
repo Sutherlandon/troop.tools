@@ -121,6 +121,7 @@ export const PATROLS = {
     name: 'Navigators',
     color: '#bbbdbd',
     logo: NavigatorsLogo,
+    icon: NavigatorsLogo,
   },
   adventurers: {
     id: 'x1ff1de77400',
@@ -128,6 +129,7 @@ export const PATROLS = {
     name: 'Adventurers',
     color: '#8ec8e7',
     logo: AdventurersLogo,
+    icon: AdventurersLogo,
   }
 };
 

@@ -12,7 +12,10 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+
+import AccessDenied from '@client/components/AccessDenied';
 import serverCheckSession from 'lib/serverCheckSession';
+import useUser from '@client/hooks/useUser';
 
 /**
  * Calculates how many credits remain to earn a branch pin
@@ -45,6 +48,7 @@ function missingCredits(row, branch) {
 export default function MissingReportPage(props) {
   const [members, setMembers] = useState();
   const [summary, setSummary] = useState({});
+  const user = useUser();
 
   useEffect(() => {
     async function loadMembers() {
@@ -59,6 +63,15 @@ export default function MissingReportPage(props) {
 
     loadMembers();
   }, []);
+
+  if (!user.isTrailGuide) {
+    return (
+      <AccessDenied>
+        You have not been granted access to the missing report. Please
+        contact your Troop Master and ask them to grant you the <b>Trail Guide</b> role.
+      </AccessDenied>
+    );
+  }
 
   if (!members) {
     return <CircularProgress />;
@@ -279,6 +292,6 @@ function BranchGrid(props) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await serverCheckSession(req, res);
-  return { props: { session } };
+  const props = await serverCheckSession(req, res);
+  return props;
 }
