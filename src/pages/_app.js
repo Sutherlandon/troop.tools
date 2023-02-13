@@ -16,7 +16,6 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <link rel='manifest' href='/manifest.json' />
         <link rel='icon' type='image/png' size='32x32' href='/img/app-icon-32.png' />
         <link rel='icon' type='image/png' size='16x16' href='/img/app-icon-16.png' />
         <link rel='shortcut icon' type='image/png' href='/img/app-icon-32.png' />
@@ -25,7 +24,7 @@ export default function MyApp({ Component, pageProps }) {
           name='description'
           content='An attendance and reporting tool for Trail Life USA'
         />
-        <title>{session?.data?.user?.troop || 'Troop.Tools'}</title>
+        <title>{session?.user?.troop || 'Troop.Tools'}</title>
       </Head>
       <SessionProvider session={session}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
