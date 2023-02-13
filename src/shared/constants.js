@@ -6,7 +6,9 @@ import HawksIcon from './images/hawk_head_180.png';
 import MountainLionsLogo from './images/mountainLionsLogo.png';
 import MountainLionsIcon from './images/mountain_lion_head_180.png';
 import AdventurersLogo from './images/adventuersLogo.png';
+import AdventurersIcon from './images/adventuers_logo_180.png';
 import NavigatorsLogo from './images/navigatorsLogo.png';
+import NavigatorsIcon from './images/navigators_logo_180.png';
 
 export const USER_ROLES = ['admin', 'parent', 'trailguide'];
 
@@ -121,7 +123,7 @@ export const PATROLS = {
     name: 'Navigators',
     color: '#bbbdbd',
     logo: NavigatorsLogo,
-    icon: NavigatorsLogo,
+    icon: NavigatorsIcon,
   },
   adventurers: {
     id: 'x1ff1de77400',
@@ -129,7 +131,7 @@ export const PATROLS = {
     name: 'Adventurers',
     color: '#8ec8e7',
     logo: AdventurersLogo,
-    icon: AdventurersLogo,
+    icon: AdventurersIcon,
   }
 };
 

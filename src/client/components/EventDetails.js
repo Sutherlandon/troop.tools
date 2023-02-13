@@ -2,21 +2,19 @@ import isEmpty from 'lodash.isempty';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+// import CheckBoxIcon from '@mui/icons-material/Check';
 import Image from 'next/image';
+import { Fragment } from 'react';
 import {
   Box,
   Button,
   Grid,
   Typography,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
 } from '@mui/material';
 
 import Tag from './Tag';
-import { LESSON_TYPES, PATROLS } from '@shared/constants';
 import useUser from '@client/hooks/useUser';
+import { LESSON_TYPES, PATROLS } from '@shared/constants';
 
 function EventDetails(props) {
   const {
@@ -59,40 +57,47 @@ function EventDetails(props) {
           <Typography variant='h6'>
             Attendance
           </Typography>
-          <Table>
-            <TableBody>
-              {Object.keys(attendance).map((patrol) => {
-                return (
-                  <TableRow
-                    key={patrol}
-                    sx={{
-                      '& td': {
-                        backgroundColor: PATROLS[patrol].color,
-                        padding: 1,
-                        border: 0,
-                      },
-                    }}
-                  >
-                    <TableCell sx={{ width: 85 }}>
-                      <Image src={PATROLS[patrol].logo} alt='Patrol Logo' />
-                    </TableCell>
-                    <TableCell>
-                      <ul style={{ margin: 0 }}>
-                        {attendance[patrol]
-                          .map((name) => name.split(' ').reverse().join(', '))
-                          .sort()
-                          .map((name) => (
-                            <li className='member-name' key={name}>
-                              {name}
-                            </li>
-                          ))}
-                      </ul>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+          {Object.keys(PATROLS).map((patrol) => {
+            // because we iterate over the PATROLS, attendence may be empty
+            // and if it is, we don't want to include it
+            if (isEmpty(attendance[patrol])) {
+              return null;
+            }
+
+            return (
+              <Fragment key={patrol}>
+                <Box
+                  sx={{
+                    backgroundColor: PATROLS[patrol].color,
+                    p: 1,
+                    mb: 1,
+                    borderRadius: '4px',
+                    height: 45
+                  }}
+                >
+                  <Grid container spacing={2} alignItems='center'>
+                    <Grid item sx={{ height: 45 }}>
+                      <Image src={PATROLS[patrol].icon} alt='Patrol Logo' style={{ height: '100%', width: 'auto' }} />
+                    </Grid>
+                    <Grid item>
+                      <Typography variant='body1'>{PATROLS[patrol].name}</Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box sx={{ mb: 1 }}>
+                  {attendance[patrol]
+                    .map((name) => name.split(' ').reverse().join(', '))
+                    .sort()
+                    .map((name) => (
+                      <Grid container spacing={1} sx={{ alignItems: 'center' }} className='member-name' key={name}>
+                        <Grid item><CheckIcon fontSize='small' /></Grid>
+                        <Grid item>{name}</Grid>
+                      </Grid>
+                    ))}
+                </Box>
+              </Fragment>
+            );
+          })}
         </>
       }
       <Box sx={{ my: 2, textAlign: 'center' }}>
@@ -108,25 +113,25 @@ function EventDetails(props) {
           </Button>
         }
         {isAdmin &&
-        <>
-          <Button
-            color='dark'
-            onClick={onEdit}
-            size='small'
-            variant='outlined'
-            sx={{ marginRight: 1 }}
-          >
-            <EditIcon />
-          </Button>
-          <Button
-            color='error'
-            onClick={onDelete}
-            size='small'
-            variant='outlined'
-          >
-            <DeleteIcon />
-          </Button>
-        </>
+          <>
+            <Button
+              color='dark'
+              onClick={onEdit}
+              size='small'
+              variant='outlined'
+              sx={{ marginRight: 1 }}
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              color='error'
+              onClick={onDelete}
+              size='small'
+              variant='outlined'
+            >
+              <DeleteIcon />
+            </Button>
+          </>
         }
       </Box>
     </Box>
