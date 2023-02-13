@@ -38,7 +38,12 @@ function EventDetails(props) {
 
   return (
     <Box>
-      <Grid container justifyContent='space-between' alignItems='center'>
+      <Grid
+        container
+        justifyContent='space-between'
+        alignItems='center'
+        sx={{ ml: -1, pt: 1, pb: 1 }}
+      >
         <Grid item>
           {event.branch && <Tag variant={event.branch} />}
           {event.lesson?.type && <Tag variant={LESSON_TYPES[event.lesson?.type]} />}
@@ -54,7 +59,7 @@ function EventDetails(props) {
       }
       {!isEmpty(attendance) &&
         <>
-          <Typography variant='h6'>
+          <Typography variant='h6' sx={{ mb: 1 }}>
             Attendance
           </Typography>
           {Object.keys(PATROLS).map((patrol) => {

@@ -146,7 +146,7 @@ export default function SchedulePage() {
             <TableBody>
               {events.map((event, index) => {
                 const expanded = showDetails === index;
-                const highlight = event.type === 'HTT' ||
+                const highlight = event.lesson?.type === 'htt' ||
                   ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
 
                 const branchColor = BRANCH_COLORS[event.branch]?.b;
