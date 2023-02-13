@@ -32,9 +32,14 @@ function MenuItem({ icon, text, onClick }) {
   );
 }
 
-function MenuItemLink({ icon, text, href }) {
+function MenuItemLink({ href, icon, onClick, text }) {
   return (
-    <Link href={href} passHref style={{ textDecoration: 'none', color: '#000' }}>
+    <Link
+      href={href}
+      onClick={onClick}
+      passHref
+      style={{ textDecoration: 'none', color: '#000' }}
+    >
       <ListItem disablePadding>
         <ListItemButton>
           <ListItemIcon>{icon}</ListItemIcon>
@@ -73,6 +78,7 @@ export default function AppMenu(props) {
         {user.isParent &&
           <MenuItemLink
             icon={<CalendarMonth />}
+            onClick={handleDrawerToggle}
             text='Schedule'
             href='/schedule'
           />
@@ -80,7 +86,7 @@ export default function AppMenu(props) {
         {user.isTrailGuide &&
           <MenuItemLink
             icon={<People />}
-            component={Link}
+            onClick={handleDrawerToggle}
             text='Members'
             href='/members'
           />
@@ -88,6 +94,7 @@ export default function AppMenu(props) {
         {user.isTrailGuide &&
           <MenuItemLink
             icon={<BarChart />}
+            onClick={handleDrawerToggle}
             text='Missing Report'
             href='/reports/missing'
           />
@@ -95,6 +102,7 @@ export default function AppMenu(props) {
         {user.isAdmin &&
           <MenuItemLink
             icon={<SupervisedUserCircle />}
+            onClick={handleDrawerToggle}
             text='Users'
             href='/admin/users'
           />
