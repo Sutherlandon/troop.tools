@@ -25,7 +25,7 @@ export default function MyApp({ Component, pageProps }) {
           name='description'
           content='An attendance and reporting tool for Trail Life USA'
         />
-        <title>{session.data?.user?.troop || 'Troop.Tools'}</title>
+        <title>{session?.data?.user?.troop || 'Troop.Tools'}</title>
       </Head>
       <SessionProvider session={session}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
