@@ -220,6 +220,7 @@ export default function SchedulePage() {
 }
 
 export async function getServerSideProps({ req, res }) {
+  console.log('GetServerSideProps Schedule');
   const props = await serverCheckSession(req, res);
   return props;
 }

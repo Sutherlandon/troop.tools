@@ -9,7 +9,7 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
 
   // gimme those messages...
-  debug: false,
+  debug: true,
 
   // Configure one or more authentication providers
   providers: [
@@ -24,6 +24,7 @@ export const authOptions = {
         },
       },
       from: 'no-reply@troop.tools',
+      url: '/'
     }),
   ],
 
