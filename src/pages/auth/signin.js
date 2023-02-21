@@ -1,5 +1,6 @@
+import Router from 'next/router';
 import { signIn, getSession } from 'next-auth/react';
-import { Router, Send } from '@mui/icons-material';
+import { Send } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { useEffect, useState } from 'react';
 import {
@@ -75,7 +76,6 @@ export default function SignIn() {
           >
             Login / Sign up
           </LoadingButton>
-
         </Box>
       </form>
     </MinimalLayout>
