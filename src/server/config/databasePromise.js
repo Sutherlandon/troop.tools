@@ -8,6 +8,8 @@ const options = {};
 const client = new MongoClient(uri, options);
 let clientPromise;
 
+console.log('DBP MONGODB_URI', NODE_ENV, MONGODB_URI);
+
 if (!MONGODB_URI) {
   throw new Error('Please add your Mongo URI to .env.local');
 }

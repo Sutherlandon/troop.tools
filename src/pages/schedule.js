@@ -222,8 +222,6 @@ export default function SchedulePage() {
 }
 
 export async function getServerSideProps({ req, res }) {
-  console.log('Getting Session');
-
   const session = await getServerSession(req, res, authOptions);
 
   console.log('Complete: ', session);
