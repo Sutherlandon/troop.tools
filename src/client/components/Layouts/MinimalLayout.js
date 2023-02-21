@@ -33,7 +33,7 @@ export default function MinimalLayout({ children, title }) {
         <Typography variant='h4' sx={{ mb: 4 }}>
           { title || 'Troop.Tools' }
         </Typography>
-          {children}
+        {children}
       </DialogContent>
     </Dialog>
   );

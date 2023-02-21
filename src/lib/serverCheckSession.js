@@ -1,8 +1,10 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from 'pages/api/auth/[...nextauth]';
 
-export default async function serverCheckSession(req, res, isOboarding) {
+export default async function serverCheckSession(req, res) {
+  console.log('Getting Session');
   const session = await getServerSession(req, res, authOptions);
+  console.log('Complete: ', session);
 
   if (!session) {
     return {
