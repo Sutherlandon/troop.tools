@@ -1,13 +1,15 @@
+import { Alert } from '@mui/material';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import PageLayout from './Layouts/PageLayout';
 
 export default function AccessDenied(props) {
   return (
-    <Box sx={{ textAlign: 'center' }}>
-      <Typography variant='h3'>Access Denied</Typography>
-      <Typography variant='body'>
-        {props.message || props.children}
-      </Typography>
-    </Box>
+    <PageLayout>
+      <Box sx={{ textAlign: 'center' }}>
+        <Alert severity='warning' variant='filled'>
+          {props.message || props.children}
+        </Alert>
+      </Box>
+    </PageLayout>
   );
 }

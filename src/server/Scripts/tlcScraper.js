@@ -110,11 +110,8 @@ const opts = new chrome.Options();
         advRows.splice(advRows.length - 7);
 
         for (let j = 0; j < advRows.length; j++) {
-          console.log({ j });
           const cells = await advRows[j].findElements(By.css('td'));
-          console.log('j1');
           const lessonNameText = await cells[0].getText();
-          console.log('j2');
           const lessonName = lessonNameText.split('\n')[0];
           let saveLesson = true;
 

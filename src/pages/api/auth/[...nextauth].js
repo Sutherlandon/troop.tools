@@ -43,9 +43,11 @@ export const authOptions = {
     }
   },
 
-  // pages: {
-  //   signIn: '/auth/signin'
-  // }
+  pages: {
+    signIn: '/auth/signin',
+    verifyRequest: '/auth/verify-request',
+    newUser: '/auth/new-user',
+  },
 
   // add the logo and theme color to the default sign in pages
   theme: {

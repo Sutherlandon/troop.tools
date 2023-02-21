@@ -8,6 +8,7 @@ import {
 
 import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
+import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
 import useUser from '@client/hooks/useUser';
 import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
@@ -73,7 +74,7 @@ export default function AdvancementReportPage(props) {
 
 function AdvancementPage({ adv, title }) {
   return (
-    <div>
+    <PageLayout>
       <Typography variant='h4'>{title}</Typography>
       <ul>
         {Object.keys(adv).map((branch) => (
@@ -89,7 +90,7 @@ function AdvancementPage({ adv, title }) {
           </li>
         ))}
       </ul>
-    </div>
+    </PageLayout>
   );
 }
 

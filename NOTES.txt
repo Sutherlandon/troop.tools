@@ -1,0 +1,3 @@
+
+App Dir beta
+- 2023/02/20 - App Dir and MUI are fundimentally incompatible due to SSR and bugs, Should consider upgrade at a later date

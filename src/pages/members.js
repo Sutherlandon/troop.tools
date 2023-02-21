@@ -17,12 +17,13 @@ import {
   Typography,
 } from '@mui/material';
 
+import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import MemberFormDialog from '@client/components/MemberFormDialog';
-import * as MembersAPI from '@client/api/MembersAPI';
-import { PATROLS_ARRAY } from '@shared/constants';
-import useUser from '@client/hooks/useUser';
+import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
+import useUser from '@client/hooks/useUser';
+import { PATROLS_ARRAY } from '@shared/constants';
 
 export default function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
@@ -74,7 +75,7 @@ export default function MembersPage() {
   }
 
   return (
-    <div>
+    <PageLayout>
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
@@ -161,7 +162,7 @@ export default function MembersPage() {
           </Table>
         </Paper>
       }
-    </div>
+    </PageLayout>
   );
 }
 

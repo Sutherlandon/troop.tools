@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 
 import AccessDenied from '@client/components/AccessDenied';
+import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
 import useUser from '@client/hooks/useUser';
 
@@ -78,7 +79,7 @@ export default function MissingReportPage(props) {
   }
 
   return (
-    <div>
+    <PageLayout>
       <Typography variant='h5' sx={{ mb: 2 }}>
         Missing Lessons Report
       </Typography>
@@ -133,7 +134,7 @@ export default function MissingReportPage(props) {
           </Grid>
         ))}
       </Grid>
-    </div>
+    </PageLayout>
   );
 }
 

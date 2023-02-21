@@ -62,7 +62,6 @@ function AppBar(props) {
           >
             <MenuIcon fontSize='large' />
           </IconButton>
-
         </Toolbar>
       </MuiAppBar>
       <Box

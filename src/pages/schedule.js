@@ -20,16 +20,17 @@ import {
   LinearProgress,
 } from '@mui/material';
 
+import * as EventsAPI from '@client/api/EventsAPI';
+import * as MembersAPI from '@client/api/MembersAPI';
+import AccessDenied from '@client/components/AccessDenied';
 import AttendanceFormDialog from '@client/components/AttendanceFormDialog';
 import EventDetails from '@client/components/EventDetails';
 import EventFormDialog from '@client/components/EventFormDialog';
+import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
-import * as EventsAPI from '@client/api/EventsAPI';
-import * as MembersAPI from '@client/api/MembersAPI';
-import { BRANCH_COLORS } from '@shared/constants';
-import useUser from '@client/hooks/useUser';
 import serverCheckSession from 'lib/serverCheckSession';
-import AccessDenied from '@client/components/AccessDenied';
+import useUser from '@client/hooks/useUser';
+import { BRANCH_COLORS } from '@shared/constants';
 
 export default function SchedulePage() {
   const [attInfo, setAttInfo] = useState({ open: false });
@@ -91,7 +92,7 @@ export default function SchedulePage() {
   }
 
   return (
-    <div>
+    <PageLayout>
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
@@ -214,7 +215,7 @@ export default function SchedulePage() {
           </Table >
         </Paper >
       }
-    </div >
+    </PageLayout>
   );
 }
 

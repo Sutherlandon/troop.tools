@@ -15,10 +15,11 @@ import {
   Typography,
 } from '@mui/material';
 
-import UserFormDialog from '@client/components/UserFormDialog';
 import * as UsersAPI from '@client/api/UserAPI';
-import serverCheckSession from 'lib/serverCheckSession';
 import AccessDenied from '@client/components/AccessDenied';
+import PageLayout from '@client/components/Layouts/PageLayout';
+import UserFormDialog from '@client/components/UserFormDialog';
+import serverCheckSession from 'lib/serverCheckSession';
 import useUser from '@client/hooks/useUser';
 
 function RoleIcon({ role }) {
@@ -68,7 +69,7 @@ export default function UsersPage() {
   }
 
   return (
-    <div>
+    <PageLayout>
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
@@ -130,7 +131,7 @@ export default function UsersPage() {
           </Table>
         </Paper>
       }
-    </div>
+    </PageLayout>
   );
 }
 
