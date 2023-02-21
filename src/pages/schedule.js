@@ -1,5 +1,7 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
+import { getServerSession } from 'next-auth';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
@@ -28,7 +30,7 @@ import EventDetails from '@client/components/EventDetails';
 import EventFormDialog from '@client/components/EventFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
-import serverCheckSession from 'lib/serverCheckSession';
+// import serverCheckSession from 'lib/serverCheckSession';
 import useUser from '@client/hooks/useUser';
 import { BRANCH_COLORS } from '@shared/constants';
 
@@ -220,7 +222,20 @@ export default function SchedulePage() {
 }
 
 export async function getServerSideProps({ req, res }) {
-  console.log('GetServerSideProps Schedule');
-  const props = await serverCheckSession(req, res);
-  return props;
+  console.log('Getting Session');
+
+  const session = await getServerSession(req, res, authOptions);
+
+  console.log('Complete: ', session);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      }
+    };
+  }
+
+  return { props: { session } };
 }
