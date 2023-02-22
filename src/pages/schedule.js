@@ -1,7 +1,7 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
-import { getServerSession } from 'next-auth';
-import { authOptions } from 'pages/api/auth/[...nextauth]';
+// import { getServerSession } from 'next-auth';
+// import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
@@ -222,18 +222,29 @@ export default function SchedulePage() {
 }
 
 export async function getServerSideProps({ req, res }) {
-  const session = await getServerSession(req, res, authOptions);
+  // const session = await getServerSession(req, res, authOptions);
 
-  console.log('Complete: ', session);
+  // console.log('Complete: ', session);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      }
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: '/api/auth/signin',
+  //       permanent: false,
+  //     }
+  //   };
+  // }
+
+  const session = {
+    user: {
+      email: 'sutherlandon@gmail.com',
+      firstName: 'Landon',
+      lastName: 'Sutherland',
+      roles: { admin: true, parent: true, trailguide: true },
+      troop: 'NM1412'
+    },
+    expires: '2023-03-23T07:36:16.332Z'
+  };
 
   return { props: { session } };
 }
