@@ -30,8 +30,8 @@ import EventDetails from '@client/components/EventDetails';
 import EventFormDialog from '@client/components/EventFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
-// import serverCheckSession from 'lib/serverCheckSession';
-// import useUser from '@client/hooks/useUser';
+import serverCheckSession from 'lib/serverCheckSession';
+import useUser from '@client/hooks/useUser';
 import { BRANCH_COLORS } from '@shared/constants';
 
 export default function SchedulePage() {
@@ -42,16 +42,7 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  // const user = useUser();
-  const user = {
-    email: 'sutherlandon@gmail.com',
-    firstName: 'Landon',
-    lastName: 'Sutherland',
-    isAdmin: true,
-    isParent: true,
-    isTrailGuide: true,
-    troop: 'NM1412'
-  };
+  const user = useUser();
 
   useEffect(() => {
     async function loadSchedule() {
@@ -230,30 +221,7 @@ export default function SchedulePage() {
   );
 }
 
-// export async function getServerSideProps({ req, res }) {
-//   // const session = await getServerSession(req, res, authOptions);
-
-//   // console.log('Complete: ', session);
-
-//   // if (!session) {
-//   //   return {
-//   //     redirect: {
-//   //       destination: '/api/auth/signin',
-//   //       permanent: false,
-//   //     }
-//   //   };
-//   // }
-
-//   const session = {
-//     user: {
-//       email: 'sutherlandon@gmail.com',
-//       firstName: 'Landon',
-//       lastName: 'Sutherland',
-//       roles: { admin: true, parent: true, trailguide: true },
-//       troop: 'NM1412'
-//     },
-//     expires: '2023-03-23T07:36:16.332Z'
-//   };
-
-//   return { props: { session } };
-// }
+export async function getServerSideProps({ req, res }) {
+  const props = await serverCheckSession(req, res);
+  return props;
+}
