@@ -10,9 +10,11 @@ export default function LoadingPage() {
       const session = await getSession();
 
       if (session) {
+        console.log('session found, redirecting to schedule');
         return Router.push('/schedule');
       }
 
+      console.log('session not found, redirecting to signin');
       return Router.push('/auth/signin');
     }
 
