@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import * as UserAPI from '@client/api/UserAPI';
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 import TextField from '@client/components/formikMui/TextField';
+import serverCheckSession from 'lib/serverCheckSession';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),
@@ -16,7 +17,7 @@ const UserSchema = yup.object({
   lastName: yup.string().required('Required'),
 });
 
-export default function OnboardingForm(props) {
+export default function NewUser(props) {
   const [loading] = useState(false);
   const { data: user } = useSession();
   const initialValues = {
@@ -80,4 +81,9 @@ export default function OnboardingForm(props) {
       </Formik>
     </MinimalLayout>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const props = await serverCheckSession(req, res);
+  return props;
 }

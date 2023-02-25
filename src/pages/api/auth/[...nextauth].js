@@ -34,6 +34,13 @@ export const authOptions = {
       const { email, firstName, lastName, roles, troop } = user;
       const filteredUser = { email, firstName, lastName, roles, troop };
 
+      // data must be serializeable which means no undefined values
+      Object.keys(filteredUser).forEach((key) => {
+        if (filteredUser[key] === undefined) {
+          delete filteredUser[key];
+        }
+      });
+
       // assign escalating user roles
       const isAdmin = Boolean(roles?.admin);
       const isTrailGuide = isAdmin || Boolean(roles?.trailguide);
