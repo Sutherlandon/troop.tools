@@ -4,11 +4,11 @@ import { Save } from '@mui/icons-material';
 import { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import { Formik, Form } from 'formik';
+import { useSession } from 'next-auth/react';
 
 import * as UserAPI from '@client/api/UserAPI';
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 import TextField from '@client/components/formikMui/TextField';
-import useUser from '@client/hooks/useUser';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),
@@ -18,7 +18,7 @@ const UserSchema = yup.object({
 
 export default function OnboardingForm(props) {
   const [loading] = useState(false);
-  const user = useUser();
+  const { data: user } = useSession();
   const initialValues = {
     email: user.email || '',
     troop: 'NM1412',

@@ -8,7 +8,7 @@ export default async function serverCheckSession(req, res) {
     console.log('serverCheckSession: session not found, redirecting to signin', req.url);
     return {
       redirect: {
-        destination: '/auth/signin',
+        destination: '/api/auth/signin',
         permanent: false,
       }
     };

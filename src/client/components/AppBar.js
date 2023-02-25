@@ -8,16 +8,16 @@ import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useSession } from 'next-auth/react';
 
 import logoLight from '@shared/images/brand/Logo-light.png';
 import AppMenu from './AppMenu';
-import useUser from '@client/hooks/useUser';
 
 const drawerWidth = 240;
 
 function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const user = useUser();
+  const { data: user } = useSession();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

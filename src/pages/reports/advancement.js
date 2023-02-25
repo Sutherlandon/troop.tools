@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import {
   CircularProgress,
@@ -10,12 +11,11 @@ import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
-import useUser from '@client/hooks/useUser';
 import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 
 export default function AdvancementReportPage(props) {
   const { query } = useRouter();
-  const user = useUser();
+  const { data: user } = useSession();
   const [member, setMember] = useState();
 
   useEffect(() => {

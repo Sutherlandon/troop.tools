@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { useSession } from 'next-auth/react';
 import { Fragment, useEffect, useState } from 'react';
 import {
   Box,
@@ -31,7 +32,6 @@ import EventFormDialog from '@client/components/EventFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
 import serverCheckSession from 'lib/serverCheckSession';
-import useUser from '@client/hooks/useUser';
 import { BRANCH_COLORS } from '@shared/constants';
 
 export default function SchedulePage() {
@@ -42,7 +42,7 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  const user = useUser();
+  const { data: user } = useSession();
 
   useEffect(() => {
     async function loadSchedule() {

@@ -1,3 +1,4 @@
 
 App Dir beta
 - 2023/02/20 - App Dir and MUI are fundimentally incompatible due to SSR and bugs, Should consider upgrade at a later date
+- 2022/02/25 - The SessoinProvider must wrap whatever calls useSession(), that's why it's in _app and not as page layout

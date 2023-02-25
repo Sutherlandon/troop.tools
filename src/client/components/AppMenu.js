@@ -10,8 +10,7 @@ import Typography from '@mui/material/Typography';
 
 import Link from 'next/link';
 
-import useUser from '@client/hooks/useUser';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import {
   BarChart,
   CalendarMonth,
@@ -52,7 +51,7 @@ function MenuItemLink({ href, icon, onClick, text }) {
 
 export default function AppMenu(props) {
   const { handleDrawerToggle } = props;
-  const user = useUser();
+  const { data: user } = useSession();
 
   return (
     <div>

@@ -22,15 +22,15 @@ import AccessDenied from '@client/components/AccessDenied';
 import MemberFormDialog from '@client/components/MemberFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
-import useUser from '@client/hooks/useUser';
 import { PATROLS_ARRAY } from '@shared/constants';
+import { useSession } from 'next-auth/react';
 
 export default function MembersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
-  const user = useUser();
+  const { data: user } = useSession();
 
   useEffect(() => {
     async function loadMembers() {

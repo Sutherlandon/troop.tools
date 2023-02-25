@@ -20,7 +20,7 @@ import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import UserFormDialog from '@client/components/UserFormDialog';
 import serverCheckSession from 'lib/serverCheckSession';
-import useUser from '@client/hooks/useUser';
+import { useSession } from 'next-auth/react';
 
 function RoleIcon({ role }) {
   return {
@@ -34,7 +34,7 @@ export default function UsersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const user = useUser();
+  const { data: user } = useSession();
 
   useEffect(() => {
     async function loadUsers() {

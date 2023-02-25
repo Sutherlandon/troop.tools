@@ -10,8 +10,7 @@ import { theme } from '@client/components/CustomTheme';
 import '@client/styles.css';
 
 export default function MyApp({ Component, pageProps }) {
-  const { session } = pageProps;
-  console.log({ pageProps });
+  const { session, ...rest } = pageProps;
 
   return (
     <>
@@ -30,7 +29,7 @@ export default function MyApp({ Component, pageProps }) {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Component {...pageProps} />
+            <Component {...rest} />
           </ThemeProvider>
         </LocalizationProvider>
       </SessionProvider>

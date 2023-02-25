@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 
 import Tag from './Tag';
-import useUser from '@client/hooks/useUser';
 import { LESSON_TYPES, PATROLS } from '@shared/constants';
+import { useSession } from 'next-auth/react';
 
 function EventDetails(props) {
   const {
@@ -24,7 +24,7 @@ function EventDetails(props) {
     onDelete,
   } = props;
 
-  const { isAdmin, isTrailGuide } = useUser();
+  const { data: user } = useSession();
 
   // group event.attendance by patrol into an object
   const attendance = {};
@@ -106,7 +106,7 @@ function EventDetails(props) {
         </>
       }
       <Box sx={{ my: 2, textAlign: 'center' }}>
-        {isTrailGuide &&
+        {user.isTrailGuide &&
           <Button
             color='secondary'
             onClick={onAttendance}
@@ -117,7 +117,7 @@ function EventDetails(props) {
             <CheckIcon /> Attendance
           </Button>
         }
-        {isAdmin &&
+        {user.isAdmin &&
           <>
             <Button
               color='dark'

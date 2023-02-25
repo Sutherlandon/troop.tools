@@ -1,5 +1,5 @@
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import * as MembersAPI from '@client/api/MembersAPI';
 import { ADVANCEMENT, BRANCHES, BRANCH_COLORS, PATROLS } from '@shared/constants';
 import {
   Box,
@@ -13,10 +13,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import serverCheckSession from 'lib/serverCheckSession';
-import useUser from '@client/hooks/useUser';
 
 /**
  * Calculates how many credits remain to earn a branch pin
@@ -49,7 +49,7 @@ function missingCredits(row, branch) {
 export default function MissingReportPage(props) {
   const [members, setMembers] = useState();
   const [summary, setSummary] = useState({});
-  const user = useUser();
+  const { data: user } = useSession();
 
   useEffect(() => {
     async function loadMembers() {

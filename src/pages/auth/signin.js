@@ -1,45 +1,24 @@
-import Router from 'next/router';
-import { signIn, getSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { Send } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  TextField,
-  FormControl,
   Box,
+  FormControl,
+  TextField,
 } from '@mui/material';
 
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 
 export default function SignIn() {
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState('sutherlandon@gmail.com');
   const [loading, setLoading] = useState(false);
-
-  // Redirect to Schedule if a valid session exists
-  // this prevents use being in a sign in loop if the redirect
-  // from the email sends us back here
-  useEffect(() => {
-    async function checkSession() {
-      const session = await getSession();
-      if (session) {
-        return Router.push('/schedule');
-      }
-    }
-
-    checkSession();
-  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setLoading(true);
 
-    const res = await signIn('email', { email });
-
-    if (res.ok) {
-      Router.push(res.url);
-    }
-
-    Router.push('/');
+    await signIn('email', { email, callbackUrl: '/schedule' });
   }
 
   return (

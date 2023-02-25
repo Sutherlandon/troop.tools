@@ -24,23 +24,27 @@ export const authOptions = {
         },
       },
       from: 'no-reply@troop.tools',
-      url: '/'
     }),
   ],
 
   callbacks: {
     async session({ session, token, user }) {
-      // construct the session user object
+      // construct the session user object with only the fields we want
+      // on the front end
       const { email, firstName, lastName, roles, troop } = user;
-      session.user = { email };
+      const filteredUser = { email, firstName, lastName, roles, troop };
 
-      // only include fields if they have value
-      if (firstName) { session.user.firstName = firstName; }
-      if (lastName) { session.user.lastName = lastName; }
-      if (roles) { session.user.roles = roles; }
-      if (troop) { session.user.troop = troop; }
+      // assign escalating user roles
+      const isAdmin = Boolean(roles?.admin);
+      const isTrailGuide = isAdmin || Boolean(roles?.trailguide);
+      const isParent = isAdmin || isTrailGuide || Boolean(roles?.trailguide);
 
-      return session;
+      return {
+        ...filteredUser,
+        isAdmin,
+        isParent,
+        isTrailGuide,
+      };
     }
   },
 
