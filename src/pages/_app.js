@@ -11,6 +11,7 @@ import '@client/styles.css';
 
 export default function MyApp({ Component, pageProps }) {
   const { session, ...rest } = pageProps;
+  console.log('_app session', session);
 
   return (
     <>
