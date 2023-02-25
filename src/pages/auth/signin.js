@@ -18,7 +18,7 @@ export default function SignIn() {
     event.preventDefault();
     setLoading(true);
 
-    await signIn('email', { email, callbackUrl: '/schedule' });
+    await signIn('email', { email, callbackUrl: '/sessionTest' });
   }
 
   return (
