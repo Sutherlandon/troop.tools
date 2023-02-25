@@ -11,7 +11,7 @@ export default function LoadingPage() {
 
       if (session) {
         console.log('session found, redirecting to schedule');
-        return Router.push('/sessionTest');
+        return Router.push('/schedule');
       }
 
       console.log('session NOT found, redirecting to signin');

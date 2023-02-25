@@ -31,7 +31,7 @@ import EventDetails from '@client/components/EventDetails';
 import EventFormDialog from '@client/components/EventFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
-import serverCheckSession from 'lib/serverCheckSession';
+// import serverCheckSession from 'lib/serverCheckSession';
 import { BRANCH_COLORS } from '@shared/constants';
 
 export default function SchedulePage() {
@@ -221,24 +221,24 @@ export default function SchedulePage() {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
-  const props = await serverCheckSession(req, res);
-  // const props = {
-  //   props: {
-  //     session: {
-  //       email: 'sutherlandon@gmail.com',
-  //       firstName: 'Landon',
-  //       lastName: 'Sutherland',
-  //       roles: {
-  //         admin: true,
-  //       },
-  //       troop: 'NM1412',
-  //       isAdmin: true,
-  //       isParent: true,
-  //       isTrailGuide: true
-  //     }
-  //   }
-  // };
+// export async function getServerSideProps({ req, res }) {
+//   const props = await serverCheckSession(req, res);
+//   // const props = {
+//   //   props: {
+//   //     session: {
+//   //       email: 'sutherlandon@gmail.com',
+//   //       firstName: 'Landon',
+//   //       lastName: 'Sutherland',
+//   //       roles: {
+//   //         admin: true,
+//   //       },
+//   //       troop: 'NM1412',
+//   //       isAdmin: true,
+//   //       isParent: true,
+//   //       isTrailGuide: true
+//   //     }
+//   //   }
+//   // };
 
-  return props;
-}
+//   return props;
+// }
