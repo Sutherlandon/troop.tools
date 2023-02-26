@@ -12,10 +12,30 @@ import { useSession } from 'next-auth/react';
 
 import logoLight from '@shared/images/brand/Logo-light.png';
 import AppMenu from './AppMenu';
+import { Divider } from '@mui/material';
 
 const drawerWidth = 240;
 
-function AppBar(props) {
+function MenuFooter() {
+  return (
+    <>
+      <Box sx={{ flexGrow: 1, borderRight: '1px solid rgba(0, 0, 0, 0.12)' }}></Box>
+      <Divider />
+      <Box sx={{
+        px: 1,
+        py: 2,
+        borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+        textAlign: 'center',
+      }}>
+        <Typography variant='body1'>
+          © Sutherlandon, llc. 2023
+        </Typography>
+      </Box>
+    </>
+  );
+}
+
+export default function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: user } = useSession();
 
@@ -33,14 +53,12 @@ function AppBar(props) {
         }}
       >
         <Toolbar>
-          <Box sx={{ width: '30px', mr: 2 }}>
+          <Box sx={{ mr: 2, display: { xs: 'block', sm: 'none' } }}>
             <Image
               src={logoLight}
               alt='troop.tools logo'
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
+              height={30}
+              width={30}
             />
           </Box>
           <Link href='/' passHref style={{
@@ -80,24 +98,32 @@ function AppBar(props) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              borderRight: 'none',
+            },
           }}
         >
           <AppMenu handleDrawerToggle={handleDrawerToggle} />
+          <MenuFooter />
         </Drawer>
         <Drawer
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              borderRight: 'none',
+            },
           }}
           open
         >
           <AppMenu handleDrawerToggle={handleDrawerToggle} />
+          <MenuFooter />
         </Drawer>
       </Box>
     </Box>
   );
 }
-
-export default AppBar;
