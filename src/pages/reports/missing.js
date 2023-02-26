@@ -16,7 +16,6 @@ import {
 import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
-import serverCheckSession from 'lib/serverCheckSession';
 
 /**
  * Calculates how many credits remain to earn a branch pin
@@ -292,7 +291,4 @@ function BranchGrid(props) {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
-  const props = await serverCheckSession(req, res);
-  return props;
-}
+MissingReportPage.auth = true;

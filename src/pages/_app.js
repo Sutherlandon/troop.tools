@@ -1,17 +1,22 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import Head from 'next/head';
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider, useSession } from 'next-auth/react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { ThemeProvider } from '@mui/material';
+import { CircularProgress, ThemeProvider } from '@mui/material';
 
+import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 import { theme } from '@client/components/CustomTheme';
 
 import '@client/styles.css';
 
 export default function MyApp({ Component, pageProps }) {
-  const { session, ...rest } = pageProps;
-  console.log('_app session', session);
+  const {
+    // session only available if passed in from getServerSideProps, otherwise
+    // SessionProvider seems to be getting it all by itself clientside
+    session,
+    ...rest
+  } = pageProps;
 
   return (
     <>
@@ -30,10 +35,29 @@ export default function MyApp({ Component, pageProps }) {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Component {...rest} />
+            {Component.auth
+              ? <Auth><Component {...rest} /></Auth>
+              : <Component {...rest} />
+            }
           </ThemeProvider>
         </LocalizationProvider>
       </SessionProvider>
     </>
   );
+}
+
+function Auth({ children }) {
+  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
+  // a session returning "unauthenticated" will client side navigate to /api/auth/signin
+  const { status } = useSession({ required: true });
+
+  if (status === 'loading') {
+    return (
+      <MinimalLayout>
+        <CircularProgress />
+      </MinimalLayout>
+    );
+  }
+
+  return children;
 }

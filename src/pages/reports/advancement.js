@@ -10,7 +10,6 @@ import {
 import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
-import serverCheckSession from 'lib/serverCheckSession';
 import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 
 export default function AdvancementReportPage(props) {
@@ -94,7 +93,4 @@ function AdvancementPage({ adv, title }) {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
-  const props = await serverCheckSession(req, res);
-  return props;
-}
+AdvancementReportPage.auth = true;

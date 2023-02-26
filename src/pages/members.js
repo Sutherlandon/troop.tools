@@ -21,7 +21,6 @@ import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import MemberFormDialog from '@client/components/MemberFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
-import serverCheckSession from 'lib/serverCheckSession';
 import { PATROLS_ARRAY } from '@shared/constants';
 import { useSession } from 'next-auth/react';
 
@@ -166,7 +165,4 @@ export default function MembersPage() {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
-  const props = await serverCheckSession(req, res);
-  return props;
-}
+MembersPage.auth = true;

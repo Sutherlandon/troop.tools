@@ -19,7 +19,6 @@ import * as UsersAPI from '@client/api/UserAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import UserFormDialog from '@client/components/UserFormDialog';
-import serverCheckSession from 'lib/serverCheckSession';
 import { useSession } from 'next-auth/react';
 
 function RoleIcon({ role }) {
@@ -135,7 +134,4 @@ export default function UsersPage() {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
-  const props = await serverCheckSession(req, res);
-  return props;
-}
+UsersPage.auth = true;
