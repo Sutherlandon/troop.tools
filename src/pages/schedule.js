@@ -1,7 +1,5 @@
 // TODO: add expading animation to opening an event.
 // TODO: add notistack for form feedback
-// import { getServerSession } from 'next-auth';
-// import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 import dayjs from 'dayjs';
 import AddIcon from '@mui/icons-material/Add';
@@ -25,12 +23,12 @@ import {
 
 import * as EventsAPI from '@client/api/EventsAPI';
 import * as MembersAPI from '@client/api/MembersAPI';
-import AccessDenied from '@client/components/AccessDenied';
 import AttendanceFormDialog from '@client/components/AttendanceFormDialog';
 import EventDetails from '@client/components/EventDetails';
 import EventFormDialog from '@client/components/EventFormDialog';
 import PageLayout from '@client/components/Layouts/PageLayout';
 import Tag from '@client/components/Tag';
+import WelcomeMessage from '@client/components/WelcomeMessage';
 import { BRANCH_COLORS } from '@shared/constants';
 
 export default function SchedulePage() {
@@ -85,10 +83,7 @@ export default function SchedulePage() {
 
   if (!user.isParent) {
     return (
-      <AccessDenied>
-        You have not been granted access to the schedule. Please
-        contact your Troop Master and ask them to grant you the <b>Parent</b> role.
-      </AccessDenied>
+      <WelcomeMessage user={user} />
     );
   }
 
