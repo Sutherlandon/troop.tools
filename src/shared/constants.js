@@ -77,6 +77,8 @@ export const BRANCHES = {
   },
 };
 
+export const BRANCH_NAMES = Object.keys(BRANCHES);
+
 export const BRANCH_COLORS = {
   // TL Branches
   ...BRANCHES,
@@ -90,7 +92,7 @@ export const BRANCH_COLORS = {
   'General': { b: 'lightgray', t: 'black' },
 };
 
-export const BRANCH_NAMES = Object.keys(BRANCH_COLORS);
+export const EVENT_BRANCHES = Object.keys(BRANCH_COLORS);
 
 export const PATROLS = {
   foxes: {

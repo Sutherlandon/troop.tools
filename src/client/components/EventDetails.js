@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import Tag from './Tag';
-import { LESSON_TYPES, PATROLS } from '@shared/constants';
+import { BRANCH_NAMES, LESSON_TYPES, PATROLS } from '@shared/constants';
 import { useSession } from 'next-auth/react';
 
 function EventDetails(props) {
@@ -46,10 +46,12 @@ function EventDetails(props) {
       >
         <Grid item>
           {event.branch && <Tag variant={event.branch} />}
-          {event.lesson?.type && <Tag variant={LESSON_TYPES[event.lesson?.type]} />}
+          {BRANCH_NAMES.includes(event.branch) && event.lesson?.type &&
+            <Tag variant={LESSON_TYPES[event.lesson?.type]} />
+          }
         </Grid>
       </Grid>
-      {event.title && event.lesson &&
+      {BRANCH_NAMES.includes(event.branch) && event.title &&
         <Box sx={{ p: 1, fontWeight: 'bold' }}>
           {event.lesson.name}
         </Box>

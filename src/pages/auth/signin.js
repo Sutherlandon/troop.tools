@@ -11,7 +11,7 @@ import {
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('sutherlandon@gmail.com');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event) {

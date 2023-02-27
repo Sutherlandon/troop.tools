@@ -15,8 +15,8 @@ import {
 
 import * as EventsAPI from '@client/api/EventsAPI';
 import {
-  ADVANCEMENT,
   BRANCH_NAMES,
+  EVENT_BRANCHES,
   LESSONS,
   LESSON_TYPES,
 } from '@shared/constants';
@@ -32,7 +32,11 @@ const EventSchema = yup.object({
   branch: yup.string().required(blankError),
   date: yup.string().required(blankError),
   desc: yup.string(),
-  lessonID: yup.number(),
+  lessonID: yup.number()
+    .when('branch', {
+      is: (value) => BRANCH_NAMES.includes(value),
+      then: yup.number().required(blankError),
+    }),
   title: yup.string()
     .when('lesson', {
       is: '',
@@ -90,7 +94,6 @@ export default function EventFormDialog(props) {
     ...blankForm,
     ...event,
     lessonID: event?.lesson?.id,
-    branch: event?.lesson?.branch || '',
   };
 
   return (
@@ -102,12 +105,12 @@ export default function EventFormDialog(props) {
           onSubmit={handleSubmit}
           validationSchema={EventSchema}
         >
-          {({ values, isSubmitting }) => {
+          {({ errors, values, isSubmitting }) => {
             const lessonOptions = Object.keys(LESSONS)
               .filter((key) => LESSONS[key].branch === values.branch && LESSONS[key].type !== 'makeup')
               .map((key) => LESSONS[key]);
 
-            const titleOptional = values.branch === '' || Object.keys(ADVANCEMENT).includes(values.branch);
+            const titleOptional = values.branch === '' || BRANCH_NAMES.includes(values.branch);
 
             return (
               <Form style={{ paddingTop: 16 }}>
@@ -119,7 +122,7 @@ export default function EventFormDialog(props) {
                   label='Branch'
                   name='branch'
                 >
-                  {BRANCH_NAMES.map((branch) => (
+                  {EVENT_BRANCHES.map((branch) => (
                     <MenuItem value={branch} key={branch}>
                       {branch}
                     </MenuItem>
