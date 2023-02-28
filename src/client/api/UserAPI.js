@@ -27,3 +27,14 @@ export function update(data) {
     data,
   });
 }
+
+export async function deleteOne(_id) {
+  try {
+    await fetch(`/api/users/${_id}`, {
+      method: 'DELETE',
+    });
+    return {};
+  } catch (error) {
+    return { error };
+  }
+}

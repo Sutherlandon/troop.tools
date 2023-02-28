@@ -37,9 +37,7 @@ UserSchema.statics = {
   },
 
   async get(id) {
-    // not sure whether email or issuer will be more consistently used
-    const user = await this.findOne({ $or: [{ email: id }, { issuer: id }] }).lean();
-
+    const user = await this.findOne({ email: id }).lean();
     return user;
   },
 
@@ -62,6 +60,10 @@ UserSchema.statics = {
 
     return this.getAll();
   },
+
+  async delete(_id) {
+    await this.findOneAndDelete({ _id });
+  }
 };
 
 let User;

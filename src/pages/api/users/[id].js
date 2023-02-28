@@ -14,6 +14,12 @@ export default async function handler(req, res) {
 
       return res.status(404).json({ error: 'USER_NOT_FOUND' });
     }
+
+    case 'DELETE': {
+      await User.delete(id);
+      return res.status(200).send();
+    }
+
     default:
       return res.status(405);
   }

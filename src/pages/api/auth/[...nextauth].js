@@ -44,7 +44,7 @@ export const authOptions = {
       // assign escalating user roles
       const isAdmin = Boolean(roles?.admin);
       const isTrailGuide = isAdmin || Boolean(roles?.trailguide);
-      const isParent = isAdmin || isTrailGuide || Boolean(roles?.trailguide);
+      const isParent = isAdmin || isTrailGuide || Boolean(roles?.parent);
 
       return {
         ...filteredUser,

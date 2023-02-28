@@ -11,7 +11,7 @@ export default function PageLayout({ children }) {
       <AppBar />
       <Box component='main' sx={{
         backgroundColor: theme.palette.light.main,
-        padding: 4,
+        padding: { xs: 2, md: 4 },
         marginLeft: { xs: 0, sm: '240px' /* drawer width */ },
         marginTop: 7
       }}>

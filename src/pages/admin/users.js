@@ -1,5 +1,5 @@
 // import AddIcon from '@mui/icons-material/Add';
-import { Edit, Explore, Lock, Person } from '@mui/icons-material';
+import { DeleteForever, Edit, Explore, Lock, Person } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import {
   // Button,
@@ -24,8 +24,8 @@ import { useSession } from 'next-auth/react';
 function RoleIcon({ role }) {
   return {
     admin: <Lock sx={(theme) => ({ color: theme.palette.error.main })} />,
-    parent: <Person sx={(theme) => ({ color: theme.palette.dark.main })} />,
     trailguide: <Explore sx={(theme) => ({ color: theme.palette.secondary.main })} />,
+    parent: <Person sx={(theme) => ({ color: theme.palette.dark.main })} />,
   }[role];
 };
 
@@ -52,10 +52,21 @@ export default function UsersPage() {
 
   // open the edit form loaded with the event at the index
   function openEdit(user) {
-    setEditInfo({
-      user,
-      open: true,
-    });
+    setEditInfo({ user, open: true });
+  }
+
+  // calls the user api to delete a user
+  async function deleteUser(user) {
+    const confirmMsg = `Are you sure you want to permanently delete ${user.firstName} (${user.email})?`;
+    if (confirm(confirmMsg)) {
+      const { error } = await UsersAPI.deleteOne(user._id);
+      if (error) {
+        return console.error(error);
+      }
+
+      // remove the user from the list
+      setUsers(users.filter((u) => u._id !== user._id));
+    }
   }
 
   if (!user.isAdmin) {
@@ -72,7 +83,7 @@ export default function UsersPage() {
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            {user.troop} App Users
+            {user.troop} Users
           </Typography>
         </Grid>
         {/* <Grid item>
@@ -94,21 +105,28 @@ export default function UsersPage() {
       />
       {loading
         ? <LinearProgress />
-        : <Paper>
+        : <Paper sx={{ mb: 2 }}>
           <Table size='small'>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>Email</TableCell>
+                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>Email</TableCell>
                 <TableCell>Roles</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {users.map((user, index) => (
                 <TableRow key={`${user.firstName} ${user.lastName}`}>
-                  <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{user.email}</TableCell>
+                  <TableCell>
+                    {user.firstName
+                      ? `${user.firstName} ${user.lastName}`
+                      : 'New User'
+                    }
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{user.email}</TableCell>
                   <TableCell>
                     {user.roles &&
                       Object.keys(user.roles)
@@ -116,12 +134,18 @@ export default function UsersPage() {
                         .map((r) => <RoleIcon key={r} role={r} />)
                     }
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                     <IconButton
                       onClick={() => openEdit(user)}
                       sx={{ color: 'inherit' }}
                     >
                       <Edit />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => deleteUser(user)}
+                      sx={(theme) => ({ color: theme.palette.error.main })}
+                    >
+                      <DeleteForever />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -130,6 +154,14 @@ export default function UsersPage() {
           </Table>
         </Paper>
       }
+      <Grid container spacing={1}>
+        <Grid item><RoleIcon role='admin'/></Grid>
+        <Grid item>Admin</Grid>
+        <Grid item><RoleIcon role='trailguide'/></Grid>
+        <Grid item>Trail Guide</Grid>
+        <Grid item><RoleIcon role='parent'/></Grid>
+        <Grid item>Parent</Grid>
+      </Grid>
     </PageLayout>
   );
 }

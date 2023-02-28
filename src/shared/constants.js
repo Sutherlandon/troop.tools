@@ -10,7 +10,7 @@ import AdventurersIcon from './images/adventuers_logo_180.png';
 import NavigatorsLogo from './images/navigatorsLogo.png';
 import NavigatorsIcon from './images/navigators_logo_180.png';
 
-export const USER_ROLES = ['admin', 'parent', 'trailguide'];
+export const USER_ROLES = ['admin', 'trailguide', 'parent'];
 
 export const ADVANCEMENT = {
   'Heritage': { core: 2, elective: 1, htt: 1, makeup: 2 },
