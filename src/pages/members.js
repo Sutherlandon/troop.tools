@@ -105,41 +105,44 @@ export default function MembersPage() {
       />
       {loading
         ? <LinearProgress />
-        : <Paper>
-          <Table size='small'>
-            <TableHead>
-              <TableRow>
-                <TableCell>Patrol</TableCell>
-                <TableCell>Name</TableCell>
-                {user.isTrailGuide &&
-                  <TableCell>Actions</TableCell>
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {PATROLS_ARRAY
-                .filter((patrol) => !!membersByPatrol[patrol.key])
-                .map((patrol) => membersByPatrol[patrol.key]
-                  .map((member, index) => (
-                    <TableRow
-                      key={`${member.firstName} ${member.lastName}`}
-                      sx={{
-                        '& td': {
-                          backgroundColor: patrol.color,
-                        },
-                      }}
-                    >
-                      {index === 0 &&
-                        <TableCell
-                          rowSpan={membersByPatrol[patrol.key].length}
-                          sx={{
-                            width: 85,
-                            borderRight: '1px solid rgba(224, 224, 224, 1)',
-                          }}
-                        >
-                          <Image src={patrol.icon} alt='Patrol Logo' width={50} />
-                        </TableCell>
-                      }
+        : PATROLS_ARRAY
+          .filter((patrol) => !!membersByPatrol[patrol.key])
+          .map((patrol) => (
+            <Paper key={patrol.key} sx={{
+              mb: 2,
+              border: `1px solid ${patrol.color}`,
+            }}>
+              <Table size='small'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={3} sx={{
+                      background: patrol.color,
+                    }}>
+                      <Grid container spacing={2} alignItems='center'>
+                        <Grid item>
+                          <Image
+                            src={patrol.icon}
+                            alt='Patrol Logo'
+                            height={35}
+                            sx={{ mr: 2 }}
+                          />
+                        </Grid>
+                        <Grid item>
+                          <Typography variant='h5'>
+                            {patrol.name}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody sx={{
+                  '& tr:last-child td': {
+                    borderBottom: 0,
+                  },
+                }}>
+                  {membersByPatrol[patrol.key].map((member, index) => (
+                    <TableRow key={`${member.firstName} ${member.lastName}`}>
                       <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
                       <TableCell>
                         <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
@@ -155,11 +158,11 @@ export default function MembersPage() {
                         </TableCell>
                       }
                     </TableRow>
-                  ))
-                )}
-            </TableBody>
-          </Table>
-        </Paper>
+                  ))}
+                </TableBody>
+              </Table>
+            </Paper>
+          ))
       }
     </PageLayout>
   );

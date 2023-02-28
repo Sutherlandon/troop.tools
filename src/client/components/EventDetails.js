@@ -2,7 +2,6 @@ import isEmpty from 'lodash.isempty';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import CheckBoxIcon from '@mui/icons-material/Check';
 import Image from 'next/image';
 import { Fragment } from 'react';
 import {
@@ -83,8 +82,8 @@ function EventDetails(props) {
                   }}
                 >
                   <Grid container spacing={2} alignItems='center'>
-                    <Grid item sx={{ height: 45 }}>
-                      <Image src={PATROLS[patrol].icon} alt='Patrol Logo' style={{ height: '100%', width: 'auto' }} />
+                    <Grid item>
+                      <Image src={PATROLS[patrol].icon} alt='Patrol Logo' height={30} />
                     </Grid>
                     <Grid item>
                       <Typography variant='body1'>{PATROLS[patrol].name}</Typography>
