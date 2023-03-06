@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
 import db from '../config/database';
-import Lesson from './lessons.model';
+import Lesson from './lesson.model';
 import { PATROLS_ARRAY } from '../../shared/constants';
 
 // define the default collection name

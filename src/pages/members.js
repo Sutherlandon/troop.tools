@@ -29,7 +29,7 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
-  const { data: user } = useSession();
+  const { data: user } = useSession({ requred: true });
 
   useEffect(() => {
     async function loadMembers() {

@@ -33,7 +33,7 @@ export default function UsersPage() {
   const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const { data: user } = useSession();
+  const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadUsers() {

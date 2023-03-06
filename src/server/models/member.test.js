@@ -7,7 +7,7 @@ import {
 } from '@jest/globals';
 
 import db from '../config/database';
-import Lesson from './lessons.model';
+import Lesson from './lesson.model';
 import Member from './member.model';
 import { PATROLS } from '../../shared/constants';
 

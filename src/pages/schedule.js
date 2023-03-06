@@ -39,7 +39,7 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  const { data: user } = useSession();
+  const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {

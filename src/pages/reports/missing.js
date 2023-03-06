@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ADVANCEMENT, BRANCHES, BRANCH_COLORS, PATROLS } from '@shared/constants';
 import {
   Box,
@@ -13,9 +13,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
+import { useLessons, useMembers } from 'hooks/dataFetchers';
 
 /**
  * Calculates how many credits remain to earn a branch pin
@@ -46,23 +46,10 @@ function missingCredits(row, branch) {
 }
 
 export default function MissingReportPage(props) {
-  const [members, setMembers] = useState();
   const [summary, setSummary] = useState({});
-  const { data: user } = useSession();
-
-  useEffect(() => {
-    async function loadMembers() {
-      const { data, error } = await MembersAPI.get();
-
-      if (error) {
-        return console.error(error);
-      }
-
-      setMembers(data);
-    }
-
-    loadMembers();
-  }, []);
+  const { data: user } = useSession({ required: true });
+  const { members, isLoading: membersLoading, error: membersError } = useMembers();
+  const { lessons, isLoading: lessonsLoading, error: lessonsError } = useLessons();
 
   if (!user.isTrailGuide) {
     return (
@@ -73,9 +60,22 @@ export default function MissingReportPage(props) {
     );
   }
 
-  if (!members) {
+  if (membersLoading || lessonsLoading) {
     return <CircularProgress />;
   }
+
+  if (membersError || lessonsError) {
+    return membersError || lessonsError;
+  }
+
+  const lessonsObject = {};
+  lessons.forEach((lesson, i) => {
+    // TODO: Clean up lessons, cause there triplicates in the collection and only
+    //       one of them has a type field... hours, literally hours to solve this...
+    if (lesson.type) {
+      lessonsObject[lesson.lessonID] = lesson;
+    }
+  });
 
   return (
     <PageLayout>
@@ -126,6 +126,7 @@ export default function MissingReportPage(props) {
           <Grid item key={branchName}>
             <BranchGrid
               branch={branchName}
+              lessons={lessonsObject}
               members={members}
               setSummary={setSummary}
               summary={summary}
@@ -138,40 +139,43 @@ export default function MissingReportPage(props) {
 }
 
 function BranchGrid(props) {
-  const { branch, members } = props;
+  const { branch, lessons, members } = props;
 
   const oneLessonAway = { branch: 0, star: 0 };
 
   // build the grid
 
-  const theGrid = members.map((member) => {
-    const name = `${member.firstName} ${member.lastName}`;
-    const row = {
-      name,
-      patrol: member.patrol,
-      core: 0,
-      elective: 0,
-      htt: 0,
-      makeup: 0,
-    };
+  const theGrid = members
+    // only woodlands trails
+    .filter((member) => ['foxes', 'hawks', 'mountainLions'].includes(member.patrol))
+    .map((member) => {
+      const name = `${member.firstName} ${member.lastName}`;
+      const row = {
+        name,
+        patrol: member.patrol,
+        core: 0,
+        elective: 0,
+        htt: 0,
+        makeup: 0,
+      };
 
-    // count up each type of lesson taken for this branch
-    member.adv.forEach((lesson) => {
-      if (lesson.branch === branch) {
-        row[lesson.type] += 1;
-      }
+      // count up each type of lesson taken for this branch
+      member.adv.forEach(({ lessonID }) => {
+        if (lessons[lessonID].branch === branch) {
+          row[lessons[lessonID].type] += 1;
+        }
+      });
+
+      // calculate missing credits
+      [row.branch, row.star] = missingCredits(row, branch);
+
+      // keep a running total of members that are 1 lesson away
+      // from a branch or star pin
+      if (row.branch === 1) oneLessonAway.branch++;
+      if (row.star === 1) oneLessonAway.star++;
+
+      return row;
     });
-
-    // calculate missing credits
-    [row.branch, row.star] = missingCredits(row, branch);
-
-    // keep a running total of members that are 1 lesson away
-    // from a branch or star pin
-    if (row.branch === 1) oneLessonAway.branch++;
-    if (row.star === 1) oneLessonAway.star++;
-
-    return row;
-  });
 
   // save the one Lesson away up state
 

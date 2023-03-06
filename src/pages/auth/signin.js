@@ -1,24 +1,45 @@
-import { signIn } from 'next-auth/react';
 import { Send } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import {
   Box,
+  CircularProgress,
   FormControl,
   TextField,
 } from '@mui/material';
 
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
+import { useRouter } from 'next/router';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/schedule');
+    }
+  }, [router, status]);
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setLoading(true);
+    setIsSubmitting(true);
 
     await signIn('email', { email, callbackUrl: '/schedule' });
+  }
+
+  // we do this when status is authenticated because there is about
+  // a 1 second delay between having moved from loading to authenticated
+  // before the redirect takes effect.
+  if (status === 'loading' || status === 'authenticated') {
+    return (
+      <MinimalLayout title='Checking Session'>
+        <CircularProgress />
+      </MinimalLayout>
+    );
   }
 
   return (
@@ -48,7 +69,7 @@ export default function SignIn() {
             color='secondary'
             endIcon={<Send />}
             loadingPosition='end'
-            loading={loading}
+            loading={isSubmitting}
             variant='contained'
             type='submit'
             sx={{ textTransform: 'none' }}
