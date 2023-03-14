@@ -69,13 +69,7 @@ export default function MissingReportPage(props) {
   }
 
   const lessonsObject = {};
-  lessons.forEach((lesson, i) => {
-    // TODO: Clean up lessons, cause there triplicates in the collection and only
-    //       one of them has a type field... hours, literally hours to solve this...
-    if (lesson.type) {
-      lessonsObject[lesson.lessonID] = lesson;
-    }
-  });
+  lessons.forEach((lesson) => { lessonsObject[lesson.lessonID] = lesson; });
 
   return (
     <PageLayout>

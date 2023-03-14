@@ -4,9 +4,10 @@ import { useField } from 'formik';
 export default function FormikMuiSelect(props) {
   const { children, helperText, label, name, ...rest } = props;
   const [field, meta] = useField(name);
+  const hasError = Boolean(meta.error) && Boolean(meta.touched);
 
   return (
-    <FormControl fullWidth sx={{ maxWidth: 500, marginBottom: 2 }} error={meta.error}>
+    <FormControl fullWidth sx={{ maxWidth: 500, marginBottom: 2 }} error={hasError}>
       <InputLabel id={`${name}-selector-label`}>{label}</InputLabel>
       <Select
         id={`${name}-selector`}
@@ -19,7 +20,7 @@ export default function FormikMuiSelect(props) {
       >
         {children}
       </Select>
-      <FormHelperText>{helperText || meta.error}</FormHelperText>
+      <FormHelperText>{helperText || (hasError && meta.error)}</FormHelperText>
     </FormControl>
   );
 }

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
-import { LESSONS } from '../../shared/constants';
+import { LESSONS_BY_ID } from '../../shared/constants';
 
 import db from '../config/database';
 import Member from './member.model';
@@ -24,7 +24,7 @@ const EventSchema = new mongoose.Schema({
   branch: String,
   date: String,
   desc: String,
-  lessonID: Number,
+  lessonID: String,
   title: String,
 }, {
   collection,
@@ -57,7 +57,7 @@ EventSchema.statics = {
 
           // hydrate a lesson if it exists
           if (lessonID) {
-            event.lesson = LESSONS[lessonID];
+            event.lesson = LESSONS_BY_ID[lessonID];
           }
 
           // hydrate the members in attendence

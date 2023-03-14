@@ -87,6 +87,8 @@ export default function SchedulePage() {
     );
   }
 
+  console.log(events);
+
   return (
     <PageLayout>
       <Grid container sx={{ marginBottom: 2 }}>
@@ -177,7 +179,7 @@ export default function SchedulePage() {
                           : <Tag text={displayDate} variant={event.branch} />
                         }
                       </TableCell>
-                      <TableCell>{event.title || event.lesson.name}</TableCell>
+                      <TableCell>{event.title || event.lesson?.name}</TableCell>
                       <TableCell sx={{ textAlign: 'right' }}>
                         {showDetails === index
                           ? <CloseIcon />
