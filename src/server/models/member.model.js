@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
+
 import db from '../config/database';
-import Lesson from './lesson.model';
-import { PATROLS, PATROLS_ARRAY } from '../../shared/constants';
+import { arrayToObject } from '../../shared/helpers';
+import {
+  LESSONS_BY_ID,
+  PATROLS,
+  PATROLS_ARRAY
+} from '../../shared/constants';
 
 // define the default collection name
 let collection = 'members';
@@ -59,19 +64,14 @@ MemberSchema.statics = {
   async getAll() {
     // fetch the members data
     const members = await this.find().lean();
-    const lessonsDB = await Lesson.getAll();
     const patrolKeysById = {};
     PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
-
-    // index the lessons
-    const lessons = {};
-    lessonsDB.forEach((lesson) => (lessons[lesson.lessonID] = lesson));
 
     const membersHydratedd = members.map((member) => {
       const advHydratedd = member.adv
         .map((entry) => ({
           ...entry,
-          ...lessons[entry.lessonID],
+          ...LESSONS_BY_ID[entry.lessonID],
           patrol: patrolKeysById[entry.patrolID]
         }));
       return { ...member, adv: advHydratedd };
@@ -114,16 +114,7 @@ MemberSchema.statics = {
   async updateAdvancement(formData) {
     const { attendance, lessonID, date } = formData;
     const memberIDs = Object.keys(attendance);
-    const members = await Member.find();
-
-    function arrayToObject(arr, key) {
-      const obj = {};
-      arr.forEach((item) => (obj[item[key]] = item));
-
-      return obj;
-    }
-
-    const membersObj = arrayToObject(members, '_id');
+    const members = arrayToObject(await Member.find(), '_id');
 
     // build the add/remove lists
     const updatedMembers = await Promise.all(
@@ -131,7 +122,7 @@ MemberSchema.statics = {
         const entry = {
           date,
           lessonID,
-          patrolID: PATROLS[membersObj[_id].patrol].id
+          patrolID: PATROLS[members[_id].patrol].id
         };
 
         if (attendance[_id]) {

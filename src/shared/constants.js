@@ -10,6 +10,7 @@ import AdventurersIcon from './images/adventuers_logo_180.png';
 import NavigatorsLogo from './images/navigatorsLogo.png';
 import NavigatorsIcon from './images/navigators_logo_180.png';
 import { LESSONS } from './lessons';
+import { arrayToObject } from './helpers';
 
 export const USER_ROLES = ['admin', 'trailguide', 'parent'];
 
@@ -149,8 +150,7 @@ export const LESSON_TYPES = {
 };
 
 // restructure LESSONS array into object by ID
-const LESSONS_BY_ID = {};
-LESSONS.forEach((l) => (LESSONS_BY_ID[l.lessonID] = l));
+const LESSONS_BY_ID = arrayToObject(LESSONS, 'lessonID');
 
 export {
   LESSONS,

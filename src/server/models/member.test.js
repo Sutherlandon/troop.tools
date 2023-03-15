@@ -1,15 +1,13 @@
 import dayjs from 'dayjs';
 import {
   afterAll,
-  beforeAll,
   expect,
   it,
 } from '@jest/globals';
 
 import db from '../config/database';
-import Lesson from './lesson.model';
 import Member from './member.model';
-import { PATROLS } from '../../shared/constants';
+import { LESSONS, PATROLS } from '../../shared/constants';
 
 let index = 0;
 function makeMember(patrol, adv = []) {
@@ -26,30 +24,10 @@ function makeMember(patrol, adv = []) {
 }
 
 const testDate = dayjs().format('DD/MM/YYYY');
-const testLessons = [{
-  lessonID: 'hbhmknwaozr5',
-  branch: 'Heritage',
-  name: 'Christian Heritage',
-  type: 'core'
-}, {
-  lessonID: '33vyzrr0umju',
-  branch: 'Heritage',
-  name: 'Flag Etiquette and History',
-  type: 'core'
-}, {
-  lessonID: 'etq3e8060lwm',
-  branch: 'Heritage',
-  name: 'Founding Fathers',
-  type: 'core'
-}];
-
-beforeAll(async () => {
-  await Lesson.create(testLessons);
-});
+const testLessons = LESSONS;
 
 afterAll(async () => {
   await Member.collection.drop();
-  await Lesson.collection.drop();
   db.close();
 });
 
