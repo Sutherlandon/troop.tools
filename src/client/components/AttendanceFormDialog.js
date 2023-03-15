@@ -59,10 +59,8 @@ function AttendenceFormDialog(props) {
       _id: event._id,
       attendance: values,
       date: event.date,
-      lessonID: event.lesson?.id,
+      lessonID: event.lesson?.lessonID,
     };
-
-    console.log('data submitted', formData);
 
     const { data, error } = await EventsAPI.attendance(formData);
 

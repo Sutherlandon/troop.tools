@@ -39,7 +39,7 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [showDetails, setShowDetails] = useState();
-  const { data: user } = useSession();
+  const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {
@@ -86,6 +86,8 @@ export default function SchedulePage() {
       <WelcomeMessage user={user} />
     );
   }
+
+  console.log(events);
 
   return (
     <PageLayout>
@@ -177,7 +179,7 @@ export default function SchedulePage() {
                           : <Tag text={displayDate} variant={event.branch} />
                         }
                       </TableCell>
-                      <TableCell>{event.title || event.lesson.name}</TableCell>
+                      <TableCell>{event.title || event.lesson?.name}</TableCell>
                       <TableCell sx={{ textAlign: 'right' }}>
                         {showDetails === index
                           ? <CloseIcon />

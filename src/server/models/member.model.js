@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
+
 import db from '../config/database';
-import Lesson from './lessons.model';
-import { PATROLS_ARRAY } from '../../shared/constants';
+import { arrayToObject } from '../../shared/helpers';
+import {
+  LESSONS_BY_ID,
+  PATROLS,
+  PATROLS_ARRAY
+} from '../../shared/constants';
 
 // define the default collection name
 let collection = 'members';
@@ -59,19 +64,14 @@ MemberSchema.statics = {
   async getAll() {
     // fetch the members data
     const members = await this.find().lean();
-    const lessonsDB = await Lesson.getAll();
     const patrolKeysById = {};
     PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
-
-    // index the lessons
-    const lessons = {};
-    lessonsDB.forEach((lesson) => (lessons[lesson.lessonID] = lesson));
 
     const membersHydratedd = members.map((member) => {
       const advHydratedd = member.adv
         .map((entry) => ({
           ...entry,
-          ...lessons[entry.lessonID],
+          ...LESSONS_BY_ID[entry.lessonID],
           patrol: patrolKeysById[entry.patrolID]
         }));
       return { ...member, adv: advHydratedd };
@@ -114,33 +114,24 @@ MemberSchema.statics = {
   async updateAdvancement(formData) {
     const { attendance, lessonID, date } = formData;
     const memberIDs = Object.keys(attendance);
-
-    const entry = { lessonID, date };
-    let addMembers = [];
-    let removeMembers = [];
+    const members = arrayToObject(await Member.find(), '_id');
 
     // build the add/remove lists
-    memberIDs.forEach((_id) => {
-      if (attendance[_id]) {
-        addMembers.push(_id);
-      } else {
-        removeMembers.push(_id);
-      }
-    });
+    const updatedMembers = await Promise.all(
+      memberIDs.map(async (_id) => {
+        const entry = {
+          date,
+          lessonID,
+          patrolID: PATROLS[members[_id].patrol].id
+        };
 
-    addMembers = await this.updateMany(
-      { _id: { $in: addMembers } },
-      { $addToSet: { adv: entry } },
-      { new: true }
+        if (attendance[_id]) {
+          return this.addAdvancement(_id, entry);
+        } else {
+          return this.removeAdvancement(_id, entry);
+        }
+      })
     );
-
-    removeMembers = await this.updateMany(
-      { _id: { $in: removeMembers } },
-      { $pull: { adv: entry } },
-      { new: true }
-    );
-
-    const updatedMembers = await this.find({ _id: { $in: memberIDs } });
 
     return updatedMembers;
   },
@@ -152,7 +143,7 @@ MemberSchema.statics = {
    */
   async addAdvancement(_id, entry) {
     const update = { $addToSet: { adv: entry } };
-    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true }).lean();
     return member;
   },
 
@@ -164,7 +155,7 @@ MemberSchema.statics = {
   async removeAdvancement(_id, entry) {
     // pull the entry out of the member's advancement list
     const update = { $pull: { adv: entry } };
-    const member = await this.findOneAndUpdate({ _id }, update, { new: true });
+    const member = await this.findOneAndUpdate({ _id }, update, { new: true }).lean();
     return member;
   }
 };

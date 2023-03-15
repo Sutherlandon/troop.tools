@@ -13,9 +13,9 @@ import PageLayout from '@client/components/Layouts/PageLayout';
 import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 
 export default function AdvancementReportPage(props) {
-  const { query } = useRouter();
-  const { data: user } = useSession();
   const [member, setMember] = useState();
+  const { query } = useRouter();
+  const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadMembers() {

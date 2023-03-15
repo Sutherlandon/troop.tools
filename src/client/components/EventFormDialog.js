@@ -1,7 +1,6 @@
 // TODO: add close icon to dialogs
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import isEmpty from 'lodash.isempty';
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Formik, Form } from 'formik';
@@ -32,10 +31,10 @@ const EventSchema = yup.object({
   branch: yup.string().required(blankError),
   date: yup.string().required(blankError),
   desc: yup.string(),
-  lessonID: yup.number()
+  lessonID: yup.string()
     .when('branch', {
       is: (value) => BRANCH_NAMES.includes(value),
-      then: yup.number().required(blankError),
+      then: yup.string().required(blankError),
     }),
   title: yup.string()
     .when('lesson', {
@@ -45,7 +44,7 @@ const EventSchema = yup.object({
 });
 
 const blankForm = {
-  branch: 'Heritage',
+  branch: '',
   date: dayjs(),
   desc: '',
   lessonID: '',
@@ -66,13 +65,9 @@ export default function EventFormDialog(props) {
       date: dayjs(values.date).format(),
     };
 
-    // map lesson to lessonID and delete lesson for transmission
-    if (!isEmpty(values.lesson)) {
-      formData.lessonID = values.lesson.id;
-      delete formData.lesson;
-    }
-
-    // console.log('submitting', formData);
+    // delete lesson for transmission
+    delete formData.lesson;
+    console.log('submitting', formData);
 
     // If the event already exists, update it, otherwise add it
     let data, error;
@@ -93,8 +88,9 @@ export default function EventFormDialog(props) {
   const initialValues = {
     ...blankForm,
     ...event,
-    lessonID: event?.lesson?.id,
+    lessonID: event?.lesson?.lessonID || blankForm.lessonID,
   };
+  let prevBranch = initialValues.branch;
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -106,11 +102,14 @@ export default function EventFormDialog(props) {
           validationSchema={EventSchema}
         >
           {({ errors, values, isSubmitting }) => {
-            const lessonOptions = Object.keys(LESSONS)
-              .filter((key) => LESSONS[key].branch === values.branch && LESSONS[key].type !== 'makeup')
-              .map((key) => LESSONS[key]);
-
             const titleOptional = values.branch === '' || BRANCH_NAMES.includes(values.branch);
+            const lessonOptions = LESSONS.filter((l) => l.branch === values.branch && l.type !== 'makeup');
+            if (values.branch !== prevBranch) {
+              prevBranch = values.branch;
+              values.lessonID = lessonOptions[0]?.lessonID;
+            }
+
+            console.log('VALUES', values);
 
             return (
               <Form style={{ paddingTop: 16 }}>
@@ -134,16 +133,17 @@ export default function EventFormDialog(props) {
                     name='lessonID'
                   >
                     {lessonOptions.map((lesson) => (
-                      <MenuItem value={lesson.id} key={lesson.id}>
+                      <MenuItem value={lesson.lessonID} key={lesson.lessonID}>
                         {LESSON_TYPES[lesson.type]}: {lesson.name}
                       </MenuItem>
-                    ))}
+                    ))
+                    }
                   </Select>
                 }
                 <TextField
                   label={`Title${titleOptional ? ' (optional)' : ''}`}
                   name='title'
-                  helperText={titleOptional && 'Defaults to lesson name' }
+                  helperText={titleOptional && 'Defaults to lesson name'}
                 />
                 <TextField
                   label='Description (optional)'
