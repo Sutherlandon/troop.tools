@@ -1,3 +1,5 @@
 node_modules
 .next
-.env.local
+.env*
+yarn-error.log
+src/server/scripts/output

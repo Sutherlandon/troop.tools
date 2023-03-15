@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>380</y>
+      <w>210</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Event
+--
+attendance: Object
+branch: String
+date: String
+name: String
+type: String
+year: String
+created: Date
+updated: Date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>410</x>
+      <y>150</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Member
+--
+active: Boolean
+name: String
+patrol: String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>930</x>
+      <y>300</y>
+      <w>210</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>User
+--
+email: String (id)
+issuer: String
+firstName: String
+lastName: String
+roles: Array
+created: Date
+updated: Date
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
