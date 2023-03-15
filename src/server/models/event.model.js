@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
 import { nanoid } from 'nanoid';
@@ -54,6 +55,7 @@ EventSchema.statics = {
         .map(async ({ attendance, lessonID, ...rest }) => {
           // start with the base record
           const event = { ...rest };
+          event.date = dayjs(event.date).format();
 
           // hydrate a lesson if it exists
           if (lessonID) {

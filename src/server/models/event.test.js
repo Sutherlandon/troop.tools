@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { LESSONS } from '../../shared/constants';
+import { LESSONS_BY_ID } from '../../shared/constants';
 import {
   afterAll,
   beforeAll,
@@ -24,10 +24,10 @@ const testEvent = {
 beforeAll(async () => {
   // create a pool of test members
   testMembers = await Member.create([
-    { firstName: 'first-01', lastName: 'last-01', patrol: 'fox', active: true },
-    { firstName: 'first-02', lastName: 'last-02', patrol: 'hawk', active: true },
-    { firstName: 'first-03', lastName: 'last-03', patrol: 'moutainLion', active: true },
-    { firstName: 'first-04', lastName: 'last-04', patrol: 'moutainLion', active: false },
+    { firstName: 'first-01', lastName: 'last-01', patrol: 'foxes', active: true },
+    { firstName: 'first-02', lastName: 'last-02', patrol: 'hawks', active: true },
+    { firstName: 'first-03', lastName: 'last-03', patrol: 'moutainLions', active: true },
+    { firstName: 'first-04', lastName: 'last-04', patrol: 'moutainLions', active: false },
   ]);
 });
 
@@ -53,7 +53,7 @@ it('Should add no-lesson event', async () => {
 it('Should add lesson event', async () => {
   const formData = {
     date: testDate.toString(),
-    lessonID: 1,
+    lessonID: '1',
   };
 
   const received = await Event.add(formData);
@@ -67,22 +67,22 @@ it('Should get all the events, sorted by date, with hydrated lessons', async () 
   const testEvents = await Event.create([
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.plus({ week: 1 }).toString(),
-      lessonID: 5
+      date: testDate.add(1, 'week').toString(),
+      lessonID: 'c9us5tnvarab'
     },
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.plus({ days: 10 }).toString(),
-      lessonID: 13
+      date: testDate.add(10, 'days').toString(),
+      lessonID: '9ez9g5w5c4r1'
     },
     {
       attendance: testMembers.map((m) => m._id),
       date: testDate.toString(), // first date not first to test sorting
-      lessonID: 1
+      lessonID: 'a911ldcyi1hc'
     },
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.plus({ weeks: 2 }).toString(),
+      date: testDate.add(2, 'weeks').toString(),
       title: 'Custom Title',
       desc: 'This is what we are doing',
     },
@@ -90,14 +90,14 @@ it('Should get all the events, sorted by date, with hydrated lessons', async () 
 
   const received = await Event.getAll();
   expect(received.length).toEqual(4); // total number
-  expect(received[0].date).toEqual(testDate.toString()); // sort order
-  expect(received[1].lesson).toEqual(LESSONS[5]); // lesson hydration
+  expect(received[0].date).toEqual(testDate.format()); // sort order
+  expect(received[1].lesson).toEqual(LESSONS_BY_ID.c9us5tnvarab); // lesson hydration
   expect(received[3].lesson).toBeUndefined(); // no lesson
   expect(received[0].attendance.length).toEqual(3); // active members only
   expect(received[0].attendance[0]).toMatchObject({ // member hydration
     _id: testMembers[0]._id,
     name: 'first-01 last-01',
-    patrol: 'fox',
+    patrol: 'foxes',
   });
 
   await Promise.all(testEvents.map(({ _id }) => Event.deleteOne({ _id })));

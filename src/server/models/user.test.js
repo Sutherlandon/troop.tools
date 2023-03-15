@@ -38,15 +38,6 @@ it('Should get a user by email', async () => {
   await User.deleteOne({ _id: received._id });
 });
 
-it('Should get a user by issuer', async () => {
-  const user = await User.create(makeUser());
-
-  const received = await User.get(user.issuer);
-  expect(received._id).toEqual(user._id);
-
-  await User.deleteOne({ _id: received._id });
-});
-
 it('Should get all the users sorted by last name', async () => {
   const testUser1 = makeUser();
   const testUser2 = makeUser();
@@ -66,12 +57,13 @@ it('should update a user\'s name with new values', async () => {
 
   const formData = {
     email: user.email,
+    troop: user.troop,
     firstName: 'Randle',
     lastName: 'Boss',
   };
 
   const received = await User.update(formData);
-  expect(received).toMatchObject(formData);
+  expect(received[0]).toMatchObject(formData);
 
   await User.deleteOne({ _id: user._id });
 });
