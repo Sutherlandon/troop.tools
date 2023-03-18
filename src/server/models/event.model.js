@@ -48,6 +48,10 @@ EventSchema.statics = {
     return event;
   },
 
+  /**
+   * Gets a list of all the events
+   * @returns An array of all the events
+   */
   async getAll() {
     // pull all events and hydrate the lessons if they exist
     const events = await Promise.all(
@@ -78,9 +82,21 @@ EventSchema.statics = {
     );
 
     // cache the events
+    // TODO: use the cache
     _events = sortBy(events, 'date');
 
     return _events;
+  },
+
+  /**
+   * Gets a list of events for a given year
+   * @param {String} year The year you want events for
+   * @returns An array of events belonging to the given year
+   */
+  async getByYear(year) {
+    const allEvents = await this.getAll();
+    const events = allEvents.filter((e) => String(dayjs(e.date).year()) === year);
+    return events;
   },
 
   /**

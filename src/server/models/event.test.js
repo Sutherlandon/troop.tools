@@ -67,22 +67,22 @@ it('Should get all the events, sorted by date, with hydrated lessons', async () 
   const testEvents = await Event.create([
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.add(1, 'week').toString(),
+      date: testDate.add(1, 'week').format(),
       lessonID: 'c9us5tnvarab'
     },
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.add(10, 'days').toString(),
+      date: testDate.add(10, 'days').format(),
       lessonID: '9ez9g5w5c4r1'
     },
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.toString(), // first date not first to test sorting
+      date: testDate.format(), // first date not first to test sorting
       lessonID: 'a911ldcyi1hc'
     },
     {
       attendance: testMembers.map((m) => m._id),
-      date: testDate.add(2, 'weeks').toString(),
+      date: testDate.add(2, 'weeks').format(),
       title: 'Custom Title',
       desc: 'This is what we are doing',
     },
@@ -99,6 +99,35 @@ it('Should get all the events, sorted by date, with hydrated lessons', async () 
     name: 'first-01 last-01',
     patrol: 'foxes',
   });
+
+  await Promise.all(testEvents.map(({ _id }) => Event.deleteOne({ _id })));
+});
+
+it('Should get all the events for a given year', async () => {
+  // create a pool of test events
+  const testEvents = await Event.create([
+    { // 1 year 2021
+      attendance: testMembers.map((m) => m._id),
+      date: testDate.subtract(2, 'days').format(),
+      lessonID: 'a911ldcyi1hc'
+    },
+    { // 2 for year 2022
+      attendance: testMembers.map((m) => m._id),
+      date: testDate.add(1, 'week').format(),
+      lessonID: 'c9us5tnvarab'
+    },
+    {
+      attendance: testMembers.map((m) => m._id),
+      date: testDate.add(10, 'days').format(),
+      lessonID: '9ez9g5w5c4r1'
+    },
+  ]);
+
+  const received2021 = await Event.getByYear('2021');
+  const received2022 = await Event.getByYear('2022');
+
+  expect(received2021.length).toEqual(1);
+  expect(received2022.length).toEqual(2);
 
   await Promise.all(testEvents.map(({ _id }) => Event.deleteOne({ _id })));
 });

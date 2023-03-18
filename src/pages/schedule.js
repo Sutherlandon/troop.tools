@@ -19,6 +19,8 @@ import {
   TableHead,
   Typography,
   LinearProgress,
+  Select,
+  MenuItem,
 } from '@mui/material';
 
 import * as EventsAPI from '@client/api/EventsAPI';
@@ -38,12 +40,13 @@ export default function SchedulePage() {
   const [newOpen, setNewOpen] = useState(false);
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
+  const [year, setYear] = useState(String(dayjs().year()));
   const [showDetails, setShowDetails] = useState();
   const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data: events, error: eventsErr } = await EventsAPI.get();
+      const { data: events, error: eventsErr } = await EventsAPI.get(year);
       const { data: members, error: memberErr } = await MembersAPI.get();
 
       if (eventsErr || memberErr) {
@@ -56,7 +59,7 @@ export default function SchedulePage() {
     }
 
     loadSchedule();
-  }, []);
+  }, [year]);
 
   // open the edit form loaded with the event
   function openEdit(event) {
@@ -70,7 +73,7 @@ export default function SchedulePage() {
 
   // Handle removing an event from the list
   async function handleRemove(event) {
-    if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name}`)) {
+    if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name} from ${year}`)) {
       const { data, error } = await EventsAPI.remove(event);
 
       if (error) {
@@ -79,6 +82,11 @@ export default function SchedulePage() {
 
       setSchedule(data);
     }
+  }
+
+  async function handleYearChange(event) {
+    setLoading(true);
+    setYear(event.target.value);
   }
 
   if (!user.isParent) {
@@ -91,12 +99,29 @@ export default function SchedulePage() {
 
   return (
     <PageLayout>
-      <Grid container sx={{ marginBottom: 2 }}>
-        <Grid item sx={{ flexGrow: 1 }}>
+      <Grid
+        container
+        spacing={2}
+        alignItems='center'
+        sx={{ marginBottom: 2 }}
+      >
+        <Grid item>
           <Typography variant='h5'>
-            Schedule 2023
+            Schedule
           </Typography>
         </Grid>
+        <Grid item>
+          <Select
+            value={year}
+            onChange={handleYearChange}
+            size='small'
+          >
+            <MenuItem value={2021}>2021</MenuItem>
+            <MenuItem value={2022}>2022</MenuItem>
+            <MenuItem value={2023}>2023</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }} />
         {user.isAdmin &&
           <Grid item>
             <Button
@@ -137,8 +162,8 @@ export default function SchedulePage() {
           <Table size='small'>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ textAlign: 'left' }}>Date</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell sx={{ pl: 4 }}>Date</TableCell>
+                <TableCell>Event</TableCell>
                 <TableCell></TableCell>
               </TableRow >
             </TableHead >

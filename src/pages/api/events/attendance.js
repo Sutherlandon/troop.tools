@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import Event from '@server/models/event.model';
 import Member from '@server/models/member.model';
 
@@ -16,7 +17,9 @@ export default async function handler(req, res) {
     await Member.updateAdvancement(formData);
   }
 
-  const events = await Event.getAll();
+  // return the schedule for the same year as the event was in
+  const year = String(dayjs(req.body.date).year());
+  const events = await Event.getByYear(year);
 
   return res.status(200).json(events);
 };

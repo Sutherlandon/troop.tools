@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import Event from '@server/models/event.model';
 
 export default async function handler(req, res) {
@@ -5,7 +6,9 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     await Event.remove(req.body);
-    events = await Event.getAll();
+    // return the schedule for the same year as the event was in
+    const year = String(dayjs(req.body.date).year());
+    events = await Event.getByYear(year);
   } else {
     return res.status(405);
   }

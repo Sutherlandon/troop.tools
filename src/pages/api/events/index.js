@@ -1,7 +1,9 @@
+import dayjs from 'dayjs';
 import Event from '@server/models/event.model';
 
 export default async function handler(req, res) {
   let events;
+  let year;
 
   switch (req.method) {
     case 'GET':
@@ -9,11 +11,15 @@ export default async function handler(req, res) {
       break;
     case 'POST':
       await Event.add(req.body);
-      events = await Event.getAll();
+      // return the schedule for the same year as the event was in
+      year = String(dayjs(req.body.date).year());
+      events = await Event.getByYear(year);
       break;
     case 'PUT':
       await Event.update(req.body);
-      events = await Event.getAll();
+      // return the schedule for the same year as the event was in
+      year = String(dayjs(req.body.date).year());
+      events = await Event.getByYear(year);
       break;
     default:
       return res.status(405);
