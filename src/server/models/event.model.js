@@ -27,6 +27,7 @@ const EventSchema = new mongoose.Schema({
   desc: String,
   lessonID: String,
   title: String,
+  troop: String,
 }, {
   collection,
   timestamps: {
@@ -38,24 +39,31 @@ const EventSchema = new mongoose.Schema({
 EventSchema.statics = {
   /**
    * Adds a new event to the list of events
-   * @param {Obejct} formData Form data contianing the new item
+   * @param {Object} formData Form data contianing the new item
+   * @param {String} troop The troop this even belongs to
    * @returns the event that was created
    */
-  async add(formData) {
+  async add(formData, troop) {
     // create the new event
-    const event = await this.create(formData);
+    const event = await this.create({ ...formData, troop });
 
     return event;
   },
 
   /**
    * Gets a list of all the events
+   * @param {String} troop The troop to return all events for.
    * @returns An array of all the events
    */
-  async getAll() {
+  async getAll(troop) {
+    // troop is required
+    if (!troop) {
+      throw new Error('Error: You cannot call Event.getAll(troop) without specifying a troop');
+    }
+
     // pull all events and hydrate the lessons if they exist
     const events = await Promise.all(
-      (await this.find().lean())
+      (await this.find({ troop }).lean())
         .map(async ({ attendance, lessonID, ...rest }) => {
           // start with the base record
           const event = { ...rest };
@@ -90,12 +98,13 @@ EventSchema.statics = {
 
   /**
    * Gets a list of events for a given year
+   * @param {String} troop The troop to return all events for.
    * @param {String} year The year you want events for
    * @returns An array of events belonging to the given year
    */
-  async getByYear(year) {
-    const allEvents = await this.getAll();
-    const events = allEvents.filter((e) => String(dayjs(e.date).year()) === year);
+  async getByYear(year, troop) {
+    const allEvents = await this.getAll(troop);
+    const events = allEvents.filter((event) => String(dayjs(event.date).year()) === year);
     return events;
   },
 

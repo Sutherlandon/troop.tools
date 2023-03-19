@@ -34,6 +34,7 @@ const MemberSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   patrol: String,
+  troop: String,
 }, {
   collection,
   timestamps: {
@@ -47,23 +48,28 @@ MemberSchema.statics = {
   /**
    * Adds a new member to the system
    * @param {Obejct} formData Form data contianing the new item
+   * @param {String} troop The troop to add the member too
    * @returns All members including the new one
    */
-  async add(formData) {
+  async add(formData, troop) {
     // put the new member in the DB
-    const member = await this.create(formData);
-
+    const member = await this.create({ ...formData, troop });
     return member;
   },
 
   /**
    * Gets a list of all the members in the DB
-   * @param {Boolean} bustCache True means ignore bust the cache and fetch all new data
+   * @param {String} troop The troop to return all members for.
    * @returns A list of all members
    */
-  async getAll() {
+  async getAll(troop) {
+    // troop is required
+    if (!troop) {
+      throw new Error('Error: You cannot call Member.getAll(troop) without specifying a troop');
+    }
+
     // fetch the members data
-    const members = await this.find().lean();
+    const members = await this.find({ troop }).lean();
     const patrolKeysById = {};
     PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
 
@@ -111,10 +117,10 @@ MemberSchema.statics = {
    * Updates the advancement of many members based on the formData submitted
    * @param {Object} formData Data from the attendance form
    */
-  async updateAdvancement(formData) {
+  async updateAdvancement(formData, troop) {
     const { attendance, lessonID, date } = formData;
     const memberIDs = Object.keys(attendance);
-    const members = arrayToObject(await Member.find(), '_id');
+    const members = arrayToObject(await Member.find({ troop }), '_id');
 
     // build the add/remove lists
     const updatedMembers = await Promise.all(
