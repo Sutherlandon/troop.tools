@@ -19,7 +19,6 @@ export default withAuthSession(async (req, res) => {
 
   // A list of users or the member created/updated
   const results = await Member.getAll(session.troop);
-  console.log(session, results.length);
 
   return res.status(200).json(results);
 });

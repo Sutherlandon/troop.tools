@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import {
+  Alert,
   Button,
   Grid,
   IconButton,
@@ -105,64 +106,70 @@ export default function MembersPage() {
       />
       {loading
         ? <LinearProgress />
-        : PATROLS_ARRAY
-          .filter((patrol) => !!membersByPatrol[patrol.key])
-          .map((patrol) => (
-            <Paper key={patrol.key} sx={{
-              mb: 2,
-              border: `1px solid ${patrol.color}`,
-            }}>
-              <Table size='small'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell colSpan={3} sx={{
-                      background: patrol.color,
-                    }}>
-                      <Grid container spacing={2} alignItems='center'>
-                        <Grid item>
-                          <Image
-                            src={patrol.icon}
-                            alt='Patrol Logo'
-                            height={35}
-                            sx={{ mr: 2 }}
-                          />
+        : members.length === 0
+          ? <Alert variant='standard' severity='info'>
+            You do not have any members yet. Use the +Add button to create some.
+          </Alert>
+          : PATROLS_ARRAY
+            .filter((patrol) => !!membersByPatrol[patrol.key])
+            .map((patrol) => (
+              <Paper key={patrol.key} sx={{
+                mb: 2,
+                border: `1px solid ${patrol.color}`,
+              }}>
+                <Table size='small'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell colSpan={3} sx={{
+                        background: patrol.color,
+                      }}>
+                        <Grid container spacing={2} alignItems='center'>
+                          <Grid item>
+                            <Image
+                              src={patrol.icon}
+                              alt='Patrol Logo'
+                              height={35}
+                              sx={{ mr: 2 }}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Typography variant='h5'>
+                              {patrol.name}
+                            </Typography>
+                          </Grid>
                         </Grid>
-                        <Grid item>
-                          <Typography variant='h5'>
-                            {patrol.name}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody sx={{
-                  '& tr:last-child td': {
-                    borderBottom: 0,
-                  },
-                }}>
-                  {membersByPatrol[patrol.key].map((member, index) => (
-                    <TableRow key={`${member.firstName} ${member.lastName}`}>
-                      <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
-                      <TableCell>
-                        <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
                       </TableCell>
-                      {user.isTrailGuide &&
-                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                          <IconButton
-                            onClick={() => openEdit(member)}
-                            sx={{ color: 'inherit' }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </TableCell>
-                      }
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Paper>
-          ))
+                  </TableHead>
+                  <TableBody sx={{
+                    '& tr:last-child td': {
+                      borderBottom: 0,
+                    },
+                  }}>
+                    {membersByPatrol[patrol.key].map((member, index) => (
+                      <TableRow key={`${member.firstName} ${member.lastName}`}>
+                        <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
+                        {user.troop === 'NM-1412' &&
+                          <TableCell>
+                            <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
+                          </TableCell>
+                        }
+                        {user.isTrailGuide &&
+                          <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                            <IconButton
+                              onClick={() => openEdit(member)}
+                              sx={{ color: 'inherit' }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </TableCell>
+                        }
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Paper>
+            ))
       }
     </PageLayout>
   );

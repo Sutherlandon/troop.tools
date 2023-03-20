@@ -8,6 +8,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useSession } from 'next-auth/react';
 import { Fragment, useEffect, useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -95,8 +96,6 @@ export default function SchedulePage() {
     );
   }
 
-  console.log(events);
-
   return (
     <PageLayout>
       <Grid
@@ -157,86 +156,90 @@ export default function SchedulePage() {
         eventsList={events}
       />
       {loading
-        ? <LinearProgress/>
-        : <Paper sx={{ mb: 2 }}>
-          <Table size='small'>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ pl: 4 }}>Date</TableCell>
-                <TableCell>Event</TableCell>
-                <TableCell></TableCell>
-              </TableRow >
-            </TableHead >
-            <TableBody>
-              {events.map((event, index) => {
-                const expanded = showDetails === index;
-                const highlight = event.lesson?.type === 'htt' ||
-                  ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
+        ? <LinearProgress />
+        : events.length === 0
+          ? <Alert variant='standard' severity='info'>
+            You do not have any events yet. Use the +Add button to create some.
+          </Alert>
+          : <Paper sx={{ mb: 2 }}>
+            <Table size='small'>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ pl: 4 }}>Date</TableCell>
+                  <TableCell>Event</TableCell>
+                  <TableCell></TableCell>
+                </TableRow >
+              </TableHead >
+              <TableBody>
+                {events.map((event, index) => {
+                  const expanded = showDetails === index;
+                  const highlight = event.lesson?.type === 'htt' ||
+                    ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
 
-                const branchColor = BRANCH_COLORS[event.branch]?.b;
-                const branchText = BRANCH_COLORS[event.branch]?.t;
-                const borderColor = '#464646';
-                const displayDate = dayjs(event.date).format('MM/DD');
+                  const branchColor = BRANCH_COLORS[event.branch]?.b;
+                  const branchText = BRANCH_COLORS[event.branch]?.t;
+                  const borderColor = '#464646';
+                  const displayDate = dayjs(event.date).format('MM/DD');
 
-                return (
-                  <Fragment key={event.title + event.date}>
-                    <TableRow
-                      onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
-                      sx={{
-                        '& td': {
-                          backgroundColor: (expanded || highlight) && branchColor,
-                          borderTop: expanded && `2px solid ${borderColor}`,
-                          color: (expanded || highlight) && branchText,
-                        },
-                        '& td:first-of-type': {
-                          borderLeft: expanded && `2px solid ${borderColor}`,
-                          borderTop: expanded && `2px solid ${borderColor}`,
-                        },
-                        '& td:last-of-type': {
-                          borderRight: expanded && `2px solid ${borderColor}`,
-                          borderTopWidth: expanded && `2px solid ${borderColor}`,
-                        },
-                      }}
-                    >
-                      <TableCell sx={{ textAlign: 'left' }}>
-                        {highlight || expanded
-                          ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
-                          : <Tag text={displayDate} variant={event.branch} />
-                        }
-                      </TableCell>
-                      <TableCell>{event.title || event.lesson?.name}</TableCell>
-                      <TableCell sx={{ textAlign: 'right' }}>
-                        {showDetails === index
-                          ? <CloseIcon />
-                          : <MoreHorizIcon />
-                        }
-                      </TableCell>
-                    </TableRow>
-                    {expanded &&
-                      <TableRow>
-                        <TableCell
-                          colSpan={3}
-                          sx={{
-                            borderWidth: '0 2px 2px',
-                            borderStyle: 'solid',
-                            borderColor,
-                          }}
-                        >
-                          <EventDetails
-                            event={event}
-                            onAttendance={() => openAttendance(event)}
-                            onEdit={() => openEdit(event)}
-                            onDelete={() => handleRemove(event)}
-                          />
+                  return (
+                    <Fragment key={event.title + event.date}>
+                      <TableRow
+                        onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
+                        sx={{
+                          '& td': {
+                            backgroundColor: (expanded || highlight) && branchColor,
+                            borderTop: expanded && `2px solid ${borderColor}`,
+                            color: (expanded || highlight) && branchText,
+                          },
+                          '& td:first-of-type': {
+                            borderLeft: expanded && `2px solid ${borderColor}`,
+                            borderTop: expanded && `2px solid ${borderColor}`,
+                          },
+                          '& td:last-of-type': {
+                            borderRight: expanded && `2px solid ${borderColor}`,
+                            borderTopWidth: expanded && `2px solid ${borderColor}`,
+                          },
+                        }}
+                      >
+                        <TableCell sx={{ textAlign: 'left' }}>
+                          {highlight || expanded
+                            ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
+                            : <Tag text={displayDate} variant={event.branch} />
+                          }
+                        </TableCell>
+                        <TableCell>{event.title || event.lesson?.name}</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          {showDetails === index
+                            ? <CloseIcon />
+                            : <MoreHorizIcon />
+                          }
                         </TableCell>
                       </TableRow>
-                    }
-                  </Fragment>
-                );
-              })}
-            </TableBody>
-          </Table >
-        </Paper >
+                      {expanded &&
+                        <TableRow>
+                          <TableCell
+                            colSpan={3}
+                            sx={{
+                              borderWidth: '0 2px 2px',
+                              borderStyle: 'solid',
+                              borderColor,
+                            }}
+                          >
+                            <EventDetails
+                              event={event}
+                              onAttendance={() => openAttendance(event)}
+                              onEdit={() => openEdit(event)}
+                              onDelete={() => handleRemove(event)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      }
+                    </Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table >
+          </Paper >
       }
     </PageLayout>
   );

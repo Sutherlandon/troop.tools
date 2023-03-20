@@ -8,12 +8,14 @@ import { useSession } from 'next-auth/react';
 
 import * as UserAPI from '@client/api/UserAPI';
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
-import TextField from '@client/components/formikMui/TextField';
+import { Select, TextField } from '@client/components/formikMui';
+import { MenuItem } from '@mui/material';
 
 const UserSchema = yup.object({
   email: yup.string().required('Required'),
   firstName: yup.string().required('Required'),
   lastName: yup.string().required('Required'),
+  troop: yup.string().required('Required'),
 });
 
 export default function NewUserPage(props) {
@@ -21,7 +23,7 @@ export default function NewUserPage(props) {
   const { data: user } = useSession();
   const initialValues = {
     email: user.email || '',
-    troop: 'NM1412',
+    troop: '',
     firstName: '',
     lastName: '',
     roles: [],
@@ -51,11 +53,15 @@ export default function NewUserPage(props) {
             label='Email Address'
             name='email'
           />
-          <TextField
-            disabled
+          <Select
             label='Trail Life Troop'
             name='troop'
-          />
+          >
+            <MenuItem value=''>- Select -</MenuItem>
+            <MenuItem value='NM-1412'>NM-1412</MenuItem>
+            <MenuItem value='TX-0938'>TX-0938</MenuItem>
+            <MenuItem value='TX-1253'>TX-1253</MenuItem>
+          </Select>
           <TextField
             label='First Name'
             name='firstName'
