@@ -1,26 +1,12 @@
 import makeRequest from './makeRequest';
 
-// cache the events when fetched
-let _events;
-
-/**
- * Make the request but cache the results for repeated gets
- */
-async function makeCacheRequest(params) {
-  const { data, error } = await makeRequest(params);
-
-  _events = data;
-
-  return { data, error };
-}
-
 /**
  * Calls the API to add a new event
  * @param {Object} item A new event item
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function add(item) {
-  return makeCacheRequest({
+  return makeRequest({
     url: '/api/events',
     method: 'POST',
     data: item,
@@ -33,7 +19,7 @@ export function add(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function attendance(formData) {
-  return makeCacheRequest({
+  return makeRequest({
     url: '/api/events/attendance',
     method: 'POST',
     data: formData,
@@ -44,14 +30,15 @@ export function attendance(formData) {
  * Fetches the list of events
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
-export function get() {
-  if (_events) {
-    return { data: _events };
+export function get(year) {
+  let url = '/api/events';
+
+  // add the year if it's given
+  if (year) {
+    url += `/${year}`;
   }
 
-  return makeCacheRequest({
-    url: '/api/events',
-  });
+  return makeRequest({ url });
 }
 
 /**
@@ -60,7 +47,7 @@ export function get() {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function remove(item) {
-  return makeCacheRequest({
+  return makeRequest({
     url: '/api/events/remove',
     method: 'POST',
     data: item,
@@ -73,7 +60,7 @@ export function remove(item) {
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of events
  */
 export function update(formData) {
-  return makeCacheRequest({
+  return makeRequest({
     url: '/api/events',
     method: 'PUT',
     data: formData,

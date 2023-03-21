@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material';
 
 import AppBar from '../AppBar';
 
-export default function PageLayout({ children }) {
+export default function PageLayout({ children, noMaxWidth }) {
   const theme = useTheme();
 
   return (
@@ -15,7 +15,14 @@ export default function PageLayout({ children }) {
         marginLeft: { xs: 0, sm: '240px' /* drawer width */ },
         marginTop: 7
       }}>
-        {children}
+        <Box sx={{
+          ...(!noMaxWidth && {
+            maxWidth: 800,
+            margin: 'auto',
+          })
+        }}>
+          {children}
+        </Box>
       </Box>
     </>
   );

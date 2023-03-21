@@ -41,8 +41,13 @@ UserSchema.statics = {
     return user;
   },
 
-  async getAll() {
-    const users = await this.find().lean();
+  async getAll(troop) {
+    // troop is required
+    if (!troop) {
+      throw new Error('Error: You cannot call User.getAll(troop) without specifying a troop');
+    }
+
+    const users = await this.find({ troop }).lean();
 
     _users = sortBy(users, 'lastName');
 
@@ -58,7 +63,7 @@ UserSchema.statics = {
       { new: true }
     ).lean();
 
-    return this.getAll();
+    return this.getAll(troop);
   },
 
   async delete(_id) {

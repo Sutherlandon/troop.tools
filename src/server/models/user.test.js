@@ -3,6 +3,8 @@ import { afterAll, expect, it } from '@jest/globals';
 import db from '../config/database';
 import User from './user.model';
 
+const testTroop = 'NM-1412';
+
 let index = 0;
 function makeUser() {
   index += 1;
@@ -10,7 +12,7 @@ function makeUser() {
 
   return {
     email: `test-${userId}@troop.tools`,
-    troop: 'NM1412',
+    troop: testTroop,
     firstName: `first-${userId}`,
     lastName: `last-${userId}`,
   };
@@ -38,18 +40,27 @@ it('Should get a user by email', async () => {
   await User.deleteOne({ _id: received._id });
 });
 
+it('Should return an error for a getAll() request with no troop', async () => {
+  // Example of asserting throws from a function that returns a promise
+  await expect(User.getAll()).rejects.toThrow(
+    new Error('Error: You cannot call User.getAll(troop) without specifying a troop')
+  );
+});
+
 it('Should get all the users sorted by last name', async () => {
-  const testUser1 = makeUser();
-  const testUser2 = makeUser();
-  const user = await User.create(testUser2);
-  const user2 = await User.create(testUser1);
+  const user1 = makeUser();
+  const user2 = makeUser();
+  const testUsers = await User.create([
+    user2,
+    user1,
+    { ...makeUser(), troop: 'TX-9874' } // should not be included in the return
+  ]);
 
-  const received = await User.getAll();
+  const received = await User.getAll(testTroop);
   expect(received.length).toEqual(2);
-  expect(received[0].lastName).toEqual(user2.lastName);
+  expect(received[0].lastName).toEqual(testUsers[1].lastName);
 
-  await User.deleteOne({ _id: user._id });
-  await User.deleteOne({ _id: user2._id });
+  await Promise.all(testUsers.map(({ _id }) => User.deleteOne({ _id })));
 });
 
 it('should update a user\'s name with new values', async () => {
