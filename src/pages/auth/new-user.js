@@ -59,8 +59,8 @@ export default function NewUserPage(props) {
           >
             <MenuItem value=''>- Select -</MenuItem>
             <MenuItem value='NM-1412'>NM-1412</MenuItem>
-            <MenuItem value='TX-0938'>TX-0938</MenuItem>
-            <MenuItem value='TX-1253'>TX-1253</MenuItem>
+            <MenuItem value='TX-0110'>TX-0110</MenuItem>
+            <MenuItem value='TX-3221'>TX-3221</MenuItem>
           </Select>
           <TextField
             label='First Name'
