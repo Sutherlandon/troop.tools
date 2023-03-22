@@ -60,9 +60,12 @@ it('Should get all the members', async () => {
   await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
 
-it('Should add a new member', async () => {
+it('Should add a new member, trimming any extra white space', async () => {
   const formData = makeMember('foxes'); // 7th
+  formData.lastName = formData.lastName + '   '; // adding training white space
+
   const received = await Member.add(formData);
+
   expect(received).toMatchObject({
     active: true,
     adv: [],

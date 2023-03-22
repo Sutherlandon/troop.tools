@@ -50,6 +50,10 @@ MemberSchema.statics = {
    * @returns All members including the new one
    */
   async add(formData) {
+    // trim text fields
+    formData.firstName = formData.firstName.trim();
+    formData.lastName = formData.lastName.trim();
+
     // put the new member in the DB
     const member = await this.create(formData);
 
@@ -90,6 +94,10 @@ MemberSchema.statics = {
    */
   async update(formData) {
     const { _id, ...update } = formData;
+
+    // trim text fields
+    update.firstName = update.firstName.trim();
+    update.lastName = update.lastName.trim();
 
     // make the update
     const member = await this.findOneAndUpdate({ _id }, { ...update }, { new: true });
