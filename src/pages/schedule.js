@@ -8,6 +8,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useSession } from 'next-auth/react';
 import { Fragment, useEffect, useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -19,6 +20,8 @@ import {
   TableHead,
   Typography,
   LinearProgress,
+  Select,
+  MenuItem,
 } from '@mui/material';
 
 import * as EventsAPI from '@client/api/EventsAPI';
@@ -38,12 +41,13 @@ export default function SchedulePage() {
   const [newOpen, setNewOpen] = useState(false);
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
+  const [year, setYear] = useState(String(dayjs().year()));
   const [showDetails, setShowDetails] = useState();
   const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data: events, error: eventsErr } = await EventsAPI.get();
+      const { data: events, error: eventsErr } = await EventsAPI.get(year);
       const { data: members, error: memberErr } = await MembersAPI.get();
 
       if (eventsErr || memberErr) {
@@ -56,7 +60,7 @@ export default function SchedulePage() {
     }
 
     loadSchedule();
-  }, []);
+  }, [year]);
 
   // open the edit form loaded with the event
   function openEdit(event) {
@@ -70,7 +74,7 @@ export default function SchedulePage() {
 
   // Handle removing an event from the list
   async function handleRemove(event) {
-    if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name}`)) {
+    if (confirm(`Are you sure you want to delete ${event.title || event.lesson.name} from ${year}`)) {
       const { data, error } = await EventsAPI.remove(event);
 
       if (error) {
@@ -81,22 +85,42 @@ export default function SchedulePage() {
     }
   }
 
+  async function handleYearChange(event) {
+    setLoading(true);
+    setYear(event.target.value);
+  }
+
   if (!user.isParent) {
     return (
       <WelcomeMessage user={user} />
     );
   }
 
-  console.log(events);
-
   return (
     <PageLayout>
-      <Grid container sx={{ marginBottom: 2 }}>
-        <Grid item sx={{ flexGrow: 1 }}>
+      <Grid
+        container
+        spacing={2}
+        alignItems='center'
+        sx={{ marginBottom: 2 }}
+      >
+        <Grid item>
           <Typography variant='h5'>
-            Schedule 2023
+            Schedule
           </Typography>
         </Grid>
+        <Grid item>
+          <Select
+            value={year}
+            onChange={handleYearChange}
+            size='small'
+          >
+            <MenuItem value={2021}>2021</MenuItem>
+            <MenuItem value={2022}>2022</MenuItem>
+            <MenuItem value={2023}>2023</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }} />
         {user.isAdmin &&
           <Grid item>
             <Button
@@ -132,86 +156,90 @@ export default function SchedulePage() {
         eventsList={events}
       />
       {loading
-        ? <LinearProgress/>
-        : <Paper sx={{ mb: 2 }}>
-          <Table size='small'>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ textAlign: 'left' }}>Date</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell></TableCell>
-              </TableRow >
-            </TableHead >
-            <TableBody>
-              {events.map((event, index) => {
-                const expanded = showDetails === index;
-                const highlight = event.lesson?.type === 'htt' ||
-                  ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
+        ? <LinearProgress />
+        : events.length === 0
+          ? <Alert variant='standard' severity='info'>
+            You do not have any events yet. Use the +Add button to create some.
+          </Alert>
+          : <Paper sx={{ mb: 2 }}>
+            <Table size='small'>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ pl: 4 }}>Date</TableCell>
+                  <TableCell>Event</TableCell>
+                  <TableCell></TableCell>
+                </TableRow >
+              </TableHead >
+              <TableBody>
+                {events.map((event, index) => {
+                  const expanded = showDetails === index;
+                  const highlight = event.lesson?.type === 'htt' ||
+                    ['Camp', 'Day Hike', 'Award', 'Fundraiser'].includes(event.branch);
 
-                const branchColor = BRANCH_COLORS[event.branch]?.b;
-                const branchText = BRANCH_COLORS[event.branch]?.t;
-                const borderColor = '#464646';
-                const displayDate = dayjs(event.date).format('MM/DD');
+                  const branchColor = BRANCH_COLORS[event.branch]?.b;
+                  const branchText = BRANCH_COLORS[event.branch]?.t;
+                  const borderColor = '#464646';
+                  const displayDate = dayjs(event.date).format('MM/DD');
 
-                return (
-                  <Fragment key={event.title + event.date}>
-                    <TableRow
-                      onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
-                      sx={{
-                        '& td': {
-                          backgroundColor: (expanded || highlight) && branchColor,
-                          borderTop: expanded && `2px solid ${borderColor}`,
-                          color: (expanded || highlight) && branchText,
-                        },
-                        '& td:first-of-type': {
-                          borderLeft: expanded && `2px solid ${borderColor}`,
-                          borderTop: expanded && `2px solid ${borderColor}`,
-                        },
-                        '& td:last-of-type': {
-                          borderRight: expanded && `2px solid ${borderColor}`,
-                          borderTopWidth: expanded && `2px solid ${borderColor}`,
-                        },
-                      }}
-                    >
-                      <TableCell sx={{ textAlign: 'left' }}>
-                        {highlight || expanded
-                          ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
-                          : <Tag text={displayDate} variant={event.branch} />
-                        }
-                      </TableCell>
-                      <TableCell>{event.title || event.lesson?.name}</TableCell>
-                      <TableCell sx={{ textAlign: 'right' }}>
-                        {showDetails === index
-                          ? <CloseIcon />
-                          : <MoreHorizIcon />
-                        }
-                      </TableCell>
-                    </TableRow>
-                    {expanded &&
-                      <TableRow>
-                        <TableCell
-                          colSpan={3}
-                          sx={{
-                            borderWidth: '0 2px 2px',
-                            borderStyle: 'solid',
-                            borderColor,
-                          }}
-                        >
-                          <EventDetails
-                            event={event}
-                            onAttendance={() => openAttendance(event)}
-                            onEdit={() => openEdit(event)}
-                            onDelete={() => handleRemove(event)}
-                          />
+                  return (
+                    <Fragment key={event.title + event.date}>
+                      <TableRow
+                        onClick={() => setShowDetails(index === showDetails ? 'close' : index)}
+                        sx={{
+                          '& td': {
+                            backgroundColor: (expanded || highlight) && branchColor,
+                            borderTop: expanded && `2px solid ${borderColor}`,
+                            color: (expanded || highlight) && branchText,
+                          },
+                          '& td:first-of-type': {
+                            borderLeft: expanded && `2px solid ${borderColor}`,
+                            borderTop: expanded && `2px solid ${borderColor}`,
+                          },
+                          '& td:last-of-type': {
+                            borderRight: expanded && `2px solid ${borderColor}`,
+                            borderTopWidth: expanded && `2px solid ${borderColor}`,
+                          },
+                        }}
+                      >
+                        <TableCell sx={{ textAlign: 'left' }}>
+                          {highlight || expanded
+                            ? <Box sx={{ pl: 2 }}>{displayDate}</Box>
+                            : <Tag text={displayDate} variant={event.branch} />
+                          }
+                        </TableCell>
+                        <TableCell>{event.title || event.lesson?.name}</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          {showDetails === index
+                            ? <CloseIcon />
+                            : <MoreHorizIcon />
+                          }
                         </TableCell>
                       </TableRow>
-                    }
-                  </Fragment>
-                );
-              })}
-            </TableBody>
-          </Table >
-        </Paper >
+                      {expanded &&
+                        <TableRow>
+                          <TableCell
+                            colSpan={3}
+                            sx={{
+                              borderWidth: '0 2px 2px',
+                              borderStyle: 'solid',
+                              borderColor,
+                            }}
+                          >
+                            <EventDetails
+                              event={event}
+                              onAttendance={() => openAttendance(event)}
+                              onEdit={() => openEdit(event)}
+                              onDelete={() => handleRemove(event)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      }
+                    </Fragment>
+                  );
+                })}
+              </TableBody>
+            </Table >
+          </Paper >
       }
     </PageLayout>
   );

@@ -12,28 +12,9 @@ import { useSession } from 'next-auth/react';
 
 import logoLight from '@shared/images/brand/Logo-light.png';
 import AppMenu from './AppMenu';
-import { Divider } from '@mui/material';
+import MenuFooter from './MenuFooter';
 
 const drawerWidth = 240;
-
-function MenuFooter() {
-  return (
-    <>
-      <Box sx={{ flexGrow: 1, borderRight: '1px solid rgba(0, 0, 0, 0.12)' }}></Box>
-      <Divider />
-      <Box sx={{
-        px: 1,
-        py: 2,
-        borderRight: '1px solid rgba(0, 0, 0, 0.12)',
-        textAlign: 'center',
-      }}>
-        <Typography variant='body1'>
-          © Sutherlandon, llc. 2023
-        </Typography>
-      </Box>
-    </>
-  );
-}
 
 export default function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);

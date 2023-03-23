@@ -83,7 +83,7 @@ export default function UsersPage() {
       <Grid container sx={{ marginBottom: 2 }}>
         <Grid item sx={{ flexGrow: 1 }}>
           <Typography variant='h5'>
-            {user.troop} Users
+            Troop Users
           </Typography>
         </Grid>
         {/* <Grid item>
@@ -105,7 +105,7 @@ export default function UsersPage() {
       />
       {loading
         ? <LinearProgress />
-        : <Paper sx={{ mb: 2 }}>
+        : <Paper>
           <Table size='small'>
             <TableHead>
               <TableRow>
@@ -154,7 +154,7 @@ export default function UsersPage() {
           </Table>
         </Paper>
       }
-      <Grid container spacing={1}>
+      <Grid container spacing={1} sx={{ pt: 2 }}>
         <Grid item><RoleIcon role='admin'/></Grid>
         <Grid item>Admin</Grid>
         <Grid item><RoleIcon role='trailguide'/></Grid>

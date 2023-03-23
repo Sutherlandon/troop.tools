@@ -9,6 +9,10 @@ import db from '../config/database';
 import Member from './member.model';
 import { LESSONS, PATROLS } from '../../shared/constants';
 
+const testDate = dayjs().format('DD/MM/YYYY');
+const testLessons = LESSONS;
+const testTroop = 'NM-1412';
+
 let index = 0;
 function makeMember(patrol, adv = []) {
   index += 1;
@@ -20,18 +24,23 @@ function makeMember(patrol, adv = []) {
     firstName: `first-${memberId}`,
     lastName: `last-${memberId}`,
     patrol,
+    troop: testTroop,
   };
 }
-
-const testDate = dayjs().format('DD/MM/YYYY');
-const testLessons = LESSONS;
 
 afterAll(async () => {
   await Member.collection.drop();
   db.close();
 });
 
-it('Should get all the members', async () => {
+it('Should return an error for a getAll() request with no troop', async () => {
+  // Example of asserting throws from a function that returns a promise
+  await expect(Member.getAll()).rejects.toThrow(
+    new Error('Error: You cannot call Member.getAll(troop) without specifying a troop')
+  );
+});
+
+it('Should get all the members for a given troop', async () => {
   // first-01 for sorting name along with patrol
   const testAdvEntry = {
     date: testDate,
@@ -46,9 +55,10 @@ it('Should get all the members', async () => {
     makeMember('navigators'),
     makeMember('adventurers'),
     adventurer,
+    { ...makeMember('foxes'), troop: 'TX-9874' } // should not be included in the return
   ]);
 
-  const received = await Member.getAll();
+  const received = await Member.getAll(testTroop);
   expect(received.length).toEqual(6);
   expect(received[0].firstName).toEqual('first-01');
   expect(received[0].adv[0]).toMatchObject({
@@ -60,22 +70,25 @@ it('Should get all the members', async () => {
   await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
 
-it('Should add a new member', async () => {
-  const formData = makeMember('foxes'); // 7th
-  const received = await Member.add(formData);
+it('Should add a new member, trimming any extra white space', async () => {
+  const formData = makeMember('foxes');
+  formData.lastName = formData.lastName + '   '; // adding training white space
+  delete formData.troop; // this will test assigning troop by logged in user
+  const received = await Member.add(formData, testTroop);
   expect(received).toMatchObject({
     active: true,
     adv: [],
-    firstName: 'first-07',
-    lastName: 'last-07',
+    firstName: 'first-08',
+    lastName: 'last-08',
     patrol: 'foxes',
+    troop: testTroop,
   });
 
   Member.deleteOne({ _id: received._id });
 });
 
 it('Should update a member', async () => {
-  const member = await Member.create(makeMember('foxes')); // 8th
+  const member = await Member.create(makeMember('foxes'));
   const formData = {
     _id: member._id,
     firstName: 'John',
@@ -92,7 +105,7 @@ it('Should update a member', async () => {
 });
 
 it('Should remove a member', async () => {
-  let member = await Member.create(makeMember('mountainLions')); // 9th
+  let member = await Member.create(makeMember('mountainLions'));
 
   await Member.remove(member._id);
   member = await Member.findOne({ _id: member._id });
@@ -101,7 +114,7 @@ it('Should remove a member', async () => {
 });
 
 it('Should add an advancement entry on one member', async () => {
-  const member = await Member.create(makeMember('hawks')); // 10th
+  const member = await Member.create(makeMember('hawks'));
   const testEntry = {
     date: '2022-09-18',
     lessonID: testLessons[0].lessonID,
@@ -120,7 +133,7 @@ it('Should removed an advancement entry on one member', async () => {
     lessonID: testLessons[0].lessonID,
     patrolID: 'ib6d767d2f8e',
   };
-  const member = await Member.create(makeMember('hawks', [testEntry])); // 11th
+  const member = await Member.create(makeMember('hawks', [testEntry]));
 
   const received = await Member.removeAdvancement(member._id, testEntry);
   expect(received.adv.length).toEqual(0);
@@ -134,9 +147,9 @@ it('Should update the advancement entries on many members', async () => {
     date: '2022-09-18',
   };
   const testMembers = await Member.create([
-    makeMember('hawks', [{ ...testEntry, patrolID: 'ib6d767d2f8e' }]), // 12th
+    makeMember('hawks', [{ ...testEntry, patrolID: 'ib6d767d2f8e' }]),
     makeMember('foxes'), // 13th
-    makeMember('adventurers', [{ ...testEntry, patrolID: 'x1ff1de77400' }]), // 14th
+    makeMember('adventurers', [{ ...testEntry, patrolID: 'x1ff1de77400' }]),
   ]);
   const formData = {
     attendance: {
@@ -147,7 +160,7 @@ it('Should update the advancement entries on many members', async () => {
     ...testEntry,
   };
 
-  const received = await Member.updateAdvancement(formData);
+  const received = await Member.updateAdvancement(formData, testTroop);
   expect(received[0].adv.length).toEqual(1); // doesn't add duplicates
   expect(received[1].adv.length).toEqual(1); // adds if true and not present
   expect(received[2].adv.length).toEqual(0); // removes if false and present

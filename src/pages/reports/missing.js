@@ -72,7 +72,7 @@ export default function MissingReportPage(props) {
   lessons.forEach((lesson) => { lessonsObject[lesson.lessonID] = lesson; });
 
   return (
-    <PageLayout>
+    <PageLayout noMaxWidth>
       <Typography variant='h5' sx={{ mb: 2 }}>
         Missing Lessons Report
       </Typography>
