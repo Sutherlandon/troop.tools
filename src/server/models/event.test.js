@@ -12,6 +12,8 @@ import Event from './event.model';
 import Member from './member.model';
 
 let testMembers;
+const testTroop = 'NM-1412';
+const testOtherTroop = 'TX-8954';
 const testDate = dayjs('2022-01-01');
 const testEvent = {
   branch: 'General',
@@ -19,6 +21,7 @@ const testEvent = {
   desc: 'Hello TLUSA',
   lessonID: 2,
   title: 'Test name',
+  troop: testTroop,
 };
 
 beforeAll(async () => {
@@ -44,8 +47,13 @@ it('Should add no-lesson event', async () => {
     desc: 'Meet at the Red Dot trailhead at 8am sharp',
   };
 
-  const received = await Event.add(formData);
-  expect(received).toMatchObject(formData);
+  const expected = {
+    ...formData,
+    troop: testTroop,
+  };
+
+  const received = await Event.add(formData, testTroop);
+  expect(received).toMatchObject(expected);
 
   await Event.deleteOne({ _id: received._id });
 });
@@ -56,10 +64,22 @@ it('Should add lesson event', async () => {
     lessonID: '1',
   };
 
-  const received = await Event.add(formData);
-  expect(received).toMatchObject(formData);
+  const expected = {
+    ...formData,
+    troop: testTroop,
+  };
+
+  const received = await Event.add(formData, testTroop);
+  expect(received).toMatchObject(expected);
 
   await Event.deleteOne({ _id: received._id });
+});
+
+it('Should return an error for a getAll() request with no troop', async () => {
+  // Example of asserting throws from a function that returns a promise
+  await expect(Event.getAll()).rejects.toThrow(
+    new Error('Error: You cannot call Event.getAll(troop) without specifying a troop')
+  );
 });
 
 it('Should get all the events, sorted by date, with hydrated lessons', async () => {
@@ -68,27 +88,38 @@ it('Should get all the events, sorted by date, with hydrated lessons', async () 
     {
       attendance: testMembers.map((m) => m._id),
       date: testDate.add(1, 'week').format(),
-      lessonID: 'c9us5tnvarab'
+      lessonID: 'c9us5tnvarab',
+      troop: testTroop,
     },
     {
       attendance: testMembers.map((m) => m._id),
       date: testDate.add(10, 'days').format(),
-      lessonID: '9ez9g5w5c4r1'
+      lessonID: '9ez9g5w5c4r1',
+      troop: testTroop,
     },
-    {
+    { // first date not first to test sorting
       attendance: testMembers.map((m) => m._id),
-      date: testDate.format(), // first date not first to test sorting
-      lessonID: 'a911ldcyi1hc'
+      date: testDate.format(),
+      lessonID: 'a911ldcyi1hc',
+      troop: testTroop,
     },
     {
       attendance: testMembers.map((m) => m._id),
       date: testDate.add(2, 'weeks').format(),
       title: 'Custom Title',
       desc: 'This is what we are doing',
+      troop: testTroop,
+    },
+    { // this event should not show up on the returned list
+      attendance: testMembers.map((m) => m._id),
+      date: testDate.add(2, 'weeks').format(),
+      title: 'Lesson from different troop',
+      desc: 'this should not cause any assertions to fail',
+      troop: testOtherTroop,
     },
   ]);
 
-  const received = await Event.getAll();
+  const received = await Event.getAll(testTroop);
   expect(received.length).toEqual(4); // total number
   expect(received[0].date).toEqual(testDate.format()); // sort order
   expect(received[1].lesson).toEqual(LESSONS_BY_ID.c9us5tnvarab); // lesson hydration
@@ -109,22 +140,25 @@ it('Should get all the events for a given year', async () => {
     { // 1 year 2021
       attendance: testMembers.map((m) => m._id),
       date: testDate.subtract(2, 'days').format(),
-      lessonID: 'a911ldcyi1hc'
+      lessonID: 'a911ldcyi1hc',
+      troop: testTroop,
     },
     { // 2 for year 2022
       attendance: testMembers.map((m) => m._id),
       date: testDate.add(1, 'week').format(),
-      lessonID: 'c9us5tnvarab'
+      lessonID: 'c9us5tnvarab',
+      troop: testTroop,
     },
     {
       attendance: testMembers.map((m) => m._id),
       date: testDate.add(10, 'days').format(),
-      lessonID: '9ez9g5w5c4r1'
+      lessonID: '9ez9g5w5c4r1',
+      troop: testTroop,
     },
   ]);
 
-  const received2021 = await Event.getByYear('2021');
-  const received2022 = await Event.getByYear('2022');
+  const received2021 = await Event.getByYear('2021', testTroop);
+  const received2022 = await Event.getByYear('2022', testTroop);
 
   expect(received2021.length).toEqual(1);
   expect(received2022.length).toEqual(2);
@@ -145,7 +179,7 @@ it('Should update an event', async () => {
   await Event.deleteOne({ _id: received._id });
 });
 
-it('Should remove and event', async () => {
+it('Should remove an event', async () => {
   let event = await Event.create(testEvent);
 
   await Event.remove(event._id);

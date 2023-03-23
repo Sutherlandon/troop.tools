@@ -1,6 +1,7 @@
 import User from '@server/models/user.model';
+import withAuthSession from '@server/withAuthSession';
 
-export default async function handler(req, res) {
+export default withAuthSession(async (req, res) => {
   const { id } = req.query;
 
   switch (req.method) {
@@ -23,4 +24,4 @@ export default async function handler(req, res) {
     default:
       return res.status(405);
   }
-};
+});
