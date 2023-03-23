@@ -31,15 +31,13 @@ export default function MenuFooter() {
           <DialogTitle>Feedback</DialogTitle>
           <DialogContent>
             <Typography variant='body1' sx={{ mb: 2 }}>
-              Thank you for wanting to submit feedback.  We really appreciate you taking the time
-              to let us know what you think.
-            </Typography>
-            <Typography variant='body1' sx={{ mb: 1 }}>
-              Click here button to send us an email using your email client
+              Hey Thanks! We really appreciate you taking the time
+              to let us know what you think. Click this button to
+              send us an email using your email client.
             </Typography>
             <Button
               variant='contained'
-              href='mailto:sutherlandonllc@gmail.com?subject=Troop.Tools Feedback'
+              href='mailto:feedback@troop.tools?subject=Troop.Tools Feedback'
             >
               Email Feedback
             </Button>
@@ -47,13 +45,7 @@ export default function MenuFooter() {
               If that does not work, Please send an email to:
             </Typography>
             <Typography variant='body1' sx={{ mb: 1, fontWeight: 'bold' }}>
-              sutherlandonllc@gmail.com
-            </Typography>
-            <Typography variant='body1' sx={{ mb: 1 }}>
-              with the subject:
-            </Typography>
-            <Typography variant='body1' sx={{ mb: 1, fontWeight: 'bold' }}>
-              Troop.Tools Feedback
+              feedback@troop.tools
             </Typography>
             <Typography variant='body1' sx={{ pt: 2 }}>
               We look forward to hearing from you!
