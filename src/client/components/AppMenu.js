@@ -102,7 +102,7 @@ export default function AppMenu(props) {
               href='/members'
             />
           }
-          {user.isTrailGuide && user.troop === 'NM-11412' &&
+          {user.isTrailGuide && user.troop === 'NM-1412' &&
             <MenuItemLink
               icon={<BarChart />}
               onClick={handleDrawerToggle}
