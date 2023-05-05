@@ -21,7 +21,7 @@ export const ADVANCEMENT = {
   'Outdoor Skills': { core: 3, elective: 1, htt: 1, makeup: 2 },
   'Science & Technology': { core: 2, elective: 1, htt: 1, makeup: 2 },
   'Sports & Fitness': { core: 2, elective: 1, htt: 1, makeup: 2 },
-  'Values': { core: 2, elective: 1, htt: 1, makeup: 2 },
+  'Values': { core: 3, elective: 1, htt: 1, makeup: 2 },
 };
 
 export const ADVANCEMENT_BLANK = {
@@ -32,6 +32,16 @@ export const ADVANCEMENT_BLANK = {
   'Science & Technology': { core: 0, elective: 0, htt: 0, makeup: 0 },
   'Sports & Fitness': { core: 0, elective: 0, htt: 0, makeup: 0 },
   'Values': { core: 0, elective: 0, htt: 0, makeup: 0 },
+};
+
+export const ADV_BADGES_BLANK = {
+  'Heritage': { branch: false, star: false },
+  'Hobbies': { branch: false, star: false },
+  'Life Skills': { branch: false, star: false },
+  'Outdoor Skills': { branch: false, star: false },
+  'Science & Technology': { branch: false, star: false },
+  'Sports & Fitness': { branch: false, star: false },
+  'Values': { branch: false, star: false },
 };
 
 export const BRANCHES = {

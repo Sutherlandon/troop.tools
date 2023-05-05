@@ -153,9 +153,13 @@ function BranchGrid(props) {
         makeup: 0,
       };
 
+      const currentPatrolID = PATROLS[member.patrol].id;
+      // if (member.id === 'uftykyxwjy3y') { console.log('Eli', currentPatrolID); }
+
       // count up each type of lesson taken for this branch
-      member.adv.forEach(({ lessonID }) => {
-        if (lessons[lessonID].branch === branch) {
+      member.adv.forEach(({ lessonID, patrolID }) => {
+        // if (member.id === 'uftykyxwjy3y') { console.log(patrolID); }
+        if (patrolID === currentPatrolID && lessons[lessonID].branch === branch) {
           row[lessons[lessonID].type] += 1;
         }
       });

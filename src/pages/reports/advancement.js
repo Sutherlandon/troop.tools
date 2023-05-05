@@ -3,14 +3,50 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import {
+  Box,
   CircularProgress,
+  Table,
+  TableCell,
+  TableBody,
+  TableHead,
+  TableRow,
   Typography,
+  Paper,
 } from '@mui/material';
 
 import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
-import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
+import { ADVANCEMENT, ADVANCEMENT_BLANK, ADV_BADGES_BLANK, PATROLS } from '@shared/constants';
+import { Check, Close } from '@mui/icons-material';
+
+/**
+ * Calculates how many credits remain to earn a branch pin
+ */
+function missingCredits(row, branch) {
+  const a = ADVANCEMENT[branch];
+  const creditsReq = a.core + a.elective + a.htt;
+
+  const branchPin = Math.max(
+    0,
+    creditsReq - (
+      Math.min(row.core, a.core) +
+      Math.min(row.elective, a.elective) +
+      Math.min(row.htt, a.htt) +
+      (Math.min(row.makeup, a.makeup) / 2))
+  );
+
+  const starPin = Math.max(
+    0,
+    2 * creditsReq - (
+      Math.min(row.core, 2 * a.core) +
+      Math.min(row.elective, 2 * a.elective) +
+      Math.min(row.htt, 2 * a.htt) +
+      (Math.min(row.makeup, 2 * a.makeup) / 2))
+  );
+
+  return [branchPin, starPin];
+}
 
 export default function AdvancementReportPage(props) {
   const [member, setMember] = useState();
@@ -51,45 +87,109 @@ export default function AdvancementReportPage(props) {
   const adv = {
     [PATROLS.foxes.id]: cloneDeep(ADVANCEMENT_BLANK),
     [PATROLS.hawks.id]: cloneDeep(ADVANCEMENT_BLANK),
-    [PATROLS.mountainLions.id]: cloneDeep(ADVANCEMENT_BLANK)
+    [PATROLS.mountainLions.id]: cloneDeep(ADVANCEMENT_BLANK),
+  };
+
+  // initialize badges
+  const badges = {
+    [PATROLS.foxes.id]: cloneDeep(ADV_BADGES_BLANK),
+    [PATROLS.hawks.id]: cloneDeep(ADV_BADGES_BLANK),
+    [PATROLS.mountainLions.id]: cloneDeep(ADV_BADGES_BLANK),
   };
 
   // fill the advancement with lessons
   member.adv.forEach((lesson) => {
-    adv[lesson.patrolID][lesson.branch][lesson.type] += 1;
+    const { branch, patrolID, type } = lesson;
+
+    // save lesson credit
+    adv[patrolID][branch][type] += 1;
+
+    // check badge status
+    const [
+      missingBranchCredits,
+      missingStarCredits
+    ] = missingCredits(adv[patrolID][branch], branch);
+
+    if (missingBranchCredits === 0) {
+      badges[patrolID][branch].branch = true;
+    }
+
+    if (missingStarCredits === 0) {
+      badges[patrolID][branch].star = true;
+    }
   });
 
   return (
-    <div>
-      <Typography variant='h5'>
+    <PageLayout>
+      <Typography variant='h4' marginBottom={2}>
         Advancement Report for {member.firstName} {member.lastName}
       </Typography>
-      <AdvancementPage title='Fox' adv={Object.values(adv)[0]} />
-      <AdvancementPage title='Hawk' adv={Object.values(adv)[1]} />
-      <AdvancementPage title='Mountain Lion' adv={Object.values(adv)[2]} />
-    </div>
+      <Typography variant='body1' marginBottom={2}>
+        In this report the denominator is the number of credits needed to earn a pin
+        and the numerator is the total number of credits earned. Badges earned are
+        designated with a checkmark.
+      </Typography>
+      <AdvancementTable
+        title='Fox'
+        adv={Object.values(adv)[0]}
+        badges={Object.values(badges)[0]}
+      />
+      <AdvancementTable
+        title='Hawk'
+        adv={Object.values(adv)[1]}
+        badges={Object.values(badges)[1]}
+      />
+      <AdvancementTable
+        title='Mountain Lion'
+        adv={Object.values(adv)[2]}
+        badges={Object.values(badges)[2]}
+      />
+    </PageLayout>
   );
 }
 
-function AdvancementPage({ adv, title }) {
+function AdvancementTable({ adv, badges, title }) {
   return (
-    <PageLayout>
-      <Typography variant='h4'>{title}</Typography>
-      <ul>
-        {Object.keys(adv).map((branch) => (
-          <li key={branch}>
-            {branch}: {
-              Object.keys(adv[branch])
-                .map((type) => (
-                  <span key={type} style={{ marginRight: 8 }}>
-                    {type}: {adv[branch][type]}/{ADVANCEMENT[branch][type] || 0}
-                  </span>
-                ))
-            }
-          </li>
-        ))}
-      </ul>
-    </PageLayout>
+    <Box sx={{ marginBottom: 4 }}>
+      <Typography variant='h5' marginBottom={1}>{title}</Typography>
+      <Paper>
+        <Table>
+          <TableHead>
+            <TableCell>Branch</TableCell>
+            <TableCell>Core</TableCell>
+            <TableCell>Elective</TableCell>
+            <TableCell>HTT</TableCell>
+            <TableCell>Makeup</TableCell>
+            <TableCell>Branch Pin</TableCell>
+            <TableCell>Star Pin</TableCell>
+          </TableHead>
+          <TableBody>
+            {Object.keys(adv).map((branch) => (
+              <TableRow key={branch}>
+                <TableCell>{branch}</TableCell>
+                {Object.keys(adv[branch])
+                  .map((type) => (
+                    <TableCell key={'adv' + branch + type}>
+                      {adv[branch][type]}/{ADVANCEMENT[branch][type]}
+                    </TableCell>
+                  ))
+                }
+                {Object.keys(badges[branch])
+                  .map((type) => (
+                    <TableCell key={'badges' + branch + type}>
+                      {badges[branch][type]
+                        ? <Check />
+                        : <Close style={{ color: '#DDDDDD' }} />
+                      }
+                    </TableCell>
+                  ))
+                }
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+    </Box>
   );
 }
 
