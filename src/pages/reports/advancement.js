@@ -17,7 +17,7 @@ import {
 import * as MembersAPI from '@client/api/MembersAPI';
 import AccessDenied from '@client/components/AccessDenied';
 import PageLayout from '@client/components/Layouts/PageLayout';
-import { ADVANCEMENT, ADVANCEMENT_BLANK, ADV_BADGES_BLANK, PATROLS } from '@shared/constants';
+import { ADVANCEMENT, ADVANCEMENT_BLANK, PATROLS } from '@shared/constants';
 import { Check, Close } from '@mui/icons-material';
 
 /**
@@ -85,37 +85,43 @@ export default function AdvancementReportPage(props) {
 
   // process advancement to match the shape of the ADVANCMENT constanst
   const adv = {
-    [PATROLS.foxes.id]: cloneDeep(ADVANCEMENT_BLANK),
-    [PATROLS.hawks.id]: cloneDeep(ADVANCEMENT_BLANK),
-    [PATROLS.mountainLions.id]: cloneDeep(ADVANCEMENT_BLANK),
-  };
-
-  // initialize badges
-  const badges = {
-    [PATROLS.foxes.id]: cloneDeep(ADV_BADGES_BLANK),
-    [PATROLS.hawks.id]: cloneDeep(ADV_BADGES_BLANK),
-    [PATROLS.mountainLions.id]: cloneDeep(ADV_BADGES_BLANK),
+    [PATROLS.foxes.id]: {
+      branch: cloneDeep(ADVANCEMENT_BLANK),
+      star: cloneDeep(ADVANCEMENT_BLANK),
+    },
+    [PATROLS.hawks.id]: {
+      branch: cloneDeep(ADVANCEMENT_BLANK),
+      star: cloneDeep(ADVANCEMENT_BLANK),
+    },
+    [PATROLS.mountainLions.id]: {
+      branch: cloneDeep(ADVANCEMENT_BLANK),
+      star: cloneDeep(ADVANCEMENT_BLANK),
+    },
   };
 
   // fill the advancement with lessons
   member.adv.forEach((lesson) => {
     const { branch, patrolID, type } = lesson;
 
-    // save lesson credit
-    adv[patrolID][branch][type] += 1;
+    // if the branch award has been earned, add credits to the star award
+    if (adv[patrolID].branch[branch].award || adv[patrolID].branch[branch][type] === ADVANCEMENT[branch][type]) {
+      // save the lesson credit
+      adv[patrolID].star[branch][type] += 1;
 
-    // check badge status
-    const [
-      missingBranchCredits,
-      missingStarCredits
-    ] = missingCredits(adv[patrolID][branch], branch);
+      // has the branch award been earned
+      const [missingStarCredits] = missingCredits(adv[patrolID].star[branch], branch);
+      if (missingStarCredits === 0) {
+        adv[patrolID].star[branch].award = true;
+      }
+    } else {
+      // save the lesson credit
+      adv[patrolID].branch[branch][type] += 1;
 
-    if (missingBranchCredits === 0) {
-      badges[patrolID][branch].branch = true;
-    }
-
-    if (missingStarCredits === 0) {
-      badges[patrolID][branch].star = true;
+      // has the branch award been earned
+      const [missingBranchCredits] = missingCredits(adv[patrolID].branch[branch], branch);
+      if (missingBranchCredits === 0) {
+        adv[patrolID].branch[branch].award = true;
+      }
     }
   });
 
@@ -127,22 +133,20 @@ export default function AdvancementReportPage(props) {
       <Typography variant='body1' marginBottom={2}>
         In this report the denominator is the number of credits needed to earn a pin
         and the numerator is the total number of credits earned. Badges earned are
-        designated with a checkmark.
+        designated with a checkmark. Please check with the schedule to see what branches
+        we have completed this year.
       </Typography>
       <AdvancementTable
         title='Fox'
         adv={Object.values(adv)[0]}
-        badges={Object.values(badges)[0]}
       />
       <AdvancementTable
         title='Hawk'
         adv={Object.values(adv)[1]}
-        badges={Object.values(badges)[1]}
       />
       <AdvancementTable
         title='Mountain Lion'
         adv={Object.values(adv)[2]}
-        badges={Object.values(badges)[2]}
       />
     </PageLayout>
   );
@@ -152,38 +156,65 @@ function AdvancementTable({ adv, badges, title }) {
   return (
     <Box sx={{ marginBottom: 4 }}>
       <Typography variant='h5' marginBottom={1}>{title}</Typography>
-      <Paper>
-        <Table>
+      <Paper sx={{ mb: 2 }}>
+        <Table size='small'>
           <TableHead>
-            <TableCell>Branch</TableCell>
+            <TableCell sx={{ fontWeight: 'bold' }}>Branch Pin</TableCell>
             <TableCell>Core</TableCell>
             <TableCell>Elective</TableCell>
             <TableCell>HTT</TableCell>
             <TableCell>Makeup</TableCell>
-            <TableCell>Branch Pin</TableCell>
-            <TableCell>Star Pin</TableCell>
+            <TableCell>Award</TableCell>
           </TableHead>
           <TableBody>
-            {Object.keys(adv).map((branch) => (
+            {Object.keys(adv.branch).map((branch) => (
               <TableRow key={branch}>
                 <TableCell>{branch}</TableCell>
-                {Object.keys(adv[branch])
-                  .map((type) => (
+                {Object.keys(adv.branch[branch])
+                  .map((type) => type !== 'award' && (
                     <TableCell key={'adv' + branch + type}>
-                      {adv[branch][type]}/{ADVANCEMENT[branch][type]}
+                      {adv.branch[branch][type]}/{ADVANCEMENT[branch][type]}
                     </TableCell>
                   ))
                 }
-                {Object.keys(badges[branch])
-                  .map((type) => (
-                    <TableCell key={'badges' + branch + type}>
-                      {badges[branch][type]
-                        ? <Check />
-                        : <Close style={{ color: '#DDDDDD' }} />
-                      }
+                <TableCell key={'adv' + branch + 'award'}>
+                  {adv.branch[branch].award
+                    ? <Check />
+                    : <Close style={{ color: '#DDDDDD' }} />
+                  }
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+      <Paper>
+        <Table size='small'>
+          <TableHead>
+            <TableCell sx={{ fontWeight: 'bold' }}>Sylvan Star</TableCell>
+            <TableCell>Core</TableCell>
+            <TableCell>Elective</TableCell>
+            <TableCell>HTT</TableCell>
+            <TableCell>Makeup</TableCell>
+            <TableCell>Award</TableCell>
+          </TableHead>
+          <TableBody>
+            {Object.keys(adv.star).map((branch) => (
+              <TableRow key={branch}>
+                <TableCell>{branch}</TableCell>
+                {Object.keys(adv.star[branch])
+                  .map((type) => type !== 'award' && (
+                    <TableCell key={'adv' + branch + type}>
+                      {adv.star[branch][type]}/{ADVANCEMENT[branch][type]}
                     </TableCell>
                   ))
                 }
+                <TableCell key={'adv' + branch + 'award'}>
+                  {adv.star[branch].award
+                    ? <Check />
+                    : <Close style={{ color: '#DDDDDD' }} />
+                  }
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
