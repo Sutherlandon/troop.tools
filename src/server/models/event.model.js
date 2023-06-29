@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import dayjs from 'dayjs';
 import mongoose from 'mongoose';
 import sortBy from 'lodash.sortby';
@@ -51,6 +52,62 @@ EventSchema.statics = {
   },
 
   /**
+   * Calculates a hash of the events attendance and lessonID for verification
+   * of latest version used in the document merge strategy.
+   * @param {Object} event And event object
+   * @returns sha256 representation of the events Attendance and LessonID
+   */
+  getHash(event) {
+    return crypto.createHash('sha256')
+      .update(JSON.stringify(event.attendance) + event.lessonID)
+      .digest('hex');
+  },
+
+  /**
+   * Hydrates the Lesson and Attendance records of an event
+   * @param {Object} event And event object
+   * @returns An object with hydrated lesson and attendance records
+   */
+  async hydrate({ attendance, lessonID, ...rest }) {
+    const event = { ...rest };
+    event.date = dayjs(event.date).format();
+
+    // hydrate a lesson if it exists
+    if (lessonID) {
+      event.lesson = LESSONS_BY_ID[lessonID];
+    }
+
+    // hydrate the members in attendence
+    if (!isEmpty(attendance)) {
+      event.attendance = (await Member.find({ _id: { $in: attendance } }))
+        .filter(({ active }) => active)
+        .map((
+          { _id, patrol, firstName, lastName }
+        ) => (
+          { _id, patrol, name: `${firstName} ${lastName}` }
+        ));
+    }
+
+    return event;
+  },
+
+  /**
+   * Retrieves a single record by the given _id
+   * @param {String} id The _id of a record
+   */
+  async getById(id) {
+    const event = await this.findOne({ _id: id }).lean();
+
+    // hydrate the current event
+    const hydratedEvent = await this.hydrate(event);
+
+    // calculate hash for document merge strategy
+    hydratedEvent.hash = this.getHash(event);
+
+    return hydratedEvent;
+  },
+
+  /**
    * Gets a list of all the events
    * @param {String} troop The troop to return all events for.
    * @returns An array of all the events
@@ -64,29 +121,7 @@ EventSchema.statics = {
     // pull all events and hydrate the lessons if they exist
     const events = await Promise.all(
       (await this.find({ troop }).lean())
-        .map(async ({ attendance, lessonID, ...rest }) => {
-          // start with the base record
-          const event = { ...rest };
-          event.date = dayjs(event.date).format();
-
-          // hydrate a lesson if it exists
-          if (lessonID) {
-            event.lesson = LESSONS_BY_ID[lessonID];
-          }
-
-          // hydrate the members in attendence
-          if (!isEmpty(attendance)) {
-            event.attendance = (await Member.find({ _id: { $in: attendance } }))
-              .filter(({ active }) => active)
-              .map((
-                { _id, patrol, firstName, lastName }
-              ) => (
-                { _id, patrol, name: `${firstName} ${lastName}` }
-              ));
-          }
-
-          return event;
-        })
+        .map(this.hydrate)
     );
 
     // cache the events

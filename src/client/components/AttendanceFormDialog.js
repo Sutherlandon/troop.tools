@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  LinearProgress,
   Slide,
   Table,
   TableBody,
@@ -26,14 +27,33 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function AttendenceFormDialog(props) {
+  const [loading, setLoading] = useState(true);
+  const [event, setEvent] = useState();
+
   const {
-    event,
-    // eventsList,
     handleClose,
     members,
     open,
     onSubmit,
   } = props;
+
+  // load the latest version of the document
+  useEffect(() => {
+    async function getLatestVersion() {
+      if (open && props.event) {
+        const { data, error } = await EventsAPI.getById(props.event._id);
+
+        if (error) {
+          return console.error(error);
+        }
+
+        setLoading(false);
+        setEvent(data);
+      }
+    }
+
+    getLatestVersion();
+  }, [props.event, open]);
 
   // form not initialized
   if (!event) {
@@ -59,8 +79,11 @@ function AttendenceFormDialog(props) {
       _id: event._id,
       attendance: values,
       date: event.date,
+      hash: event.hash,
       lessonID: event.lesson?.lessonID,
     };
+
+    console.log(formData);
 
     const { data, error } = await EventsAPI.attendance(formData);
 
@@ -104,81 +127,90 @@ function AttendenceFormDialog(props) {
           </Grid>
         </Grid>
       </DialogTitle>
-      <DialogContent>
-        <Box sx={{ fontWeight: 'bold', py: 2 }}>
-          Attendance
-        </Box>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-        >
-          {({ values, isSubmitting }) => {
-            // console.log('Values', values);
+      {loading
+        ? (
+          <DialogContent>
+            <LinearProgress />
+          </DialogContent>
+          )
+        : (
+          <DialogContent>
+            <Box sx={{ fontWeight: 'bold', py: 2 }}>
+              Attendance
+            </Box>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+            >
+              {({ values, isSubmitting }) => {
+                // console.log('Values', values);
 
-            return (
-              <Form>
-                {PATROLS_ARRAY.map((patrol) => {
-                  const patrolMembers = members
-                    .filter(member => member.patrol === patrol.key)
-                    .map((member) => {
-                      const label = `${member.firstName} ${member.lastName}`;
-                      return (
-                        <CheckboxRow
-                          label={label}
-                          name={member._id}
-                          key={member._id}
-                        />
-                      );
-                    });
-
-                  if (patrolMembers.length > 0) {
-                    return (
-                      <div key={patrol.key}>
-                        <Grid
-                          container
-                          alignItems='center'
-                          sx={{
-                            backgroundColor: patrol.color,
-                          }}
-                        >
-                          <Grid item sx={{ width: 60, padding: 2 }}>
-                            <Image
-                              src={patrol.logo}
-                              alt='Patrol Logo'
-                              width={28}
+                return (
+                  <Form>
+                    {PATROLS_ARRAY.map((patrol) => {
+                      const patrolMembers = members
+                        .filter(member => member.patrol === patrol.key)
+                        .map((member) => {
+                          const label = `${member.firstName} ${member.lastName}`;
+                          return (
+                            <CheckboxRow
+                              label={label}
+                              name={member._id}
+                              key={member._id}
                             />
-                          </Grid>
-                          <Grid item>
-                            {patrol.name}
-                          </Grid>
-                        </Grid>
-                        <Table sx={{ marginBottom: 2 }}>
-                          <TableBody>
-                            {patrolMembers}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    );
-                  }
+                          );
+                        });
 
-                  return null;
-                })}
-                <Box sx={{ textAlign: 'center' }}>
-                  <LoadingButton
-                    loading={isSubmitting}
-                    loadingPosition='start'
-                    type='submit'
-                    startIcon={<SaveIcon />}
-                    variant='contained'
-                  >
-                    Save
-                  </LoadingButton>
-                </Box>
-              </Form>
-            );
-          }}
-        </Formik>
-      </DialogContent>
+                      if (patrolMembers.length > 0) {
+                        return (
+                          <div key={patrol.key}>
+                            <Grid
+                              container
+                              alignItems='center'
+                              sx={{
+                                backgroundColor: patrol.color,
+                              }}
+                            >
+                              <Grid item sx={{ width: 60, padding: 2 }}>
+                                <Image
+                                  src={patrol.logo}
+                                  alt='Patrol Logo'
+                                  width={28}
+                                />
+                              </Grid>
+                              <Grid item>
+                                {patrol.name}
+                              </Grid>
+                            </Grid>
+                            <Table sx={{ marginBottom: 2 }}>
+                              <TableBody>
+                                {patrolMembers}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        );
+                      }
+
+                      return null;
+                    })}
+                    <Box sx={{ textAlign: 'center' }}>
+                      <LoadingButton
+                        loading={isSubmitting}
+                        loadingPosition='start'
+                        type='submit'
+                        startIcon={<SaveIcon />}
+                        variant='contained'
+                      >
+                        Save
+                      </LoadingButton>
+                    </Box>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </DialogContent>
+          )
+      }
     </Dialog >
   );
 }

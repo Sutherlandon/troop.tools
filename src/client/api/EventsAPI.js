@@ -66,3 +66,14 @@ export function update(formData) {
     data: formData,
   });
 }
+
+/**
+ * Gets the latest version of a single record
+ * @param {String} id An _id of an event
+ * @returns The event that matches _id
+ */
+export function getById(id) {
+  return makeRequest({
+    url: `/api/events/attendance/${id}`,
+  });
+}

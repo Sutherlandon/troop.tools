@@ -54,6 +54,8 @@ export default function SchedulePage() {
         return console.error(eventsErr || memberErr);
       }
 
+      console.log(events);
+
       setMembers(members);
       setSchedule(events);
       setLoading(false);
