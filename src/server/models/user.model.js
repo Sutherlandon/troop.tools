@@ -55,7 +55,13 @@ UserSchema.statics = {
   },
 
   async update(formData) {
-    const { email, firstName, lastName, roles, troop } = formData;
+    const {
+      email,
+      firstName,
+      lastName,
+      roles = {},
+      troop
+    } = formData;
 
     await this.findOneAndUpdate(
       { email },

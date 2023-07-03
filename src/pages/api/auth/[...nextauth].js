@@ -9,7 +9,7 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
 
   // gimme those messages...
-  debug: true,
+  debug: false,
 
   // Configure one or more authentication providers
   providers: [

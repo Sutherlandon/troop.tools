@@ -25,8 +25,7 @@ export default function NewUserPage(props) {
     email: user.email || '',
     troop: '',
     firstName: '',
-    lastName: '',
-    roles: [],
+    lastName: ''
   };
 
   async function handleSubmit(values) {
