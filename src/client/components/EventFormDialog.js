@@ -81,7 +81,7 @@ export default function EventFormDialog(props) {
       return console.log(error);
     }
 
-    onUpdate(data);
+    onUpdate(data, dayjs(values.date).year());
     handleClose();
   }
 

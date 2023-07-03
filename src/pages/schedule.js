@@ -42,22 +42,24 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [year, setYear] = useState(String(dayjs().year()));
+  const [yearOptions, setYearOptions] = useState(['2021', '2022', '2023', '2024']);
   const [showDetails, setShowDetails] = useState();
   const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data: events, error: eventsErr } = await EventsAPI.get(year);
+      const { data: schedule, error: scheduleErr } = await EventsAPI.get(year);
       const { data: members, error: memberErr } = await MembersAPI.get();
 
-      if (eventsErr || memberErr) {
-        return console.error(eventsErr || memberErr);
+      if (scheduleErr || memberErr) {
+        return console.error(scheduleErr || memberErr);
       }
 
-      console.log(events);
+      console.log(schedule);
 
       setMembers(members);
-      setSchedule(events);
+      setSchedule(schedule.events);
+      setYearOptions(schedule.years);
       setLoading(false);
     }
 
@@ -83,7 +85,7 @@ export default function SchedulePage() {
         return console.error(error);
       }
 
-      setSchedule(data);
+      setSchedule(data.events);
     }
   }
 
@@ -117,9 +119,7 @@ export default function SchedulePage() {
             onChange={handleYearChange}
             size='small'
           >
-            <MenuItem value={2021}>2021</MenuItem>
-            <MenuItem value={2022}>2022</MenuItem>
-            <MenuItem value={2023}>2023</MenuItem>
+            {yearOptions.map((year) => <MenuItem key={year} value={year}>{year}</MenuItem>)}
           </Select>
         </Grid>
         <Grid item sx={{ flexGrow: 1 }} />
@@ -140,19 +140,27 @@ export default function SchedulePage() {
       <EventFormDialog
         handleClose={() => setNewOpen(false)}
         open={newOpen}
-        onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
+        onUpdate={(updatedSchedule, year) => {
+          setSchedule(updatedSchedule.events);
+          setYearOptions(updatedSchedule.years);
+          setYear(year);
+        }}
       />
       <EventFormDialog
         {...editInfo}
         handleClose={() => setEditInfo({ open: false })}
-        onUpdate={(updatedSchedule) => setSchedule(updatedSchedule)}
+        onUpdate={(updatedSchedule, year) => {
+          setSchedule(updatedSchedule.events);
+          setYearOptions(updatedSchedule.years);
+          setYear(year);
+        }}
       />
       <AttendanceFormDialog
         {...attInfo}
         handleClose={() => setAttInfo({ open: false })}
         members={members}
-        onSubmit={(data) => {
-          setSchedule(data);
+        onSubmit={(updatedSchedule) => {
+          setSchedule(updatedSchedule.events);
           setAttInfo({ open: false });
         }}
         eventsList={events}

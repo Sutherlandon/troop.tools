@@ -160,8 +160,9 @@ it('Should get all the events for a given year', async () => {
   const received2021 = await Event.getByYear('2021', testTroop);
   const received2022 = await Event.getByYear('2022', testTroop);
 
-  expect(received2021.length).toEqual(1);
-  expect(received2022.length).toEqual(2);
+  expect(received2021.years).toEqual([2021, 2022]);
+  expect(received2021.events.length).toEqual(1);
+  expect(received2022.events.length).toEqual(2);
 
   await Promise.all(testEvents.map(({ _id }) => Event.deleteOne({ _id })));
 });

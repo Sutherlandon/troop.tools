@@ -26,7 +26,7 @@ export default withAuthSession(async (req, res) => {
 
   // return the schedule for the same year as the event was in
   const year = String(dayjs(req.body.date).year());
-  const events = await Event.getByYear(year, session.troop);
+  const schedule = await Event.getByYear(year, session.troop);
 
-  return res.status(200).json(events);
+  return res.status(200).json(schedule);
 });

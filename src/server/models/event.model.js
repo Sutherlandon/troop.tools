@@ -137,12 +137,27 @@ EventSchema.statics = {
    * Gets a list of events for a given year
    * @param {String} troop The troop to return all events for.
    * @param {String} year The year you want events for
-   * @returns An array of events belonging to the given year
+   * @returns An Object with the `events` as an array of events belonging to the given year, and
+   *  `yearOptions` an array of all the years this troop has events
    */
   async getByYear(year, troop) {
     const allEvents = await this.getAll(troop);
+
+    // assemble a list of unique years
+    const years = allEvents.reduce((years, event) => {
+      const year = dayjs(event.date).year();
+      if (!years.includes(year)) {
+        years.push(year);
+      }
+
+      return years;
+    }, []);
+
+    // assemble list of events for the given year
     const events = allEvents.filter((event) => String(dayjs(event.date).year()) === year);
-    return events;
+    const schedule = { events, years };
+
+    return schedule;
   },
 
   /**

@@ -61,19 +61,6 @@ function AttendenceFormDialog(props) {
   // load the latest version of the document whenever the event changes
   useEffect(() => { getLatestVersion(); }, [props.event, open, getLatestVersion]);
 
-  // form not initialized
-  if (!event) {
-    return null;
-  }
-
-  // list of member._id's mapped to an obect { [_id]: true } or {} if undefined
-  const membersList = members.reduce((acc, member) => ({ ...acc, [member._id]: false }), {});
-  const attendanceList = event.attendance?.reduce((acc, member) => ({ ...acc, [member._id]: true }), {}) || {};
-  const initialValues = {
-    ...membersList,
-    ...attendanceList,
-  };
-
   function ConflictDialog() {
     return (
       <Dialog
@@ -136,6 +123,19 @@ function AttendenceFormDialog(props) {
     onSubmit(data);
     formik.resetForm();
   }
+
+  // form not initialized
+  if (!event) {
+    return null;
+  }
+
+  // list of member._id's mapped to an obect { [_id]: true } or {} if undefined
+  const membersList = members.reduce((acc, member) => ({ ...acc, [member._id]: false }), {});
+  const attendanceList = event.attendance?.reduce((acc, member) => ({ ...acc, [member._id]: true }), {}) || {};
+  const initialValues = {
+    ...membersList,
+    ...attendanceList,
+  };
 
   return (
     <Dialog
