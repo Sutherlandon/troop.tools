@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,11 +16,14 @@ import {
   Table,
   TableBody,
   IconButton,
+  Typography,
+  DialogActions,
 } from '@mui/material';
 
 import CheckboxRow from './formikMui/CheckboxRow';
 import * as EventsAPI from '@client/api/EventsAPI';
 import { BRANCH_COLORS, PATROLS_ARRAY } from '@shared/constants';
+import { Refresh } from '@mui/icons-material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -29,6 +32,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function AttendenceFormDialog(props) {
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState();
+  const [conflict, setConflict] = useState(false);
 
   const {
     handleClose,
@@ -37,23 +41,25 @@ function AttendenceFormDialog(props) {
     onSubmit,
   } = props;
 
-  // load the latest version of the document
-  useEffect(() => {
-    async function getLatestVersion() {
-      if (open && props.event) {
-        const { data, error } = await EventsAPI.getById(props.event._id);
+  // Get's the latest version of the document
+  const getLatestVersion = useCallback(async () => {
+    if (open && props.event) {
+      setLoading(true);
 
-        if (error) {
-          return console.error(error);
-        }
+      const { data, error } = await EventsAPI.getById(props.event._id);
 
-        setLoading(false);
-        setEvent(data);
+      if (error) {
+        return console.error(error);
       }
-    }
 
-    getLatestVersion();
+      setLoading(false);
+      setConflict(false);
+      setEvent(data);
+    }
   }, [props.event, open]);
+
+  // load the latest version of the document whenever the event changes
+  useEffect(() => { getLatestVersion(); }, [props.event, open, getLatestVersion]);
 
   // form not initialized
   if (!event) {
@@ -67,6 +73,34 @@ function AttendenceFormDialog(props) {
     ...membersList,
     ...attendanceList,
   };
+
+  function ConflictDialog() {
+    return (
+      <Dialog
+        open={conflict}
+        onClose={() => setConflict(false)}
+      >
+        <DialogTitle>Conflict</DialogTitle>
+        <DialogContent>
+          <Typography variant='body1'>
+            A document conflict has occurred. This is probably due to someone else submitting attendance before you.
+            Click &quot;Refresh&quot; to get the latest version, then record your changes again.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <LoadingButton
+            loading={loading}
+            loadingPosition='start'
+            startIcon={<Refresh />}
+            variant='contained'
+            onClick={getLatestVersion}
+          >
+            Refresh
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 
   /**
    * Submits attendance to the API
@@ -88,6 +122,10 @@ function AttendenceFormDialog(props) {
     const { data, error } = await EventsAPI.attendance(formData);
 
     if (error) {
+      if (error.status === 409) {
+        setConflict(true);
+      }
+
       return console.log(error);
     }
 
@@ -138,9 +176,11 @@ function AttendenceFormDialog(props) {
             <Box sx={{ fontWeight: 'bold', py: 2 }}>
               Attendance
             </Box>
+            {conflict && <ConflictDialog />}
             <Formik
               initialValues={initialValues}
               onSubmit={handleSubmit}
+              enableReinitialize
             >
               {({ values, isSubmitting }) => {
                 // console.log('Values', values);

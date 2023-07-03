@@ -10,6 +10,12 @@ export default withAuthSession(async (req, res) => {
 
   const { body: formData, session } = req;
 
+  // if the hashes don't match report a conflict istead of overriding current values
+  const currentEvent = await Event.getById(formData._id);
+  if (formData.hash !== currentEvent.hash) {
+    return res.status(409).json('CONFLICT');
+  }
+
   // record event attendance
   await Event.updateAttendance(formData, session.troop);
 

@@ -78,7 +78,9 @@ EventSchema.statics = {
     }
 
     // hydrate the members in attendence
-    if (!isEmpty(attendance)) {
+    if (isEmpty(attendance)) {
+      event.attendance = [];
+    } else {
       event.attendance = (await Member.find({ _id: { $in: attendance } }))
         .filter(({ active }) => active)
         .map((

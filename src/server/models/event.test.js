@@ -19,7 +19,7 @@ const testEvent = {
   branch: 'General',
   date: testDate.toString(),
   desc: 'Hello TLUSA',
-  lessonID: 2,
+  lessonID: 'hbhmknwaozr5',
   title: 'Test name',
   troop: testTroop,
 };
@@ -204,10 +204,18 @@ it('Should get a record by _id and attach a hash of the record to the result', a
   const event = await Event.create(testEvent);
   const expected = {
     ...event._doc,
-    hash: '19ac8d7208c1f54146346735c63150132a5675d847ff4fd975362629f92e0773',
+    date: dayjs(event._doc.date).format(),
+    lesson: {
+      lessonID: 'hbhmknwaozr5',
+      name: 'Christian Heritage',
+      branch: 'Heritage',
+      type: 'core'
+    },
+    hash: '7f1ff7e185824a4924061840aadb2ffb02d89d162a98c4dba0a0538ff438e3f2',
   };
+  delete expected.lessonID;
 
-  const received = await Event.getById(event._id.toString());
+  const received = await Event.getById(event._id);
   expect(received).toMatchObject(expected);
 
   await Event.deleteOne({ _id: received._id });
