@@ -49,7 +49,7 @@ export default function SchedulePage() {
   useEffect(() => {
     async function loadSchedule() {
       const { data: schedule, error: scheduleErr } = await EventsAPI.get(year);
-      const { data: members, error: memberErr } = await MembersAPI.get();
+      const { data: members, error: memberErr } = await MembersAPI.getAll();
 
       if (scheduleErr || memberErr) {
         return console.error(scheduleErr || memberErr);

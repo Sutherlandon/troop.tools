@@ -18,7 +18,7 @@ const drawerWidth = 240;
 
 export default function AppBar(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { data: user } = useSession();
+  const { data: user } = useSession({ required: true });
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

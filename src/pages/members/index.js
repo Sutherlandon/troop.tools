@@ -1,5 +1,4 @@
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -7,7 +6,6 @@ import {
   Alert,
   Button,
   Grid,
-  IconButton,
   LinearProgress,
   Paper,
   Table,
@@ -26,7 +24,6 @@ import { PATROLS_ARRAY } from '@shared/constants';
 import { useSession } from 'next-auth/react';
 
 export default function MembersPage() {
-  const [editInfo, setEditInfo] = useState({ open: false });
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [newOpen, setNewOpen] = useState(false);
@@ -34,7 +31,7 @@ export default function MembersPage() {
 
   useEffect(() => {
     async function loadMembers() {
-      const { data, error } = await MembersAPI.get();
+      const { data, error } = await MembersAPI.getAll();
 
       if (error) {
         return console.error(error);
@@ -46,14 +43,6 @@ export default function MembersPage() {
 
     loadMembers();
   }, []);
-
-  // open the edit form loaded with the event at the index
-  function openEdit(member) {
-    setEditInfo({
-      member,
-      open: true,
-    });
-  }
 
   // calculate the rows that each logo needs to span
   const membersByPatrol = {};
@@ -98,11 +87,6 @@ export default function MembersPage() {
         open={newOpen}
         onUpdate={(updatedMembers) => setMembers(updatedMembers)}
         handleClose={() => setNewOpen(false)}
-      />
-      <MemberFormDialog
-        {...editInfo}
-        handleClose={() => setEditInfo({ open: false })}
-        onUpdate={(memberList) => setMembers(memberList)}
       />
       {loading
         ? <LinearProgress />
@@ -156,12 +140,7 @@ export default function MembersPage() {
                         }
                         {user.isTrailGuide &&
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                            <IconButton
-                              onClick={() => openEdit(member)}
-                              sx={{ color: 'inherit' }}
-                            >
-                              <EditIcon />
-                            </IconButton>
+                            <Link href={`/members/profile?id=${member._id}`}>View Profile</Link>
                           </TableCell>
                         }
                       </TableRow>

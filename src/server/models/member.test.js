@@ -170,3 +170,12 @@ it('Should update the advancement entries on many members', async () => {
 
   await Promise.all(testMembers.map(({ _id }) => Member.deleteOne({ _id })));
 });
+
+it('Should get a record by _id and hydrate the advancement', async () => {
+  const member = await Member.create(makeMember('foxes'));
+
+  const received = await Member.getById(member._id);
+  expect(received._id).toMatchObject(member._id);
+
+  await Member.deleteOne({ _id: received._id });
+});

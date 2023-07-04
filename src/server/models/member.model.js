@@ -62,6 +62,43 @@ MemberSchema.statics = {
   },
 
   /**
+   * Hydrates the advancement for the member
+   * @param {Object} member Member record
+   */
+  hydrateMember(member) {
+    // TODO: This is curious, find a better way
+    const patrolKeysById = {};
+    PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
+
+    // hydrate the members advancement
+    const advHydrated = member.adv
+      .map((entry) => ({
+        ...entry,
+        ...LESSONS_BY_ID[entry.lessonID],
+        patrol: patrolKeysById[entry.patrolID]
+      }));
+
+    return { ...member, adv: advHydrated };
+  },
+
+  /**
+   * Fetches and hydrates a single member
+   * @param {String} id _id of a member
+   */
+  async getById(id) {
+    const member = await this.findOne({ _id: id }).lean();
+
+    // if no member short curcuit
+    if (!member) {
+      return null;
+    }
+
+    const hydratedMember = this.hydrateMember(member);
+
+    return hydratedMember;
+  },
+
+  /**
    * Gets a list of all the members in the DB
    * @param {String} troop The troop to return all members for.
    * @returns A list of all members
@@ -74,21 +111,10 @@ MemberSchema.statics = {
 
     // fetch the members data
     const members = await this.find({ troop }).lean();
-    const patrolKeysById = {};
-    PATROLS_ARRAY.forEach((p) => (patrolKeysById[p.id] = p.key));
-
-    const membersHydratedd = members.map((member) => {
-      const advHydratedd = member.adv
-        .map((entry) => ({
-          ...entry,
-          ...LESSONS_BY_ID[entry.lessonID],
-          patrol: patrolKeysById[entry.patrolID]
-        }));
-      return { ...member, adv: advHydratedd };
-    });
+    const membersHydrated = members.map(this.hydrateMember);
 
     // cache the members
-    _members = sortBy(membersHydratedd, ['patrol', 'firstName']);
+    _members = sortBy(membersHydrated, ['patrol', 'firstName']);
 
     return _members;
   },
