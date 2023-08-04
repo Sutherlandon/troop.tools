@@ -133,11 +133,9 @@ export default function MembersPage() {
                     {membersByPatrol[patrol.key].map((member, index) => (
                       <TableRow key={`${member.firstName} ${member.lastName}`}>
                         <TableCell>{`${member.firstName} ${member.lastName}`}</TableCell>
-                        {user.troop === 'NM-1412' &&
-                          <TableCell>
-                            <Link href={`/reports/advancement?id=${member._id}`}>Adv Report</Link>
-                          </TableCell>
-                        }
+                        <TableCell>
+                          {member.active ? 'Active' : 'Inactive'}
+                        </TableCell>
                         {user.isTrailGuide &&
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>
                             <Link href={`/members/profile?id=${member._id}`}>View Profile</Link>

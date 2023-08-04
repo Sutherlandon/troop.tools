@@ -52,7 +52,7 @@ function MenuItemLink({ href, icon, onClick, text }) {
 }
 
 export default function AppMenu(props) {
-  const { handleDrawerToggle } = props;
+  const { handleDrawerToggle, Submenu } = props;
   const { data: user } = useSession();
 
   return (
@@ -124,6 +124,7 @@ export default function AppMenu(props) {
             onClick={() => signOut()}
           />
         </List>
+        {Submenu && <Submenu onClick={handleDrawerToggle} />}
         <Divider />
         {user?.firstName &&
           <Typography variant='body1' component='div' sx={{ p: 1, textAlign: 'center' }}>

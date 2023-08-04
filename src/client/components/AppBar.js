@@ -17,6 +17,7 @@ import MenuFooter from './MenuFooter';
 const drawerWidth = 240;
 
 export default function AppBar(props) {
+  const { Submenu } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: user } = useSession({ required: true });
 
@@ -29,12 +30,12 @@ export default function AppBar(props) {
       <MuiAppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
-          <Box sx={{ mr: 2, display: { xs: 'block', sm: 'none' } }}>
+          <Box sx={{ mr: 2, display: { xs: 'block', md: 'none' } }}>
             <Image
               src={logoLight}
               alt='troop.tools logo'
@@ -57,7 +58,7 @@ export default function AppBar(props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { md: 'none' } }}
           >
             <MenuIcon fontSize='large' />
           </IconButton>
@@ -65,7 +66,7 @@ export default function AppBar(props) {
       </MuiAppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -78,7 +79,7 @@ export default function AppBar(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
@@ -86,13 +87,13 @@ export default function AppBar(props) {
             },
           }}
         >
-          <AppMenu handleDrawerToggle={handleDrawerToggle} />
+          <AppMenu handleDrawerToggle={handleDrawerToggle} Submenu={Submenu}/>
           <MenuFooter />
         </Drawer>
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
+            display: { xs: 'none', md: 'block' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
@@ -101,7 +102,7 @@ export default function AppBar(props) {
           }}
           open
         >
-          <AppMenu handleDrawerToggle={handleDrawerToggle} />
+          <AppMenu handleDrawerToggle={handleDrawerToggle} Submenu={Submenu}/>
           <MenuFooter />
         </Drawer>
       </Box>

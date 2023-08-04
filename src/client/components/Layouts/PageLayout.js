@@ -3,17 +3,17 @@ import { useTheme } from '@mui/material';
 
 import AppBar from '../AppBar';
 
-export default function PageLayout({ children, noMaxWidth }) {
+export default function PageLayout({ children, noMaxWidth, Submenu }) {
   const theme = useTheme();
 
   return (
     <>
-      <AppBar />
+      <AppBar Submenu={Submenu} />
       <Box component='main' sx={{
         backgroundColor: theme.palette.light.main,
         padding: { xs: 2, md: 4 },
-        marginLeft: { xs: 0, sm: '240px' /* drawer width */ },
-        marginTop: 7
+        marginLeft: { xs: 0, md: '240px' /* drawer width */ },
+        marginTop: { xs: 7, sm: 8, md: 7 }
       }}>
         <Box sx={{
           ...(!noMaxWidth && {
