@@ -169,12 +169,14 @@ function AdvancementTable({ adv, badges, title }) {
       <Paper sx={{ width: 'fit-content' }}>
         <Table size='small'>
           <TableHead>
-            <TableCell sx={{ fontWeight: 'bold' }}>Sylvan Star</TableCell>
-            <TableCell>Core</TableCell>
-            <TableCell>Elective</TableCell>
-            <TableCell>HTT</TableCell>
-            <TableCell>Makeup</TableCell>
-            <TableCell>Award</TableCell>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Sylvan Star</TableCell>
+              <TableCell>Core</TableCell>
+              <TableCell>Elective</TableCell>
+              <TableCell>HTT</TableCell>
+              <TableCell>Makeup</TableCell>
+              <TableCell>Award</TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(adv.star).map((branch) => (

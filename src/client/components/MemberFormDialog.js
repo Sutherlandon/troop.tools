@@ -98,6 +98,7 @@ export default function MemberFormDialog(props) {
                 <Checkbox
                   label='Active'
                   name='active'
+                  formGroupSx={{ width: 'fit-content' }}
                 />
                 <Box sx={{ textAlign: 'center' }}>
                   <LoadingButton

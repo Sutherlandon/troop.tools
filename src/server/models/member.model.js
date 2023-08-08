@@ -132,9 +132,9 @@ MemberSchema.statics = {
     update.lastName = update.lastName.trim();
 
     // make the update
-    const member = await this.findOneAndUpdate({ _id }, { ...update }, { new: true });
+    const member = await this.findOneAndUpdate({ _id }, { ...update }, { new: true }).lean();
 
-    return member;
+    return this.hydrateMember(member);
   },
 
   /**

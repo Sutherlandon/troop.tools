@@ -4,6 +4,8 @@ import withAuthSession from '@server/withAuthSession';
 export default withAuthSession(async (req, res) => {
   const { body: formData, session } = req;
 
+  let member;
+
   switch (req.method) {
     case 'GET':
       break;
@@ -11,8 +13,10 @@ export default withAuthSession(async (req, res) => {
       await Member.add(formData, session.troop);
       break;
     case 'PUT':
-      await Member.update(formData);
-      break;
+      // updates are only done on one member at a time, so just
+      // respond with the updated member
+      member = await Member.update(formData);
+      return res.status(200).json(member);
     default:
       return res.status(405);
   }

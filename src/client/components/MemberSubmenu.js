@@ -1,18 +1,24 @@
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Link from 'next/link';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { MenuList } from '@mui/material';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import {
+  Box,
+  Divider,
+  Link,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  MenuList,
+} from '@mui/material';
 import {
   BarChart,
   Check,
   DeleteForever,
   Edit as EditIcon,
 } from '@mui/icons-material';
+
+import MemberFormDialog from './MemberFormDialog';
+import { useMember } from './MemberContext';
 
 function MenuItem({ icon, text, onClick }) {
   return (
@@ -43,54 +49,61 @@ function MenuItemLink({ href, icon, onClick, text }) {
   );
 }
 
-export default function configureMemberSubmenu(id, memberName) {
-  function MemberSubmenu(props) {
-    const { onClick } = props;
-    const { data: user } = useSession();
+export default function MemberSubmenu(props) {
+  const { onClick } = props;
+  const { data: user } = useSession();
+  const { member, setMember } = useMember();
+  const [editOpen, setEditOpen] = useState(false);
 
-    // only trailguide and up can see this menu
-    if (!user.isTrailGuide) {
-      return null;
-    }
+  // only trailguide and up can see this menu
+  if (!user.isTrailGuide) {
+    return null;
+  }
 
-    return (
-      <Box>
-        <Divider />
-        <Box sx={{
-          fontWeight: 'bold',
-          pl: 2,
-          pt: 2,
-        }}>
-          {memberName}
-        </Box>
-        <MenuList>
-          <MenuItemLink
-            href={`/members/profile?id=${id}`}
-            icon={<BarChart />}
-            text='Adv. Report'
-            onClick={onClick}
-          />
-          <MenuItem
-            icon={<Check />}
-            text='Track Adv.'
-            onClick={onClick}
-          />
-          <MenuItem
-            icon={<EditIcon />}
-            text='Edit Profile'
-            onClick={onClick}
-          />
-          {user.isAdmin &&
-            <MenuItem
-              icon={<DeleteForever sx={{ color: 'red' }} />}
-              text='Delete Member'
-              onClick={onClick}
-            />
-          }
-        </MenuList>
+  return (
+    <Box>
+      <Divider />
+      <Box sx={{
+        fontWeight: 'bold',
+        pl: 2,
+        pt: 2,
+      }}>
+        {`${member.firstName} ${member.lastName}`}
       </Box>
-    );
-  };
-
-  return MemberSubmenu;
+      <MenuList>
+        <MenuItemLink
+          href={`/members/profile?id=${member.id}`}
+          icon={<BarChart />}
+          text='Adv. Report'
+          onClick={onClick}
+        />
+        <MenuItem
+          icon={<Check />}
+          text='Track Adv.'
+          onClick={onClick}
+        />
+        <MenuItem
+          icon={<EditIcon />}
+          text='Edit Profile'
+          onClick={() => {
+            setEditOpen(true);
+            onClick();
+          }}
+        />
+        {user.isAdmin &&
+          <MenuItem
+            icon={<DeleteForever sx={{ color: 'red' }} />}
+            text='Delete Member'
+            onClick={onClick}
+          />
+        }
+      </MenuList>
+      <MemberFormDialog
+        open={editOpen}
+        onUpdate={(updatedMember) => setMember(updatedMember)}
+        handleClose={() => setEditOpen(false)}
+        member={member}
+      />
+    </Box>
+  );
 }
