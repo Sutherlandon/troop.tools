@@ -7,7 +7,7 @@
  */
 export default async function makeRequest({
   url,
-  data,
+  data: formData,
   headers,
   method = 'GET',
   ...rest
@@ -19,7 +19,7 @@ export default async function makeRequest({
         'Content-Type': 'application/json',
         ...headers,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(formData),
       method,
       ...rest,
     });
@@ -34,11 +34,13 @@ export default async function makeRequest({
       return { error };
     }
 
+    const data = await response.json();
+
     // return the response data
-    return { data: await response.json() };
+    return { data };
   } catch (error) {
     // log and return any errors
-    console.error('Error: makeRequest()', { url, data, error });
+    console.error('Error: makeRequest()', { url, data: formData, error });
     return { error };
   }
 }

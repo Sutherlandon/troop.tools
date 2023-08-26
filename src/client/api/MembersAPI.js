@@ -57,12 +57,24 @@ export async function get(id) {
  * @param {Object} formData The form data form the update form
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members
  */
-export function update(formData) {
-  return makeCacheRequest({
+export async function update(formData) {
+  const { data, error } = await makeRequest({
     url: '/api/members',
     method: 'PUT',
     data: formData,
   });
+
+  // update the member in the cache
+  if (data && _members) {
+    for (let i = 0; i < _members.length; i++) {
+      if (data._id === _members[i]._id) {
+        _members[i] = data;
+        break;
+      }
+    }
+  }
+
+  return { data, error };
 }
 
 /**

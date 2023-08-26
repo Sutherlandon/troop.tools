@@ -104,8 +104,6 @@ function AttendenceFormDialog(props) {
       lessonID: event.lesson?.lessonID,
     };
 
-    console.log(formData);
-
     const { data, error } = await EventsAPI.attendance(formData);
 
     if (error) {
@@ -130,7 +128,9 @@ function AttendenceFormDialog(props) {
   }
 
   // list of member._id's mapped to an obect { [_id]: true } or {} if undefined
-  const membersList = members.reduce((acc, member) => ({ ...acc, [member._id]: false }), {});
+  const membersList = members
+    .filter((member) => member.active)
+    .reduce((acc, member) => ({ ...acc, [member._id]: false }), {});
   const attendanceList = event.attendance?.reduce((acc, member) => ({ ...acc, [member._id]: true }), {}) || {};
   const initialValues = {
     ...membersList,
@@ -189,7 +189,7 @@ function AttendenceFormDialog(props) {
                   <Form>
                     {PATROLS_ARRAY.map((patrol) => {
                       const patrolMembers = members
-                        .filter(member => member.patrol === patrol.key)
+                        .filter(member => member.active && member.patrol === patrol.key)
                         .map((member) => {
                           const label = `${member.firstName} ${member.lastName}`;
                           return (

@@ -6,8 +6,6 @@ function FormikMuiCheckbox(props) {
   const { formGroupSx, name, label, ...rest } = props;
   const [{ value }, , helpers] = useField(name);
 
-  console.log({ name, label, value });
-
   return (
     <FormGroup sx={{ mb: 1, ...formGroupSx }}>
       <FormControlLabel
