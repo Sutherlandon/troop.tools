@@ -64,3 +64,15 @@ export function update(formData) {
     data: formData,
   });
 }
+
+/**
+ * Really and truly deletes a member with all of it's attendance data.
+ * @param {String} id The _id of the member to delete
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members
+ */
+export function realDelete(id) {
+  return makeCacheRequest({
+    url: `/api/members/${id}`,
+    method: 'DELETE'
+  });
+}

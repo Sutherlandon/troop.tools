@@ -142,7 +142,7 @@ MemberSchema.statics = {
    * @param {String} _id The _id of the user to delete
    * @returns The new list of members
    */
-  async remove(_id) {
+  async realDelete(_id) {
     // delete the member from the DB
     await this.deleteOne({ _id });
   },

@@ -19,6 +19,7 @@ import {
 
 import MemberFormDialog from './MemberFormDialog';
 import { useMember } from './MemberContext';
+import MemberDeleteDialog from './MemberDeleteDialog';
 
 function MenuItem({ icon, text, onClick }) {
   return (
@@ -54,6 +55,7 @@ export default function MemberSubmenu(props) {
   const { data: user } = useSession();
   const { member, setMember } = useMember();
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   // only trailguide and up can see this menu
   if (!user.isTrailGuide) {
@@ -94,7 +96,10 @@ export default function MemberSubmenu(props) {
           <MenuItem
             icon={<DeleteForever sx={{ color: 'red' }} />}
             text='Delete Member'
-            onClick={onClick}
+          onClick={() => {
+            setDeleteOpen(true);
+            onClick();
+          }}
           />
         }
       </MenuList>
@@ -102,6 +107,11 @@ export default function MemberSubmenu(props) {
         open={editOpen}
         onUpdate={(updatedMember) => setMember(updatedMember)}
         handleClose={() => setEditOpen(false)}
+        member={member}
+      />
+      <MemberDeleteDialog
+        open={deleteOpen}
+        handleClose={() => setDeleteOpen(false)}
         member={member}
       />
     </Box>

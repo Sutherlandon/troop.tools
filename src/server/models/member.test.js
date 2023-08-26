@@ -107,7 +107,7 @@ it('Should update a member', async () => {
 it('Should remove a member', async () => {
   let member = await Member.create(makeMember('mountainLions'));
 
-  await Member.remove(member._id);
+  await Member.realDelete(member._id);
   member = await Member.findOne({ _id: member._id });
 
   expect(member).toBeNull();
