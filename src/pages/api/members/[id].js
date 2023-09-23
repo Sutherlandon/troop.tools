@@ -2,7 +2,11 @@ import Member from '@server/models/member.model';
 import withAuthSession from '@server/withAuthSession';
 
 export default withAuthSession(async (req, res) => {
-  const { query: { id }, session } = req;
+  const {
+    body: formData,
+    query: { id },
+    session,
+  } = req;
 
   // no id found
   if (!id) {
@@ -18,6 +22,11 @@ export default withAuthSession(async (req, res) => {
       return res.status(404).json('NOT FOUND');
     }
 
+    return res.status(200).json(member);
+  }
+
+  if (req.method === 'POST') {
+    const member = Member.hydrateMember(await Member.addAdvancement(id, formData));
     return res.status(200).json(member);
   }
 

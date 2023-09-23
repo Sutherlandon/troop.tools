@@ -30,6 +30,7 @@ const MemberSchema = new mongoose.Schema({
     date: String,
     lessonID: String,
     patrolID: String,
+    notes: String,
   }],
   firstName: String,
   lastName: String,

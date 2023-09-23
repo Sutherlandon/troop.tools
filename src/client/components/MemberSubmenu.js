@@ -17,9 +17,10 @@ import {
   Edit as EditIcon,
 } from '@mui/icons-material';
 
+import MemberAdvFormDialog from './MemberAdvFormDialog';
 import MemberFormDialog from './MemberFormDialog';
-import { useMember } from './MemberContext';
 import MemberDeleteDialog from './MemberDeleteDialog';
+import { useMember } from './MemberContext';
 
 function MenuItem({ icon, text, onClick }) {
   return (
@@ -40,12 +41,7 @@ function MenuItemLink({ href, icon, onClick, text }) {
       passHref
       style={{ textDecoration: 'none', color: '#000' }}
     >
-      <ListItem disablePadding>
-        <ListItemButton>
-          <ListItemIcon>{icon}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItemButton>
-      </ListItem>
+      <MenuItem icon={icon} text={text} />
     </Link>
   );
 }
@@ -56,6 +52,7 @@ export default function MemberSubmenu(props) {
   const { member, setMember } = useMember();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [advOpen, setAdvOpen] = useState(false);
 
   // only trailguide and up can see this menu
   if (!user.isTrailGuide) {
@@ -74,7 +71,7 @@ export default function MemberSubmenu(props) {
       </Box>
       <MenuList>
         <MenuItemLink
-          href={`/members/profile?id=${member.id}`}
+          href={`/members/profile?id=${member._id}`}
           icon={<BarChart />}
           text='Adv. Report'
           onClick={onClick}
@@ -82,7 +79,10 @@ export default function MemberSubmenu(props) {
         <MenuItem
           icon={<Check />}
           text='Track Adv.'
-          onClick={onClick}
+          onClick={() => {
+            setAdvOpen(true);
+            onClick();
+          }}
         />
         <MenuItem
           icon={<EditIcon />}
@@ -112,6 +112,12 @@ export default function MemberSubmenu(props) {
       <MemberDeleteDialog
         open={deleteOpen}
         handleClose={() => setDeleteOpen(false)}
+        member={member}
+      />
+      <MemberAdvFormDialog
+        open={advOpen}
+        onUpdate={(updatedMember) => setMember(updatedMember)}
+        handleClose={() => setAdvOpen(false)}
         member={member}
       />
     </Box>

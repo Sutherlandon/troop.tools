@@ -119,6 +119,7 @@ it('Should add an advancement entry on one member', async () => {
     date: '2022-09-18',
     lessonID: testLessons[0].lessonID,
     patrolID: 'ib6d767d2f8e',
+    notes: 'Explanation of credits'
   };
 
   const received = await Member.addAdvancement(member._id, testEntry);

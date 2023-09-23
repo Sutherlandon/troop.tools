@@ -78,6 +78,31 @@ export async function update(formData) {
 }
 
 /**
+ * Calls the API to add an individual advancement
+ * @param {Object} formData The form data form the update form
+ * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members
+ */
+export async function addIndividualAdv(id, formData) {
+  const { data, error } = await makeRequest({
+    url: `/api/members/${id}`,
+    method: 'POST',
+    data: formData,
+  });
+
+  // update the member in the cache
+  if (data && _members) {
+    for (let i = 0; i < _members.length; i++) {
+      if (data._id === _members[i]._id) {
+        _members[i] = data;
+        break;
+      }
+    }
+  }
+
+  return { data, error };
+}
+
+/**
  * Really and truly deletes a member with all of it's attendance data.
  * @param {String} id The _id of the member to delete
  * @returns <Promise> An object contianing `data` or `error`. `data` contians the list of members
