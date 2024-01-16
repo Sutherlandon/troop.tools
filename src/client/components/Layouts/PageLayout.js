@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material';
+import { Alert, useTheme } from '@mui/material';
 
 import AppBar from '../AppBar';
 
@@ -15,6 +15,12 @@ export default function PageLayout({ children, noMaxWidth, Submenu }) {
         marginLeft: { xs: 0, md: '240px' /* drawer width */ },
         marginTop: { xs: 7, sm: 8, md: 7 }
       }}>
+        <Box sx={{ marginBottom: 2 }}>
+          <Alert variant='standard' severity='error'>
+              This application was used by my Trail Life troop but is no longer necessary, Therefore the data has been anonamized and
+              this app remains active for demonstration and porfolio reasons.  Feel free to look around!
+          </Alert>
+        </Box>
         <Box sx={{
           ...(!noMaxWidth && {
             maxWidth: 800,
