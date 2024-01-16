@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
 import { CircularProgress, Typography } from '@mui/material';
-import { getSession } from 'next-auth/react';
+// import { getSession } from 'next-auth/react';
 import MinimalLayout from '@client/components/Layouts/MinimalLayout';
 
 export default function LoadingPage() {

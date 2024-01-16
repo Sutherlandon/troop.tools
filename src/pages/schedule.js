@@ -42,7 +42,7 @@ export default function SchedulePage() {
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
   const [year, setYear] = useState('2023');
-  const [yearOptions, setYearOptions] = useState(['2023', '2024']);
+  const [yearOptions] = useState(['2023', '2024']);
   const [showDetails, setShowDetails] = useState();
   const { data: user } = useSession({ required: true });
 
