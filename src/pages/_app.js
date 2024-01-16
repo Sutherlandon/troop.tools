@@ -14,9 +14,22 @@ export default function MyApp({ Component, pageProps }) {
   const {
     // session only available if passed in from getServerSideProps, otherwise
     // SessionProvider seems to be getting it all by itself clientside
-    session,
+    // session,
     ...rest
   } = pageProps;
+
+  const session = {
+    email: 'demo@troop.tools',
+    firstName: 'Landon',
+    lastName: 'Sutherland',
+    roles: {
+      admin: true
+    },
+    troop: 'DM-1234',
+    isAdmin: true,
+    isParent: true,
+    isTrailGuide: true,
+  };
 
   return (
     <>

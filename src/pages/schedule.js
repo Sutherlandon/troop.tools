@@ -41,14 +41,14 @@ export default function SchedulePage() {
   const [newOpen, setNewOpen] = useState(false);
   const [events, setSchedule] = useState([]);
   const [members, setMembers] = useState([]);
-  const [year, setYear] = useState(String(dayjs().year()));
-  const [yearOptions, setYearOptions] = useState(['2021', '2022', '2023', '2024']);
+  const [year, setYear] = useState('2023');
+  const [yearOptions, setYearOptions] = useState(['2023', '2024']);
   const [showDetails, setShowDetails] = useState();
   const { data: user } = useSession({ required: true });
 
   useEffect(() => {
     async function loadSchedule() {
-      const { data: schedule, error: scheduleErr } = await EventsAPI.get(year);
+      const { data: schedule, error: scheduleErr } = await EventsAPI.get('2023');
       const { data: members, error: memberErr } = await MembersAPI.getAll();
 
       if (scheduleErr || memberErr) {
@@ -59,7 +59,6 @@ export default function SchedulePage() {
 
       setMembers(members);
       setSchedule(schedule.events);
-      setYearOptions(schedule.years);
       setLoading(false);
     }
 
@@ -142,7 +141,6 @@ export default function SchedulePage() {
         open={newOpen}
         onUpdate={(updatedSchedule, year) => {
           setSchedule(updatedSchedule.events);
-          setYearOptions(updatedSchedule.years);
           setYear(year);
         }}
       />
@@ -151,7 +149,6 @@ export default function SchedulePage() {
         handleClose={() => setEditInfo({ open: false })}
         onUpdate={(updatedSchedule, year) => {
           setSchedule(updatedSchedule.events);
-          setYearOptions(updatedSchedule.years);
           setYear(year);
         }}
       />

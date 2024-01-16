@@ -15,7 +15,7 @@ export default function LoadingPage() {
       }
 
       console.log('session NOT found, redirecting to signin');
-      return Router.push('/api/auth/signin');
+      return Router.push('/api/auth/signin2');
     }
 
     checkSession();

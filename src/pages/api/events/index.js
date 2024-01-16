@@ -14,7 +14,7 @@ export default withAuthSession(async (req, res) => {
 
   switch (req.method) {
     case 'GET':
-      events = await Event.getAll('NM1412');
+      events = await Event.getAll(session.troop);
       break;
     case 'POST':
       await Event.add(formData, session.troop);
