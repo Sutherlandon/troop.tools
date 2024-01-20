@@ -17,7 +17,7 @@ export default function PageLayout({ children, noMaxWidth, Submenu }) {
       }}>
         <Box sx={{ marginBottom: 2 }}>
           <Alert variant='standard' severity='error'>
-              This application was used by my Trail Life troop but is no longer necessary, Therefore the data has been anonamized and
+              This application was used by my Trail Life troop but is no longer maintained, Therefore the data has been anonamized and
               this app remains active for demonstration and porfolio reasons.  Feel free to look around!
           </Alert>
         </Box>
